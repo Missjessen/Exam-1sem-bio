@@ -39,31 +39,31 @@
                 <!-- Vis liste over dagens bookinger og ledige parkeringspladser her -->
             </section>
 
-            <!-- Tilføj ny film -->
-            <section class="card" id="add-movie">
+             <!-- Tilføj ny film med billede-upload -->
+             <section class="card" id="add-movie">
                 <h2>Tilføj ny film</h2>
                 <p>Opret en ny film med billeder og beskrivelser.</p>
-                <section class="card" id="add-movie">
-    <h2>Tilføj ny film</h2>
-    <form action="add_movie.php" method="post" enctype="multipart/form-data">
-        <label for="title">Filmtitel:</label>
-        <input type="text" id="title" name="title" placeholder="Indtast filmtitel" required>
 
-        <label for="director">Instruktør:</label>
-        <input type="text" id="director" name="director" placeholder="Indtast instruktørens navn" required>
+                <form action="imgUp/upload_image.php" method="post" enctype="multipart/form-data">
+                    <label for="title">Filmtitel:</label>
+                    <input type="text" id="title" name="title" placeholder="Indtast filmtitel" required>
 
-        <label for="release-date">Udgivelsesdato:</label>
-        <input type="date" id="release-date" name="release_date" required>
+                    <label for="director">Instruktør:</label>
+                    <input type="text" id="director" name="director" placeholder="Indtast instruktørens navn" required>
 
-        <label for="description">Beskrivelse:</label>
-        <textarea id="description" name="description" rows="4" placeholder="Skriv en kort beskrivelse af filmen" required></textarea>
+                    <label for="release-date">Udgivelsesdato:</label>
+                    <input type="date" id="release-date" name="release_date" required>
 
-        <label for="movie-poster">Filmplakat:</label>
-        <input type="file" id="movie-poster" name="movie_poster" accept="image/*">
+                    <label for="description">Beskrivelse:</label>
+                    <textarea id="description" name="description" rows="4" placeholder="Skriv en kort beskrivelse af filmen" required></textarea>
 
-        <button type="submit" class="add-button">Tilføj Film</button>
-    </form>
-</section>
+                    <label for="movie-poster">Filmplakat:</label>
+                    <input type="file" id="movie-poster" name="file" accept="image/*" required>
+
+                    <button type="submit" class="add-button">Tilføj Film</button>
+                </form>
+            </section>
+
 
             </section>
 

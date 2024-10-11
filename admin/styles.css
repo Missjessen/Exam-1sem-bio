@@ -119,3 +119,28 @@ body {
 .large-card {
     grid-column: span 2;
 }
+.upload-section, .uploaded-images {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #2b2b2b; /* Tilføj baggrundsfarve */
+    border-radius: 5px;
+}
+
+.upload-section h2, .uploaded-images h2 {
+    color: #f3b96e;
+}
+
+.upload-section input[type="file"],
+.upload-section button {
+    margin-top: 10px;
+    padding: 8px;
+    background-color: #f0e6d2;
+    color: #2b2b2b;
+    border: none;
+    cursor: pointer;
+}
+
+.uploaded-images img {
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}

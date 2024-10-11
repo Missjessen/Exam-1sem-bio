@@ -1,0 +1,178 @@
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #1e1e1e;
+    color: #f0e6d2;
+    font-family: 'Georgia', serif;
+}
+.container {
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+    margin-top: 20px;
+}
+.film-info{
+    width: 50%;
+    background-color: #4d4a4a;
+    padding: 20px;
+    border-radius: 48px 0;
+    background: linear-gradient(135deg, rgba(178, 161, 161, 0.1), rgba(184, 182, 182, 0));
+    -webkit-backdrop-filter: blur(40px);
+    backdrop-filter: blur(50px);
+    box-shadow: 0 8px 32px 0 rgba(207, 206, 206, 0.37);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 32px;
+}
+.parking-grid {
+    width: 50%;
+    height: 1000px;
+    background-color: #4d4a4a;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 5px;
+    
+    justify-items: center;
+    border-radius: 0 48px ;
+    background: linear-gradient(135deg, rgba(178, 161, 161, 0.1), rgba(184, 182, 182, 0));
+    -webkit-backdrop-filter: blur(40px);
+    backdrop-filter: blur(50px);
+    box-shadow: 0px;
+    border: 1px solid rgba(23, 23, 23, 0.18);
+    border-radius: 32px;
+}
+.parking-spot{
+    width: 40px;
+    height: 40px;
+    background: url('car-icon.png') no-repeat center;
+    background-size: contain;
+    cursor: pointer;
+}
+.parking-spot.available {
+    filter: grayscale(100%);
+}
+.parking-spot.booked {
+    filter: brightness(0.5);
+}
+.parking-spot.selected {
+    filter: brightness(1.2) sepia(1) hue-rotate(330deg);
+}
+.ticket {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: #2b2b2b;
+}
+.ticket h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+.ticket p {
+    font-size: 16px;
+}
+.ticket button {
+    width: 100%;
+    
+    padding: 10px;
+    background-color: #c65f29;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    margin-top: 30px;
+    font-size: 16px;
+    font-weight: bold;
+}
+.ticket button:hover {
+    background-color: #a34721;
+}
+
+.img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #c65f29;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    margin-top: 30px;
+    font-size: 16px;
+    font-weight: bold;
+}
+input[type="submit"]:hover {
+    background-color: #a34721;
+}
+
+/* Layout container */
+.parking-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+   
+}
+
+/* Screen styling */
+.screen {
+    width: 80%;
+    height: 30px;
+    background-color: #333;
+    color: white;
+    text-align: center;
+    margin: auto;
+    line-height: 40px;
+    font-weight: bold;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+/* Parking rows container */
+.parking-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+/* Individual row styling */
+.parking-row {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+/* Individual parking spot */
+.parking-spot {
+    position: relative;
+    width: 50px;
+    height: 50px;
+    background-color: #007bff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Parking icon */
+.parking-icon {
+    width: 100%;
+    height: auto;
+    max-width: 40px;
+    max-height: 40px;
+}
+
+/* Style for booked spots */
+.booked {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Available spots */
+.available {
+    background-color: #007bff;
+    cursor: pointer;
+}
