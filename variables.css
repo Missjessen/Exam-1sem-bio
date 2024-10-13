@@ -1,0 +1,84 @@
+
+/* variables.css */
+:root {
+    /* Farver */
+    --primary-color: #f3b96e; /* Gylden farve til knapper og overskrifter */
+    --secondary-color: #1e1e1e; /* Mørk baggrund */
+    --accent-color: #dba056; /* Lysere accentfarve */
+    --background-color: #121212; /* Hovedbaggrundsfarve */
+    --text-color: #f0e6d2; /* Lys beige tekst */
+    --border-color: #444; /* Grå kantfarve */
+
+    /* Typografi */
+    --font-family: 'Arial, sans-serif';
+    --font-size-base: 16px;
+    --font-size-large: 36px;
+    --font-size-medium: 20px;
+    --font-size-small: 14px;
+    --line-height: 1.6;
+
+    /* Spacing */
+    --padding: 16px;
+    --margin: 16px;
+    --padding-small: 8px;
+    --padding-large: 24px;
+
+    /* Border og radius */
+    --border-width: 1px;
+    --border-radius: 8px;
+    --card-border-radius: 15px;
+
+    /* Skygger */
+    --box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    --text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+
+    /* Layoutbredder */
+    --max-width: 1000px;
+    --container-width: 80%;
+    --sidebar-width: 250px;
+
+    /* Animeringshastigheder */
+    --transition-duration: 0.3s;
+    --animation-duration: 1s;
+    --animation-easing: ease-in-out;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+}
+
+main {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+nav {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+nav a {
+    margin: 0 10px;
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+nav a:hover {
+    background-color: #555;
+}
+
+h2 {
+    color: #333;
+}

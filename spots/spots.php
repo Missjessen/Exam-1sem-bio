@@ -1,11 +1,20 @@
-<!DOCTYPE html>
-<html lang="da">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Drive-In Bio - Parkering</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
+
+<?php
+
+
+// Inkluder header og databaseforbindelse
+ 
+// Inkluder header og databaseforbindelse ved hjælp af absolut sti
+include $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/includes/header.php'; 
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/includes/connection.php'; 
+
+// (rest of your code here)
+
+// Inkluder funktioner
+$page = $_GET['page'] ?? 'spots';
+?>
+
+
 <body>
     <h1>Drive-In Bio - Parkering</h1>
     <div class="container">
@@ -132,6 +141,6 @@
     </div>
 
 </body>
-</html>
+
 
 
