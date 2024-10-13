@@ -19,7 +19,11 @@ function loadPage($page) {
         'about' => [
             'file' => 'about.php',
             'css' => 'common.css'
-        ]
+        ],
+        'admin' => [
+            'file' => 'admin.php',
+            'css' => 'admin.css'
+        ],
     ];
     
     // Check if page exists in the map, otherwise default to 'home'

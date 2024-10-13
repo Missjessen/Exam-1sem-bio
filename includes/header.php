@@ -10,7 +10,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/includes/connection.php
 $cssFiles = [
     'spots' => '/css/spots.css',
     'movie' => '/css/movie.css',
-    'haeder' => '/css/about.css',  // Hvis du har om os-siden
+    'admin' => '/css/admin.css',  // Hvis du har om os-siden
     'contact' => '/css/contact.css',  // Tilføj andre sider efter behov
     'services' => '/css/services.css',
     'gallery' => '/css/gallery.css'

@@ -1,6 +1,12 @@
 <?php 
-// Hvis function.php allerede er inkluderet i header.php, fjern linjen her:
-include $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/includes/header.php';
+// Inkluder header og databaseforbindelse ved hjælp af absolut sti
+include $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/includes/header.php'; 
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/includes/connection.php'; 
+
+// (rest of your code here)
+
+// Inkluder funktioner
+$page = $_GET['page'] ?? 'movie';
 ?>
 <main>
     <?php

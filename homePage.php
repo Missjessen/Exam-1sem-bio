@@ -1,20 +1,14 @@
 
 <?php 
 
-// I index.php eller hovedfilen
-
+// Inkluder header og databaseforbindelse ved hjælp af absolut sti
 include $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/includes/header.php'; 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/includes/connection.php';
-?>
-<main>
-<?php
-include 'path/to/your/function/file.php'; // Ret stien til din funktion
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/includes/connection.php'; 
 
-// Hent den ønskede side fra URL'en
+// (rest of your code here)
+
+// Inkluder funktioner
 $page = $_GET['page'] ?? 'homePage';
-
-// Kald funktionen for at indlæse siden
-loadPage($page);
 ?>
 </main>
   
