@@ -1,48 +1,33 @@
-
 <?php
 
-function loadPage($page) {
-    // Map of pages to files and styles
-    $pages = [
-        'home' => [
-            'file' => 'homePage.php',
-            'css' => 'homePage.css'
-        ],
-        'movie' => [
-            'file' => 'movieView/movie.php',
-            'css' => 'movie.css'
-        ],
-        'spots' => [
-            'file' => 'spots/spots.php',
-            'css' => 'spots.css'
-        ],
-        'about' => [
-            'file' => 'about.php',
-            'css' => 'common.css'
-        ],
-        'admin' => [
-            'file' => 'admin.php',
-            'css' => 'admin.css'
-        ],
-    ];
-    
-    // Check if page exists in the map, otherwise default to 'home'
-    $pageData = $pages[$page] ?? $pages['home'];
+// Forbind til databasen
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/includes/connection.php';
 
-    // Include the CSS file
-    echo '<link rel="stylesheet" href="/Exam-1sem-bio/css/' . $pageData['css'] . '">';
+// Forbered og udfør forespørgslen
 
-    // Include the page file
-    include $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/' . $pageData['file'];
+$stmt = $db->prepare("SELECT * FROM pages WHERE LOWER(page_name) = LOWER(:page)");
+$stmt->bindParam(':page', $page, PDO::PARAM_STR);
+$stmt->execute();
+$pageData = $stmt->fetch(PDO::FETCH_ASSOC);
+
+// Kontrollér, om siden blev fundet i databasen
+if ($pageData) {
+    // Indlæs sidens CSS, titel, og indhold
+    echo '<link rel="stylesheet" href="/Exam-1sem-bio/assets/css/' . $pageData['css_file'] . '">';
+    echo '<title>' . htmlspecialchars($pageData['title']) . '</title>';
+    echo '<div>' . htmlspecialchars($pageData['content']) . '</div>';
+
+    // Inkluder skabelonfilen, hvis den findes
+    $templatePath = $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/' . $pageData['template_file'];
+    if (file_exists($templatePath)) {
+        include $templatePath;
+    } else {
+        echo "Skabelonfilen blev ikke fundet.";
+    }
+} else {
+    // Vis fejlmeddelelse, hvis siden ikke blev fundet i databasen
+    echo "Siden blev ikke fundet.";
 }
+
+
 ?>
-
-
-
-
-
-
-
-
-
-

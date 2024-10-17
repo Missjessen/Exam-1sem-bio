@@ -1,31 +1,11 @@
-<?php  
-// Korrigér stien til filen
-include $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/includes/functions.php'; 
-
+<?php
+// Inkluder nødvendige filer
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/includes/functions.php'; 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/includes/connection.php';
 
-// Sørg for, at $page bliver sat korrekt
-
-// Definér tilladte sider og deres tilsvarende CSS-filer i et array
-$cssFiles = [
-    'spots' => '/css/spots.css',
-    'movie' => '/css/movie.css',
-    'admin' => '/css/admin.css',  // Hvis du har om os-siden
-    'contact' => '/css/contact.css',  // Tilføj andre sider efter behov
-    'services' => '/css/services.css',
-    'gallery' => '/css/gallery.css'
-];
-
-// Hent $page fra URL'en, eller sæt den til null, hvis parameteren ikke findes
-$page = $_GET['page'] ?? null;
-
-// Vælg CSS-fil baseret på $page, eller brug common.css som fallback
-$cssFile = $cssFiles[$page] ?? '/css/common.css';
+// Hent 'page' parameteren fra URL'en
+$page = isset($_GET['page']) ? $_GET['page'] : 'home';
 ?>
-
-
-
-
 
 <!DOCTYPE html>
 <html lang="da">
@@ -33,26 +13,23 @@ $cssFile = $cssFiles[$page] ?? '/css/common.css';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Drive-In Bio</title>
-    <link rel="stylesheet" href="/Exam-1sem-bio/css/variables.css">
-    <?php echo '<link rel="stylesheet" href="/Exam-1sem-bio' . $cssFile . '">'; ?>
+    <link rel="stylesheet" href="/Exam-1sem-bio/assets/css/variables.css">
+    <link rel="stylesheet" href="/Exam-1sem-bio/includes/cssLoader.php?page; ?>">
+
+
 </head>
-<body>
 <body>
 <header>
     <h1>Drive-In Bio</h1>
     <nav>
         <ul>
-            <li><a href="?page=home">Hjem</a></li>
-            <li><a href="?page=movie">Film</a></li>
-            <li><a href="?page=spots">Pladser</a></li>
-            <li><a href="?page=about">Om Os</a></li>
+            <li><a href="/Exam-1sem-bio/index.php?page=home">Hjem</a></li>
+            <li><a href="/Exam-1sem-bio/index.php?page=program">Program</a></li>
+            <li><a href="/Exam-1sem-bio/index.php?page=movie">Film</a></li>
+            <li><a href="/Exam-1sem-bio/index.php?page=spots">Pladser</a></li>
+            <li><a href="/Exam-1sem-bio/index.php?page=tickets">Billetter</a></li>
+            <li><a href="/Exam-1sem-bio/index.php?page=about">Om Os</a></li>
+            <li><a href="/Exam-1sem-bio/index.php?page=admin">Admin</a></li>
         </ul>
     </nav>
 </header>
-
-<?php
-// Inkluder footer.php med en absolut sti
-include $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/includes/footer.php';
-?>
-</body>
-</html>

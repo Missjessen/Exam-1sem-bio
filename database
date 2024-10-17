@@ -1,0 +1,95 @@
+-- Opret database, hvis den ikke findes
+-- Slet databasen, hvis den allerede findes
+DROP DATABASE IF EXISTS `drive-in-1sem`;
+
+-- Opret databasen, hvis den ikke findes
+CREATE DATABASE IF NOT EXISTS `drive-in-1sem`;
+USE `drive-in-1sem`;
+
+
+-- Opret tabel for film
+CREATE TABLE IF NOT EXISTS `films` (
+    `film_id` INT AUTO_INCREMENT PRIMARY KEY,
+    `title` VARCHAR(255) NOT NULL,
+    `description` TEXT,
+    `release_date` DATE
+);
+
+-- Opret tabel for parkeringspladser
+CREATE TABLE IF NOT EXISTS `spots` (
+    `spot_id` INT AUTO_INCREMENT PRIMARY KEY,
+    `spot_number` INT NOT NULL UNIQUE,
+    `status` ENUM('available', 'booked') DEFAULT 'available'
+);
+
+-- Opret tabel for visningstider
+CREATE TABLE IF NOT EXISTS `showtimes` (
+    `showtime_id` INT AUTO_INCREMENT PRIMARY KEY,
+    `film_id` INT NOT NULL,
+    `show_date` DATE NOT NULL,
+    `show_time` TIME NOT NULL,
+    FOREIGN KEY (`film_id`) REFERENCES `films`(`film_id`)
+);
+
+-- Opret tabel for bookinger
+CREATE TABLE IF NOT EXISTS `bookings` (
+    `booking_id` INT AUTO_INCREMENT PRIMARY KEY,
+    `film_id` INT NOT NULL,
+    `spot_id` INT NOT NULL,
+    `customer_id` INT,
+    `booking_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `price` INT,
+    FOREIGN KEY (`film_id`) REFERENCES `films`(`film_id`),
+    FOREIGN KEY (`spot_id`) REFERENCES `spots`(`spot_id`)
+);
+
+CREATE TABLE pages (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    page_name VARCHAR(50) UNIQUE NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    content TEXT,
+    css_file VARCHAR(255),
+    template_file VARCHAR(255)
+);
+
+-- Tilføj eksempeldata i `films`-tabellen
+INSERT INTO `films` (`title`, `description`, `release_date`) VALUES
+('Film A', 'Beskrivelse af Film A', '2023-12-01'),
+('Film B', 'Beskrivelse af Film B', '2023-12-15');
+
+-- Tilføj eksempeldata i `spots`-tabellen
+INSERT INTO `spots` (`spot_number`, `status`) VALUES 
+(1, 'available'), (2, 'available'), (3, 'available'), (4, 'available'), (5, 'available'),
+(6, 'available'), (7, 'available'), (8, 'available'), (9, 'available'), (10, 'available'),
+(11, 'available'), (12, 'available'), (13, 'available'), (14, 'available'), (15, 'available'),
+(16, 'available'), (17, 'available'), (18, 'available'), (19, 'available'), (20, 'available'),
+(21, 'available'), (22, 'available'), (23, 'available'), (24, 'available'), (25, 'available'),
+(26, 'available'), (27, 'available'), (28, 'available'), (29, 'available'), (30, 'available'),
+(31, 'available'), (32, 'available'), (33, 'available'), (34, 'available'), (35, 'available'),
+(36, 'available'), (37, 'available'), (38, 'available'), (39, 'available'), (40, 'available'),
+(41, 'available'), (42, 'available'), (43, 'available'), (44, 'available'), (45, 'available'),
+(46, 'available'), (47, 'available'), (48, 'available'), (49, 'available'), (50, 'available');
+
+-- Tilføj eksempeldata i `showtimes`-tabellen
+INSERT INTO `showtimes` (`film_id`, `show_date`, `show_time`) VALUES
+(1, '2023-12-01', '18:00:00'),
+(1, '2023-12-01', '20:30:00'),
+(2, '2023-12-15', '18:00:00'),
+(2, '2023-12-15', '20:30:00');
+
+INSERT INTO pages (page_name, title, content, css_file, template_file) VALUES
+('home', 'Hjem - Drive-In Bio', 'Velkommen til Drive-In Bio.', 'homePage.css', 'view/homePage.php'),
+('program', 'Program - Drive-In Bio', 'Film for alle.', 'program.css', 'view/program.php'),
+('movie', 'Film - Drive-In Bio', 'Her er vores filmoversigt.', 'movie.css', 'view/movie.php'),
+('spots', 'Pladser - Drive-In Bio', 'Find din parkering.', 'spots.css', 'view/spots.php'),
+('ticket', 'Køb din spot - Drive-In Bio', 'Køb plads til den næste forestilling.', 'ticket.css', 'view/ticket.php'),
+('about', 'Om Os - Drive-In Bio', 'Lær mere om vores Drive-In biograf.', 'about.css', 'view/about.php');
+
+
+
+
+
+-- Indsæt en standardadmin (Brug password_hash i PHP til at generere hashet kodeord)
+-- Eksempel på indsættelse:
+--INSERT INTO users (username, email, password, is_validated) 
+--VALUES ('testuser', 'testuser@example.com', '$2y$10$dF7jq39V4i0OMuBKQUtfCe8zfJraemow8.sjoRbqzh74Tx8D8Ob7S', 1);

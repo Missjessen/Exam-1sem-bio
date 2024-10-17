@@ -1,11 +1,11 @@
-body {
+/* body {
     display: flex;
     flex-direction: column;
     align-items: center;
     background-color: #1e1e1e;
     color: #f0e6d2;
     font-family: 'Georgia', serif;
-}
+} */
 .container {
     display: flex;
     justify-content: space-between;

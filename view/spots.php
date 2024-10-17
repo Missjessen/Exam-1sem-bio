@@ -1,21 +1,16 @@
 
-<?php
+<?php 
+require_once  $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/includes/header.php';
+   // Inkluder funktionen
+   require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/includes/functions.php';
+   require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/includes/connection.php';
+  
+  
+   ?>
 
 
-// Inkluder header og databaseforbindelse
- 
-// Inkluder header og databaseforbindelse ved hjælp af absolut sti
-include $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/includes/header.php'; 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/includes/connection.php'; 
-
-// (rest of your code here)
-
-// Inkluder funktioner
-$page = $_GET['page'] ?? 'spots';
-?>
-
-
-<body>
+<main>
+   
     <h1>Drive-In Bio - Parkering</h1>
     <div class="container">
         <!-- Film Information Section -->
@@ -30,11 +25,14 @@ $page = $_GET['page'] ?? 'spots';
         <!-- Parking Grid Section -->
         <div class="parking-grid">
             <?php
-            require_once '../includes/connection.php';
-
+           
+          
+        
             $currentFilmId = 1;
 
-            // Hent bookede pladser fra databasen
+            
+
+            // Hent bookede pladser fra databasen$
             $stmt = $db->prepare("SELECT spot_id FROM bookings WHERE film_id = :film_id");
             $stmt->bindParam(':film_id', $currentFilmId, PDO::PARAM_INT);
             $stmt->execute();
@@ -140,7 +138,7 @@ $page = $_GET['page'] ?? 'spots';
                 ?>
     </div>
 
-</body>
+            </main>
 
 
 

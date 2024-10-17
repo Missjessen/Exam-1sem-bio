@@ -1,20 +1,12 @@
 <?php 
-// Inkluder header og databaseforbindelse ved hjælp af absolut sti
-include $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/includes/header.php'; 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/includes/connection.php'; 
+require_once  $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/includes/header.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/includes/functions.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/includes/connection.php';
 
-// (rest of your code here)
 
-// Inkluder funktioner
-$page = $_GET['page'] ?? 'movie';
 ?>
-<main>
-    <?php
 
-    ?>
-</main>
-
-<body class="moviebody">
+<main class="moviebody">
     <div class="card">
         <!-- Header med filmplakat og detaljer -->
         <div class="film-header">
@@ -43,6 +35,6 @@ $page = $_GET['page'] ?? 'movie';
             <p>Spider-Man forsøger at finde balance i sit liv som teenager og superhelt, da nye trusler dukker op i kølvandet på de begivenheder, der rystede hans verden.</p>
         </div>
     </div>
-</body>
+</main>
 
-<?php include $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/includes/footer.php';?>
+

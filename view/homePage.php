@@ -1,16 +1,12 @@
 
 <?php 
+require_once  $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/includes/header.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/includes/functions.php';
 
-// Inkluder header og databaseforbindelse ved hjælp af absolut sti
-include $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/includes/header.php'; 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/includes/connection.php'; 
+// Definér sideparameteren fra URL'en
+$page = isset($_GET['page']) ? $_GET['page'] : 'homePage';
 
-// (rest of your code here)
-
-// Inkluder funktioner
-$page = $_GET['page'] ?? 'homePage';
 ?>
-</main>
   
 
 
