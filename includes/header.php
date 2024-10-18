@@ -23,7 +23,7 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'home';
     <h1>Drive-In Bio</h1>
     <nav>
         <ul>
-            <li><a href="/Exam-1sem-bio/index.php?page=home">Hjem</a></li>
+            <li><a href="/Exam-1sem-bio/index.php?page=homePage">Hjem</a></li>
             <li><a href="/Exam-1sem-bio/index.php?page=program">Program</a></li>
             <li><a href="/Exam-1sem-bio/index.php?page=movie">Film</a></li>
             <li><a href="/Exam-1sem-bio/index.php?page=spots">Pladser</a></li>
