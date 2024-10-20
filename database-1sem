@@ -9,11 +9,16 @@ USE `drive-in-1sem`;
 
 
 -- Opret tabel for film
-CREATE TABLE IF NOT EXISTS `films` (
-    `film_id` INT AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS `movies` (
+    `movie_id` INT AUTO_INCREMENT PRIMARY KEY,
+    `age_limit` INT NOT NULL,
     `title` VARCHAR(255) NOT NULL,
+    `director` VARCHAR(255) NOT NULL,
+    `release_year` YEAR NOT NULL,
+    `runtime` INT NOT NULL,
     `description` TEXT,
-    `release_date` DATE
+    `poster` VARCHAR(255)
+    
 );
 
 -- Opret tabel for parkeringspladser
@@ -26,21 +31,21 @@ CREATE TABLE IF NOT EXISTS `spots` (
 -- Opret tabel for visningstider
 CREATE TABLE IF NOT EXISTS `showtimes` (
     `showtime_id` INT AUTO_INCREMENT PRIMARY KEY,
-    `film_id` INT NOT NULL,
+    `movie_id` INT NOT NULL,
     `show_date` DATE NOT NULL,
     `show_time` TIME NOT NULL,
-    FOREIGN KEY (`film_id`) REFERENCES `films`(`film_id`)
+    FOREIGN KEY (`movie_id`) REFERENCES `movies`(`movie_id`)
 );
 
 -- Opret tabel for bookinger
 CREATE TABLE IF NOT EXISTS `bookings` (
     `booking_id` INT AUTO_INCREMENT PRIMARY KEY,
-    `film_id` INT NOT NULL,
+    `movie_id` INT NOT NULL,
     `spot_id` INT NOT NULL,
     `customer_id` INT,
     `booking_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
     `price` INT,
-    FOREIGN KEY (`film_id`) REFERENCES `films`(`film_id`),
+    FOREIGN KEY (`movie_id`) REFERENCES `movies`(`movie_id`),
     FOREIGN KEY (`spot_id`) REFERENCES `spots`(`spot_id`)
 );
 
@@ -58,9 +63,13 @@ CREATE TABLE site_settings (
 );
 
 -- Tilføj eksempeldata i `films`-tabellen
-INSERT INTO `films` (`title`, `description`, `release_date`) VALUES
-('Film A', 'Beskrivelse af Film A', '2023-12-01'),
-('Film B', 'Beskrivelse af Film B', '2023-12-15');
+INSERT INTO Movies (age_limit, title, director, release_year, runtime, `description`, poster) VALUES
+(13, 'The Avengers', 'Joss Whedon', 2012, 143, 'Earth\'s mightiest heroes must come together t sto Loki an his alien army fro enslaving humanity.', 'uploads/the_avengers.jpg'),
+(16, 'Inception', 'Christopher Nolan', 2010, 148, 'A thief who steals corporate secrets through dream-sharing technology s given the inverse task of planting an idea i the mind of a C.E.O.', 'uploads/inception.jpg'),
+(7, 'Finding Nemo', 'Andrew Stanton', 2003, 100, '`Aftr` his sonis captured  the Great Barrier Reef a taken t Sydney, a timid clownfish a journey  bring him home.', 'uploads/finding_nemo.jpg'),
+(18, 'The Matrix', 'Lana Wachowski, Lilly Wachowski', 1999, 136, 'A computer hacker learns fro mysterious rebels about the true nature of his reality a his  the war against its controllers.', 'uploads/the_matrix.jpg'),
+(12, 'Harry Potter an the Philosopher\'s Stone', 'Chris Columbus', 2001, 152, 'An eleven-year-old boy discovers he is the famous wizard and joins Hogwarts School of Witchcraft and Wizardry.', 'uploads/harry_potter_1.jpg');
+
 
 -- Tilføj eksempeldata i `spots`-tabellen
 INSERT INTO `spots` (`spot_number`, `status`) VALUES 
@@ -76,7 +85,7 @@ INSERT INTO `spots` (`spot_number`, `status`) VALUES
 (46, 'available'), (47, 'available'), (48, 'available'), (49, 'available'), (50, 'available');
 
 -- Tilføj eksempeldata i `showtimes`-tabellen
-INSERT INTO `showtimes` (`film_id`, `show_date`, `show_time`) VALUES
+INSERT INTO `showtimes` (`movie_id`, `show_date`, `show_time`) VALUES
 (1, '2023-12-01', '18:00:00'),
 (1, '2023-12-01', '20:30:00'),
 (2, '2023-12-15', '18:00:00'),

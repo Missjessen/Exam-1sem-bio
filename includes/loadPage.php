@@ -37,7 +37,7 @@ function loadPage($page) {
             'css' => '/Exam-1sem-bio/admin/admin_styles.css'
         ],
           'manage_pages' => [
-            'file' => $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/admin/manage_pages.php',
+            'file' => $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/admin/page/manage_pages.php',
             'css' => '/Exam-1sem-bio/admin/css/admin_styles.css'
         ],
         'admin_crud' => [
