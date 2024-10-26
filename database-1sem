@@ -8,6 +8,25 @@ USE `drive-in-1sem`;
 
 
 
+CREATE TABLE IF NOT EXISTS `customers` (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    phone VARCHAR(20) NOT NULL
+    
+);
+
+CREATE TABLE IF NOT EXISTS `employees` (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+    role VARCHAR(100) NOT NULL,
+    address VARCHAR(255) NOT NULL
+   
+);
+
+
 -- Opret tabel for film
 CREATE TABLE IF NOT EXISTS `movies` (
     `movie_id` INT AUTO_INCREMENT PRIMARY KEY,
@@ -72,6 +91,20 @@ INSERT INTO Movies (age_limit, title, director, release_year, runtime, `descript
 (18, 'The Matrix', 'Lana Wachowski, Lilly Wachowski', 1999, 136, 'A computer hacker learns fro mysterious rebels about the true nature of his reality a his  the war against its controllers.', 'uploads/the_matrix.jpg'),
 (12, 'Harry Potter an the Philosopher\'s Stone', 'Chris Columbus', 2001, 152, 'An eleven-year-old boy discovers he is the famous wizard and joins Hogwarts School of Witchcraft and Wizardry.', 'uploads/harry_potter_1.jpg');
 
+INSERT INTO employees (name, email, phone, role, address) VALUES
+('Michael Scott', 'michael@dundermifflin.com', '5551234', 'Manager', '1725 Slough Avenue'),
+('Dwight Schrute', 'dwight@dundermifflin.com', '5555678', 'Assistant to the Regional Manager', '168 Beet Lane'),
+('Jim Halpert', 'jim@dundermifflin.com', '5552468', 'Sales Representative', '54 Maple Street'),
+('Pam Beesly', 'pam@dundermifflin.com', '5551357', 'Receptionist', '12 Park Drive'),
+('Stanley Hudson', 'stanley@dundermifflin.com', '5557890', 'Sales Representative', '98 Elm Street');
+
+INSERT INTO `customers` (name, email, phone) VALUES
+('John Doe', 'john@example.com', '12345678'),
+('Jane Smith', 'jane@example.com', '87654321'),
+('Alice Johnson', 'alice@example.com', '11223344'),
+('Bob Brown', 'bob@example.com', '99887766'),
+('Charlie Green', 'charlie@example.com', '33445566'),
+('Diana White', 'diana@example.com', '55667788');
 
 -- Tilføj eksempeldata i `spots`-tabellen
 INSERT INTO `spots` (`spot_number`, `status`) VALUES 

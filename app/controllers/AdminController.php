@@ -8,28 +8,69 @@ class AdminController {
     private $model;
 
     public function __construct($db) {
-        if ($db instanceof PDO) {
-            $this->model = new AdminModel($db);
+        $this->model = new AdminModel($db);
+    }
+
+    // Customers methods
+    public function getAllCustomers() {
+        return $this->model->getAllCustomers();
+    }
+
+    public function getCustomerById($id) {
+        return $this->model->getCustomerById($id);
+    }
+
+    public function saveCustomer($data) {
+        if (!empty($data['id'])) {
+            return $this->model->updateCustomer($data['id'], $data);
         } else {
-            die("Databaseforbindelse er ikke korrekt oprettet.");
+            return $this->model->createCustomer($data);
         }
     }
-    // Hent specifikke indstillinger
-    public function getSettings($keys) {
+
+    public function deleteCustomer($id) {
+        return $this->model->deleteCustomer($id);
+    }
+
+    // Employees methods
+    public function getAllEmployees() {
+        return $this->model->getAllEmployees();
+    }
+
+    public function getEmployeeById($id) {
+        return $this->model->getEmployeeById($id);
+    }
+
+    public function saveEmployee($data) {
+        if (!empty($data['id'])) {
+            return $this->model->updateEmployee($data['id'], $data);
+        } else {
+            return $this->model->createEmployee($data);
+        }
+    }
+
+    public function deleteEmployee($id) {
+        return $this->model->deleteEmployee($id);
+    }
+
+ // Method to retrieve specific settings
+    public function getSettings($keys)
+    {
         $settings = [];
         foreach ($keys as $key) {
             $result = $this->model->getItem('site_settings', ['setting_key' => $key]);
             if ($result && isset($result['setting_value'])) {
                 $settings[$key] = $result['setting_value'];
             } else {
-                $settings[$key] = ''; // Brug tom streng, hvis der ikke findes en værdi
+                $settings[$key] = ''; // Use empty string if no value exists
             }
         }
         return $settings;
     }
 
-    // Opdater indstillinger
-    public function updateSettings($settings) {
+    // Method to update settings
+    public function updateSettings($settings)
+    {
         foreach ($settings as $key => $value) {
             $result = $this->model->updateItem('site_settings', ['setting_value' => $value], ['setting_key' => $key]);
             if (!$result) {
@@ -38,21 +79,30 @@ class AdminController {
         }
     }
 
-   // Generiske metoder til Movies
-   public function createMovie($data) {
-       return $this->model->create('Movies', $data);
-   }
+    // Method to create a movie
+    public function createMovie($data)
+    {
+        return $this->model->createItem('Movies', $data);
+    }
 
-   public function updateMovie($id, $data) {
-       return $this->model->update('Movies', $data, ['movie_id' => $id]);
-   }
+    // Method to update a movie
+    public function updateMovie($id, $data)
+    {
+        return $this->model->updateItem('Movies', $data, ['movie_id' => $id]);
+    }
 
-   public function deleteMovie($id) {
-       return $this->model->delete('Movies', ['movie_id' => $id]);
-   }
+    // Method to delete a movie
+    public function deleteMovie($id)
+    {
+        return $this->model->deleteItem('Movies', ['movie_id' => $id]);
+    }
 
-   public function getAllMovies() {
-       return $this->model->getAllMovies();
-   }
+    // Method to retrieve all movies
+    public function getAllMovies()
+    {
+        return $this->model->getAllMovies();
+    }
+
+    
 }
 ?>

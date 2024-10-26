@@ -6,7 +6,13 @@ DROP DATABASE IF EXISTS `drive-in-1sem`;
 CREATE DATABASE IF NOT EXISTS `drive-in-1sem`;
 USE `drive-in-1sem`;
 
-
+CREATE TABLE IF NOT EXISTS `customers` (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    phone VARCHAR(20) NOT NULL
+    
+);
 
 -- Opret tabel for film
 CREATE TABLE IF NOT EXISTS `films` (
@@ -63,6 +69,14 @@ CREATE TABLE site_settings (
 INSERT INTO `films` (`title`, `description`, `release_date`) VALUES
 ('Film A', 'Beskrivelse af Film A', '2023-12-01'),
 ('Film B', 'Beskrivelse af Film B', '2023-12-15');
+
+INSERT INTO `customers` (name, email, phone) VALUES
+('John Doe', 'john@example.com', '12345678'),
+('Jane Smith', 'jane@example.com', '87654321'),
+('Alice Johnson', 'alice@example.com', '11223344'),
+('Bob Brown', 'bob@example.com', '99887766'),
+('Charlie Green', 'charlie@example.com', '33445566'),
+('Diana White', 'diana@example.com', '55667788');
 
 -- Tilføj eksempeldata i `spots`-tabellen
 INSERT INTO `spots` (`spot_number`, `status`) VALUES 

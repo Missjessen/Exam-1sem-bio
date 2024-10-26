@@ -9,71 +9,95 @@ class AdminModel extends CrudBase {
         parent::__construct($db);
     }
 
-    /**
-     * Hent specifik post fra en tabel
-     * @param string $table Tabellen at hente fra
-     * @param array $where Betingelser for forespørgsel
-     * @return mixed Post fra tabellen
-     */
-    public function getItem($table, $where) {
-        return $this->read($table, '*', $where, true);
+    // Customers methods
+    public function getAllCustomers() {
+        return $this->read('customers');
     }
 
-    /**
-     * Hent alle poster fra en tabel
-     * @param string $table Tabellen at hente fra
-     * @return array Alle poster fra tabellen
-     */
-    public function getAllItems($table) {
-        return $this->read($table);
+    public function getCustomerById($id) {
+        return $this->read('customers', '*', ['id' => $id], true);
     }
 
-    /**
-     * Opdater specifik post i en tabel
-     * @param string $table Tabellen at opdatere
-     * @param array $data Data der skal opdateres
-     * @param array $where Betingelser for opdatering
-     * @return bool Om opdateringen lykkedes
-     */
-    public function updateItem($table, $data, $where) {
-        return $this->update($table, $data, $where);
+    public function createCustomer($data) {
+        return $this->create('customers', $data);
     }
 
-    /**
-     * Slet specifik post fra en tabel
-     * @param string $table Tabellen at slette fra
-     * @param array $where Betingelser for sletning
-     * @return bool Om sletningen lykkedes
-     */
-    public function deleteItem($table, $where) {
-        return $this->delete($table, $where);
+    public function updateCustomer($id, $data) {
+        return $this->update('customers', $data, ['id' => $id]);
     }
 
-    /**
-     * Opret en ny post i en tabel
-     * @param string $table Tabellen at indsætte i
-     * @param array $data Data der skal indsættes
-     * @return bool Om oprettelsen lykkedes
-     */
-    public function createItem($table, $data) {
-        return $this->create($table, $data);
+    public function deleteCustomer($id) {
+        return $this->delete('customers', ['id' => $id]);
     }
 
-    /**
-     * Hent specifik film
-     * @param int $movieId Filmens ID
-     * @return mixed Filmdata
-     */
-    public function getMovie($movieId) {
-        return $this->read('Movies', '*', ['movie_id' => $movieId], true);
+    // Employees methods
+    public function getAllEmployees() {
+        return $this->read('employees');
     }
 
-    /**
-     * Hent alle film
-     * @return array Alle film
-     */
-    public function getAllMovies() {
-        return $this->read('Movies');
+    public function getEmployeeById($id) {
+        return $this->read('employees', '*', ['id' => $id], true);
     }
-}
+
+    public function createEmployee($data) {
+        return $this->create('employees', $data);
+    }
+
+    public function updateEmployee($id, $data) {
+        return $this->update('employees', $data, ['id' => $id]);
+    }
+
+    public function deleteEmployee($id) {
+        return $this->delete('employees', ['id' => $id]);
+    }
+
+
+
+
+   
+   
+       // Method to retrieve a specific item from a table
+       public function getItem($table, $where)
+       {
+           return $this->read($table, '*', $where, true);
+       }
+   
+       // Method to retrieve all items from a table
+       public function getAllItems($table)
+       {
+           return $this->read($table);
+       }
+   
+       // Method to create a new item in a table
+       public function createItem($table, $data)
+       {
+           return $this->create($table, $data);
+       }
+   
+       // Method to update a specific item in a table
+       public function updateItem($table, $data, $where)
+       {
+           return $this->update($table, $data, $where);
+       }
+   
+       // Method to delete a specific item from a table
+       public function deleteItem($table, $where)
+       {
+           return $this->delete($table, $where);
+       }
+   
+       // Method to retrieve a specific movie
+       public function getMovie($movieId)
+       {
+           return $this->read('Movies', '*', ['movie_id' => $movieId], true);
+       }
+   
+       // Method to retrieve all movies
+       public function getAllMovies()
+       {
+           return $this->read('Movies');
+       }
+   }
+
+
 ?>
