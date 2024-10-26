@@ -57,6 +57,8 @@ CREATE TABLE site_settings (
     setting_value TEXT NOT NULL
 );
 
+
+
 -- Tilføj eksempeldata i `films`-tabellen
 INSERT INTO `films` (`title`, `description`, `release_date`) VALUES
 ('Film A', 'Beskrivelse af Film A', '2023-12-01'),
@@ -83,12 +85,13 @@ INSERT INTO `showtimes` (`film_id`, `show_date`, `show_time`) VALUES
 (2, '2023-12-15', '20:30:00');
 
 INSERT INTO pages (page_name, title, content, css_file, template_file) VALUES
-('home', 'Hjem - Drive-In Bio', 'Velkommen til Drive-In Bio.', 'homePage.css', 'view/homePage.php'),
-('program', 'Program - Drive-In Bio', 'Film for alle.', 'program.css', 'view/program.php'),
-('movie', 'Film - Drive-In Bio', 'Her er vores filmoversigt.', 'movie.css', 'view/movie.php'),
-('spots', 'Pladser - Drive-In Bio', 'Find din parkering.', 'spots.css', 'view/spots.php'),
-('ticket', 'Køb din spot - Drive-In Bio', 'Køb plads til den næste forestilling.', 'ticket.css', 'view/ticket.php'),
-('about', 'Om Os - Drive-In Bio', 'Lær mere om vores Drive-In biograf.', 'about.css', 'view/about.php');
+('home', 'Hjem - Drive-In Bio', 'Velkommen til Drive-In Bio.', 'assets/css/homePage.css', 'views/user/homePage.php'),
+('program', 'Program - Drive-In Bio', 'Film for alle.', 'assets/css/program.css', 'views/user/program.php'),
+('movie', 'Film - Drive-In Bio', 'Her er vores filmoversigt.', 'assets/css/movie.css', 'views/user/movie.php'),
+('spots', 'Pladser - Drive-In Bio', 'Find din parkering.', 'assets/css/spots.css', 'views/user/spots.php'),
+('ticket', 'Køb din spot - Drive-In Bio', 'Køb plads til den næste forestilling.', 'assets/css/ticket.css', 'views/user/ticket.php'),
+('about', 'Om Os - Drive-In Bio', 'Lær mere om vores Drive-In biograf.', 'assets/css/about.css', 'views/user/about.php');
+
 
 INSERT INTO site_settings (setting_key, setting_value) VALUES
 ('site_title', 'Drive-In Bio'),

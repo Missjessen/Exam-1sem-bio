@@ -1,37 +1,39 @@
 <?php
 session_start();
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/includes/functions.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/includes/connection.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/includes/constants.php';
-include 'includes/headeradmin.php';
+
+// Inkluder databaseforbindelse og autoloader
+require_once '/Applications/XAMPP/xamppfiles/htdocs/Exam-1sem-bio/config/connection.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/core/autoloader.php'; // Brug en absolut sti
 
 
-// Forbind til databasen
-$conn = new mysqli($db_host, DB_USER, DB_PASS, $db_dbname);
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+// Brug AdminController til at håndtere logik
+$controller = new AdminController($db); // Videregiv $db til konstruktøren
+
 
 // Håndter opdatering af indstillinger via formularindsendelse
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Saml værdier fra POST-requesten
     $settings = [
         'site_title' => $_POST['site_title'],
         'contact_email' => $_POST['contact_email'],
         'opening_hours' => $_POST['opening_hours'],
         'about_content' => $_POST['about_content']
     ];
-    
-    updateSettings($conn, $settings);
+
+    // Opdater indstillinger via controlleren
+    $controller->updateSettings($settings);
+
+    // For at vise en opdateret version uden refresh-problemer, kan du opdatere $settings her:
+    $settings = $controller->getSettings(['site_title', 'contact_email', 'opening_hours', 'about_content']);
 }
 
-// Hent eksisterende indstillinger for at udfylde formularen
-$site_title = getSetting($conn, 'site_title');
-$contact_email = getSetting($conn, 'contact_email');
-$opening_hours = getSetting($conn, 'opening_hours');
-$about_content = getSetting($conn, 'about_content');
-
-$conn->close();
+// Brug controlleren til at hente indstillingerne, hvis de ikke blev opdateret
+$site_title = $settings['site_title'] ?? '';
+$contact_email = $settings['contact_email'] ?? '';
+$opening_hours = $settings['opening_hours'] ?? '';
+$about_content = $settings['about_content'] ?? '';
 ?>
+
 <h1>Indstillinger</h1>
 <p>Opdater website indstillinger som titel, kontaktinformation og farveskema.</p>
 <form action="settings.php" method="post">
@@ -49,7 +51,3 @@ $conn->close();
 
     <button type="submit">Gem Indstillinger</button>
 </form>
-
-
-
-
