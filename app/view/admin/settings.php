@@ -5,26 +5,29 @@ session_start();
 require_once '/Applications/XAMPP/xamppfiles/htdocs/Exam-1sem-bio/config/connection.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/core/autoloader.php'; // Brug en absolut sti
 
-
 // Brug AdminController til at håndtere logik
 $controller = new AdminController($db); // Videregiv $db til konstruktøren
 
+// Hent nuværende indstillinger fra databasen
+$keys = ['site_title', 'contact_email', 'opening_hours', 'about_content'];
+$settings = $controller->getSettings($keys); // Hent de aktuelle indstillinger ved hjælp af de eksisterende nøgler
 
 // Håndter opdatering af indstillinger via formularindsendelse
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Saml værdier fra POST-requesten
-    $settings = [
+    $updatedSettings = [
         'site_title' => $_POST['site_title'],
         'contact_email' => $_POST['contact_email'],
         'opening_hours' => $_POST['opening_hours'],
         'about_content' => $_POST['about_content']
     ];
 
-    // Opdater indstillinger via controlleren
-    $controller->updateSettings($settings);
+    // Opdater hver indstilling i databasen via AdminController
+    $controller->updateSettings($updatedSettings); // Brug controller til at opdatere indstillingerne
 
-    // For at vise en opdateret version uden refresh-problemer, kan du opdatere $settings her:
-    $settings = $controller->getSettings(['site_title', 'contact_email', 'opening_hours', 'about_content']);
+    // Genindlæs siden for at vise opdaterede data uden at genindlæse form
+    header("Location: settings.php");
+    exit;
 }
 
 // Brug controlleren til at hente indstillingerne, hvis de ikke blev opdateret

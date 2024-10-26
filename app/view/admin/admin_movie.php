@@ -1,25 +1,38 @@
 <?php
 session_start();
 
+// Inkluder databaseforbindelse og autoloader
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/config/connection.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/core/autoloader.php';
 
+// Inkluder FileUploadService-filen
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/app/controllers/fileUploader.php';
 
-// Opret en instans af controlleren
+// Opret en instans af controlleren og filuploadservicen
 $controller = new AdminController($db);
+$fileUploadService = new FileUploadService(); // Tilføj filuploadservicen
 
 // Håndter forskellige CRUD-operationer baseret på handling
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['action'])) {
-        handlePostAction($controller, $_POST['action']);
+        handlePostAction($controller, $fileUploadService, $_POST['action']);
+
+        // Genindlæs siden efter `POST`-anmodningen for at forhindre gentagelse ved opdatering
+        header("Location: admin_movie.php");
+        exit;
     }
 }
 
 /**
  * Håndterer forskellige CRUD-operationer baseret på handling
  */
-function handlePostAction($controller, $action) {
-    $poster_path = handleFileUpload();
+function handlePostAction($controller, $fileUploadService, $action) {
+    $poster_path = '';
+    try {
+        $poster_path = $fileUploadService->uploadFile($_FILES['poster']);
+    } catch (Exception $e) {
+        echo $e->getMessage();
+    }
 
     switch ($action) {
         case 'create':
@@ -44,30 +57,6 @@ function handlePostAction($controller, $action) {
 }
 
 /**
- * Håndterer filupload og returnerer filens sti.
- */
-function handleFileUpload() {
-    $upload_dir = $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/uploads/';
-    $poster_path = '';
-    
-    if (isset($_FILES['poster']) && $_FILES['poster']['error'] === UPLOAD_ERR_OK) {
-        $tmp_name = $_FILES['poster']['tmp_name'];
-        $poster_name = basename($_FILES['poster']['name']);
-        $poster_path = $upload_dir . $poster_name;
-    
-        // Flyt filen til uploads-mappen
-        if (move_uploaded_file($tmp_name, $poster_path)) {
-            return '/Exam-1sem-bio/uploads/' . $poster_name; // Returner relativ sti til lagring i databasen
-        } else {
-            echo "Fejl: Kunne ikke flytte den uploadede fil.";
-        }
-    }
-    
-
-    return $poster_path;
-}
-
-/**
  * Forbereder data til oprettelse eller opdatering af en film.
  */
 function prepareMovieData($poster_path, $isUpdate = false) {
@@ -89,6 +78,7 @@ function prepareMovieData($poster_path, $isUpdate = false) {
     return $data;
 }
 ?>
+
 
 <h1>Film Administration</h1>
 

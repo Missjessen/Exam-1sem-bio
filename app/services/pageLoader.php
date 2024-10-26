@@ -6,7 +6,7 @@ class PageLoader {
 
     public function __construct() {
         // Indlæs konfigurationsfilen for at få tilladte sider
-        $this->config = require $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/config/pages.php';
+        $this->config = require $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/config/loadPages.php';
     }
 
     // Funktion til at indlæse CSS for en side
@@ -36,7 +36,7 @@ class PageLoader {
         }
 
         // Sanitere side-fil sti for at undgå directory traversal
-        $filePath = $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/' . basename($this->config['pages'][$page]['file']);
+        $filePath = $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/' . BASENAME($this->config['pages'][$page]['file']);
 
         if (file_exists($filePath)) {
             include $filePath;

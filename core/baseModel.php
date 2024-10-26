@@ -105,14 +105,9 @@ class CrudBase {
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
     }
-    
-}
 
-
-// /helpers
-
-function updateSettings($db, $settings) {
-    try {
+ public function updateSettings($db, $settings) {
+     try {
         // Forbered forespørgslen
         $sql = "INSERT INTO site_settings (setting_key, setting_value) 
                 VALUES (:key, :value) 
@@ -138,6 +133,43 @@ function updateSettings($db, $settings) {
         echo "En fejl opstod under opdateringen. Kontakt venligst administrator.";
     }
 }
+
+public function updateItem($table, $data, $where) {
+    $updates = implode(", ", array_map(function ($key) {
+        return "$key = :$key";
+    }, array_keys($data)));
+
+    $whereClause = implode(" AND ", array_map(function ($key) {
+        return "$key = :$key";
+    }, array_keys($where)));
+
+    $sql = "UPDATE $table SET $updates WHERE $whereClause";
+    $stmt = $this->db->prepare($sql);
+
+    // Debugging for at se SQL-forespørgsel og de aktuelle værdier
+    echo "SQL Forespørgsel: $sql<br>";
+    echo "Data til opdatering: " . json_encode(array_merge($data, $where)) . "<br>";
+
+    foreach (array_merge($data, $where) as $key => $value) {
+        $stmt->bindValue(":$key", $value);
+    }
+
+    if (!$stmt->execute()) {
+        // Log fejl, hvis eksekvering fejler
+        error_log("Fejl ved opdatering af $table: " . implode(", ", $stmt->errorInfo()), 3, $_SERVER['DOCUMENT_ROOT'] . '/logs/errors.log');
+        return false;
+    }
+
+    return true;
+}
+
+    
+}
+
+
+
+
+
 
 
 ?>

@@ -1,5 +1,6 @@
 <?php
 
+
 // Tjek brugerens rolle for at afgøre, om det er admin eller bruger
 session_start();
 //$isAdmin = isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin';

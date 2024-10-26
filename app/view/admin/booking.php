@@ -1,7 +1,6 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/includes/functions.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/includes/connection.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/includes/constants.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/config/connection.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/core/autoloader.php';
 
 // Forbind til databasen
 $conn = new mysqli($db_host, DB_USER, DB_PASS, $db_dbname);

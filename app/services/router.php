@@ -1,6 +1,8 @@
 <?php
-
 // /app/services/Router.php
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/config/connection.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/core/autoloader.php';
+
 class Router {
     public static function route($page) {
         // Tjek om brugeren er logget ind og om de er admin
@@ -16,19 +18,19 @@ class Router {
             case 'about':
                 require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/app/controllers/PageController.php';
                 $controller = new PageController();
-                $controller->loadPage($page, 'user');
+                $controller->loadUserPage($page); // Brug den korrekte metode
                 break;
 
             // Admin Pages - tjek at brugeren er admin før visning
             case 'dashboard':
-            case 'manage_pages':
+            case 'admin_movie':
             case 'admin_crud':
             case 'manage_user':
             case 'settings':
                 if ($isAdmin) {
-                    require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/app/controllers/pageController.php';
-                    $controller = new pageController();
-                    $controller->handle($page);
+                    require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/app/controllers/PageController.php';
+                    $controller = new PageController(); // Korrekt brug af klasse navn med stort 'P'
+                    $controller->loadAdminPage($page); // Brug den korrekte metode til admin
                 } else {
                     header("Location: /Exam-1sem-bio/index.php?page=login");
                     exit;
@@ -39,7 +41,7 @@ class Router {
             default:
                 require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/app/controllers/PageController.php';
                 $controller = new PageController();
-                $controller->loadPage('homePage', 'user');
+                $controller->loadUserPage('homePage'); // Brug den korrekte metode
                 break;
         }
     }

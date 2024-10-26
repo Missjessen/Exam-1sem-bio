@@ -9,6 +9,14 @@
 
      <link rel="stylesheet" href="/Exam-1sem-bio/assets/css/variables.css">
     <link rel="stylesheet" href="/Exam-1sem-bio/includes/cssLoader.php?page=<?php echo $page; ?>">
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const generatedInfo = document.createElement('meta');
+            generatedInfo.name = "Nanna";
+            generatedInfo.content = "Nanna";
+            document.head.appendChild(generatedInfo);
+        });
+    </script>
 
     <!-- Dynamisk CSS indlæsning -->
     <?php
@@ -17,6 +25,7 @@
     }
     ?>
 </head>
+
 <body>
     <header>
         <nav>

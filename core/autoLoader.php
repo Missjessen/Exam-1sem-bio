@@ -6,6 +6,7 @@ spl_autoload_register(function ($class_name) {
             __DIR__ . '/../app/view/controllers/', // Tilføj denne sti hvis relevant
             __DIR__ . '/../app/models/',         // Kontroller denne sti
             __DIR__ . '/../core/',               // Kontroller denne sti
+            
         ];
 
     foreach ($paths as $path) {
