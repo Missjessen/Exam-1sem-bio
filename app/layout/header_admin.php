@@ -5,25 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Sektion - Drive-In Biograf</title>
-    <link rel="stylesheet" href="/Exam-1sem-bio/cssloader.php?page=<?php echo htmlspecialchars($_GET['page'] ?? 'dashboard'); ?>">
-
-     <link rel="stylesheet" href="/Exam-1sem-bio/assets/css/variables.css">
-    <link rel="stylesheet" href="/Exam-1sem-bio/includes/cssLoader.php?page=<?php echo $page; ?>">
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const generatedInfo = document.createElement('meta');
-            generatedInfo.name = "Nanna";
-            generatedInfo.content = "Nanna";
-            document.head.appendChild(generatedInfo);
-        });
-    </script>
 
     <!-- Dynamisk CSS indlæsning -->
     <?php
-    if (isset($pageLoader)) {
-        $pageLoader->loadCss($page);  // Tilføj CSS for den valgte side
+    if (!isset($pageLoader)) {
+        require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/app/services/PageLoader.php';
+        $pageLoader = new PageLoader();
     }
+    $page = $_GET['page'] ?? 'dashboard';
+    $pageLoader->loadCss($page);  // Tilføj CSS for den valgte side
     ?>
+
+    <link rel="stylesheet" href="/Exam-1sem-bio/app/assets/css/variables.css">
 </head>
 
 <body>

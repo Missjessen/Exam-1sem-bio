@@ -1,6 +1,6 @@
-<?php
 
-// /app/services/PageLoader.php
+<?php
+// PageLoader.php - Klasses ansvar for indlæsning af sider og CSS
 class PageLoader {
     private $config;
 
@@ -14,16 +14,16 @@ class PageLoader {
         // Whitelist validering
         $allowedPages = array_keys($this->config['pages']);
         if (!in_array($page, $allowedPages)) {
-            $page = 'homePage'; // Standard side hvis ukendt side anmodes
+            $page = 'home'; // Standard side hvis ukendt side anmodes
         }
 
         // Sanitere CSS sti
         if (isset($this->config['pages'][$page]['css'])) {
             $cssPath = htmlspecialchars($this->config['pages'][$page]['css'], ENT_QUOTES, 'UTF-8');
-            echo '<link rel="stylesheet" href="' . $cssPath . '">';
+            echo '<link rel="stylesheet" href="/Exam-1sem-bio' . $cssPath . '">';
         } else {
             $defaultCss = htmlspecialchars($this->config['default_css'], ENT_QUOTES, 'UTF-8');
-            echo '<link rel="stylesheet" href="' . $defaultCss . '">';
+            echo '<link rel="stylesheet" href="/Exam-1sem-bio' . $defaultCss . '">';
         }
     }
 
@@ -32,11 +32,11 @@ class PageLoader {
         // Whitelist validering
         $allowedPages = array_keys($this->config['pages']);
         if (!in_array($page, $allowedPages)) {
-            $page = 'homePage'; // Standard side hvis ukendt side anmodes
+            $page = 'home'; // Standard side hvis ukendt side anmodes
         }
 
         // Sanitere side-fil sti for at undgå directory traversal
-        $filePath = $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/' . BASENAME($this->config['pages'][$page]['file']);
+        $filePath = $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/app/views/' . basename($this->config['pages'][$page]['view']);
 
         if (file_exists($filePath)) {
             include $filePath;
@@ -47,4 +47,5 @@ class PageLoader {
         }
     }
 }
+
 ?>

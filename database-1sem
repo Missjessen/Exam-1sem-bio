@@ -141,5 +141,11 @@ INSERT INTO site_settings (setting_key, setting_value) VALUES
 ('about_content', 'Drive-In Bio tilbyder en unik filmoplevelse i det fri. Kom og nyd en aften med de nyeste film fra komforten af din egen bil.');
 
 
-
+INSERT INTO pages (page_name, title, content, css_file, template_file) VALUES
+('home', 'Hjem - Drive-In Bio', 'Velkommen til Drive-In Bio.', 'assets/css/homePage.css', 'app/views/user/homePage.php'),
+('program', 'Program - Drive-In Bio', 'Film for alle.', 'assets/css/program.css', 'app/views/user/program.php'),
+('movie', 'Film - Drive-In Bio', 'Her er vores filmoversigt.', 'assets/css/movie.css', 'app/views/user/movie.php'),
+('spots', 'Pladser - Drive-In Bio', 'Find din parkering.', 'assets/css/spots.css', 'app/views/user/spots.php'),
+('ticket', 'Køb din spot - Drive-In Bio', 'Køb plads til den næste forestilling.', 'assets/css/ticket.css', 'app/views/user/ticket.php'),
+('about', 'Om Os - Drive-In Bio', 'Lær mere om vores Drive-In biograf.', 'assets/css/about.css', 'app/views/user/about.php');
 
