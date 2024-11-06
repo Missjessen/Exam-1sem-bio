@@ -9,7 +9,7 @@ if ($conn->connect_error) {
 }
 
 // Håndter forskellige CRUD-operationer baseret på handling
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+/* if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['action'])) {
         $action = $_POST['action'];
 
@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 break;
         }
     }
-}
+} */
 
 // Hent og vis parkeringspladsdata
 $result = $conn->query("SELECT * FROM Parking_Spots");

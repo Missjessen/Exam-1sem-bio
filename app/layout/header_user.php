@@ -1,5 +1,9 @@
-<!-- header_user.php -->
-<!-- /includes/header.php -->
+<?php
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php'; // Inkluderer init.php med autoloader og db
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/app/services/pageLoader.php';
+  
+
+?>
 
 <!DOCTYPE html>
 <html lang="da">
@@ -8,15 +12,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Drive-In Bio</title>
     <link rel="stylesheet" href="/Exam-1sem-bio/assets/css/variables.css">
-    <link rel="stylesheet" href="/Exam-1sem-bio/includes/cssLoader.php?page=<?php echo $page; ?>">
-
-    <!-- Dynamisk CSS indlæsning -->
-    <?php
-    if (isset($pageLoader)) {
-        $pageLoader->loadCss($page);  // Tilføj CSS for den valgte side
-    }
-    ?>
+    <link rel="stylesheet" href="/Exam-1sem-bio' . $cssPath . '">
+    <link rel="stylesheet" href="/Exam-1sem-bio/services/pageLoader.php?page=<?php echo $page; ?>"
 </head>
+
 <body>
     <header>
         <h1>Drive-In Bio</h1>

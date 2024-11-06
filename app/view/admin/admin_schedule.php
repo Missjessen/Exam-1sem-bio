@@ -9,11 +9,11 @@ if ($conn->connect_error) {
 }
 
 // Håndter forskellige CRUD-operationer baseret på handling
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['action'])) {
-        $action = $_POST['action'];
+//if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    //if (isset($_POST['action'])) {
+        //$action = $_POST['action'];
 
-        switch ($action) {
+      /*   switch ($action) {
             case 'create':
                 // Opret en ny tidsplan for en film
                 $data = [
@@ -42,15 +42,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 break;
         }
     }
-}
+} */
 
 // Hent og vis tidsplan for film
-$result = $conn->query("SELECT * FROM Movie_Schedule");
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        echo "<div>Tidsplan ID: " . $row['schedule_id'] . ", Film ID: " . $row['movie_id'] . ", Dato: " . $row['schedule_date'] . ", Starttid: " . $row['start_time'] . "</div>";
-    }
-}
+//$result = $conn->query("SELECT * FROM Movie_Schedule");
+//if ($result->num_rows > 0) {
+    //while ($row = $result->fetch_assoc()) {
+       // echo "<div>Tidsplan ID: " . $row['schedule_id'] . ", Film ID: " . $row['movie_id'] . ", Dato: " . $row['schedule_date'] . ", Starttid: " . $row['start_time'] . "</div>";
+   //// }
+//}
 
-$conn->close();
-?>
+//$conn->close();
+//?>

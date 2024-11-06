@@ -2,18 +2,11 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/config/connection.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/core/autoloader.php';
 ?>
-<!DOCTYPE html>
-<html lang="da">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Drive-in Bio</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
+
 <body>
 
     <!-- Sidebar til navigation -->
-    <aside class="sidebar">
+<!--     <aside class="sidebar">
         <h2>Admin</h2>
         <nav>
             <ul>
@@ -25,7 +18,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/core/autoloader.php';
             </ul>
         </nav>
         <button class="logout-button">Log ud</button>
-    </aside>
+    </aside> -->
 
     <!-- Hovedindhold -->
     <main class="content">

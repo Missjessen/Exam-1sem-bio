@@ -1,8 +1,5 @@
 <?php
-// Inkluder nødvendige filer
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/core/baseModel.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/config/connection.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/core/autoloader.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php'; // Inkluder init.php med $db og autoloader
 
 class AdminModel extends CrudBase {
     public function __construct($db) {
@@ -83,9 +80,9 @@ class AdminModel extends CrudBase {
        }
    
        // Method to retrieve a specific movie
-       public function getMovie($movieId)
+       public function getMovie($movieUUID)
        {
-           return $this->read('Movies', '*', ['movie_id' => $movieId], true);
+           return $this->read('Movies', '*', ['id' => $movieUUID], true); // Opdateret til at bruge 'id' (UUID)
        }
    
        // Method to retrieve all movies

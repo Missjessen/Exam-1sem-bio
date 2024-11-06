@@ -1,8 +1,5 @@
 <?php
-
-// Inkluder databaseforbindelse og autoloader
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/config/connection.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/core/autoloader.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php'; // Inkluder init.php med $db og autoloader
 
 class AdminController {
     private $model;
@@ -81,21 +78,38 @@ class AdminController {
 
     // Method to create a movie
     public function createMovie($data)
-    {
-        return $this->model->createItem('Movies', $data);
+{
+    // Hvis `id` (UUID) ikke er inkluderet i dataene, generér et nyt
+    if (!isset($data['id'])) {
+        $data['id'] = $this->generateUUID(); // Generér en UUID
     }
+
+    // Generér slug baseret på title, hvis slug ikke er angivet
+    if (!isset($data['slug']) || empty($data['slug'])) {
+        $data['slug'] = $this->generateSlug($data['title']);
+    }
+    return $this->model->create('movies', $data);
+}
+
+// UUID-generator metode
+private function generateUUID()
+{
+    return bin2hex(random_bytes(16)); // Generér en 36-tegns UUID
+}
 
     // Method to update a movie
     public function updateMovie($id, $data)
-    {
-        return $this->model->updateItem('Movies', $data, ['movie_id' => $id]);
-    }
+{
+    return $this->model->updateItem('Movies', $data, ['id' => $id]); // Ændret til 'id'
+}
+
 
     // Method to delete a movie
     public function deleteMovie($id)
-    {
-        return $this->model->deleteItem('Movies', ['movie_id' => $id]);
-    }
+{
+    return $this->model->deleteItem('Movies', ['id' => $id]); // Ændret til 'id'
+}
+
 
     // Method to retrieve all movies
     public function getAllMovies()
@@ -103,6 +117,12 @@ class AdminController {
         return $this->model->getAllMovies();
     }
 
+    public function generateSlug($title)
+{
+    // Fjern specialtegn og lav alle bogstaver små
+    $slug = strtolower(preg_replace('/[^A-Za-z0-9-]+/', '-', $title));
+    return trim($slug, '-'); // Trim eventuelle ekstra bindestreger fra begyndelsen eller slutningen
+}
     
 }
 ?>

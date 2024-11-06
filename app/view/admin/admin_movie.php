@@ -1,9 +1,5 @@
 <?php
-session_start();
-
-// Inkluder databaseforbindelse og autoloader
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/config/connection.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/core/autoloader.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php'; // Inkluder init.php med $db og autoloader
 
 // Inkluder FileUploadService-filen
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/app/controllers/fileUploader.php';
@@ -29,7 +25,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 function handlePostAction($controller, $fileUploadService, $action) {
     $poster_path = '';
     try {
-        $poster_path = $fileUploadService->uploadFile($_FILES['poster']);
+        // Upload filen, hvis den er tilgængelig
+        if (isset($_FILES['poster']) && $_FILES['poster']['error'] === UPLOAD_ERR_OK) {
+            $poster_path = $fileUploadService->uploadFile($_FILES['poster']);
+        }
     } catch (Exception $e) {
         echo $e->getMessage();
     }
@@ -41,13 +40,13 @@ function handlePostAction($controller, $fileUploadService, $action) {
             break;
 
         case 'update':
-            $id = intval($_POST['movie_id']);
+            $id = $_POST['movie_id']; // Ingen `intval`, da UUID er en streng
             $data = prepareMovieData($poster_path, true);
             $controller->updateMovie($id, $data);
             break;
 
         case 'delete':
-            $id = intval($_POST['movie_id']);
+            $id = $_POST['movie_id']; // Ingen `intval`
             $controller->deleteMovie($id);
             break;
 
@@ -107,7 +106,7 @@ function prepareMovieData($poster_path, $isUpdate = false) {
                             <p>Beskrivelse: {$movie['description']}</p>
                         </div>
                         <form action='admin_movie.php' method='post'>
-                            <input type='hidden' name='movie_id' value='{$movie['movie_id']}'>
+                            <input type='hidden' name='movie_id' value='{$movie['id']}'> <!-- Brug 'id' som UUID -->
                             <button type='submit' name='action' value='delete'>Slet Film</button>
                         </form>
                     </div>";
@@ -115,6 +114,7 @@ function prepareMovieData($poster_path, $isUpdate = false) {
             } else {
                 echo "<p>Ingen film tilgængelige.</p>";
             }
+            ob_end_flush();
             ?>
         </div>
     </section>
@@ -147,6 +147,7 @@ function prepareMovieData($poster_path, $isUpdate = false) {
             <button type="submit" name="action" value="create">Opret Film</button>
         </form>
     </section>
+    
 </div>
 
 <script>
@@ -167,7 +168,7 @@ function prepareMovieData($poster_path, $isUpdate = false) {
 </script>
 
 </body>
-</html>
+
 
 
 <style>

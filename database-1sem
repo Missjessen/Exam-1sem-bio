@@ -29,7 +29,8 @@ CREATE TABLE IF NOT EXISTS `employees` (
 
 -- Opret tabel for film
 CREATE TABLE IF NOT EXISTS `movies` (
-    `movie_id` INT AUTO_INCREMENT PRIMARY KEY,
+     id CHAR(36) PRIMARY KEY,       -- UUID
+     slug VARCHAR(255) UNIQUE,      -- Slug
     `age_limit` INT NOT NULL,
     `title` VARCHAR(255) NOT NULL,
     `director` VARCHAR(255) NOT NULL,
@@ -50,27 +51,37 @@ CREATE TABLE IF NOT EXISTS `spots` (
 -- Opret tabel for visningstider
 CREATE TABLE IF NOT EXISTS `showtimes` (
     `showtime_id` INT AUTO_INCREMENT PRIMARY KEY,
-    `movie_id` INT NOT NULL,
+    `movie_id` CHAR(36) NOT NULL,
     `show_date` DATE NOT NULL,
     `show_time` TIME NOT NULL,
-    FOREIGN KEY (`movie_id`) REFERENCES `movies`(`movie_id`)
+    FOREIGN KEY (`movie_id`) REFERENCES `movies`(`id`) ON DELETE CASCADE
 );
 
 -- Opret tabel for bookinger
 CREATE TABLE IF NOT EXISTS `bookings` (
     `booking_id` INT AUTO_INCREMENT PRIMARY KEY,
-    `movie_id` INT NOT NULL,
+    `movie_id` CHAR(36) NOT NULL,          -- Opdateret til CHAR(36) for at matche UUID-formatet
     `spot_id` INT NOT NULL,
     `customer_id` INT,
     `booking_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
     `price` INT,
-    FOREIGN KEY (`movie_id`) REFERENCES `movies`(`movie_id`),
+    FOREIGN KEY (`movie_id`) REFERENCES `movies`(`id`) ON DELETE CASCADE,   -- Refererer til `id` i `movies`
     FOREIGN KEY (`spot_id`) REFERENCES `spots`(`spot_id`)
 );
 
-CREATE TABLE pages (
+CREATE TABLE IF NOT EXISTS `reviews` (
+    `review_id` INT AUTO_INCREMENT PRIMARY KEY,
+    `movie_id` CHAR(36) NOT NULL,      -- Refererer til UUID i `movies` tabellen
+    `user_id` INT NOT NULL,            -- Brugeren, der har skrevet anmeldelsen (hvis nødvendigt)
+    `rating` INT NOT NULL CHECK (rating BETWEEN 1 AND 5), -- Rating fra 1 til 5
+    `comment` TEXT,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`movie_id`) REFERENCES `movies`(`id`) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS `pages` (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    page_name VARCHAR(50) UNIQUE NOT NULL,
+    `pages` VARCHAR(50) UNIQUE NOT NULL,
     title VARCHAR(255) NOT NULL,
     content TEXT,
     css_file VARCHAR(255),
@@ -84,12 +95,14 @@ CREATE TABLE site_settings (
 
 
 -- Tilføj eksempeldata i `films`-tabellen
-INSERT INTO Movies (age_limit, title, director, release_year, runtime, `description`, poster) VALUES
-(13, 'The Avengers', 'Joss Whedon', 2012, 143, 'Earth\'s mightiest heroes must come together t sto Loki an his alien army fro enslaving humanity.', 'uploads/the_avengers.jpg'),
-(16, 'Inception', 'Christopher Nolan', 2010, 148, 'A thief who steals corporate secrets through dream-sharing technology s given the inverse task of planting an idea i the mind of a C.E.O.', 'uploads/inception.jpg'),
-(7, 'Finding Nemo', 'Andrew Stanton', 2003, 100, '`Aftr` his sonis captured  the Great Barrier Reef a taken t Sydney, a timid clownfish a journey  bring him home.', 'uploads/finding_nemo.jpg'),
-(18, 'The Matrix', 'Lana Wachowski, Lilly Wachowski', 1999, 136, 'A computer hacker learns fro mysterious rebels about the true nature of his reality a his  the war against its controllers.', 'uploads/the_matrix.jpg'),
-(12, 'Harry Potter an the Philosopher\'s Stone', 'Chris Columbus', 2001, 152, 'An eleven-year-old boy discovers he is the famous wizard and joins Hogwarts School of Witchcraft and Wizardry.', 'uploads/harry_potter_1.jpg');
+INSERT INTO `movies` (`id`, `slug`, `age_limit`, `title`, `director`, `release_year`, `runtime`, `description`, `poster`) VALUES
+(UUID(), 'the-dark-knight-2008', 13, 'The Dark Knight', 'Christopher Nolan', 2008, 152, 'When the menace known as the Joker wreaks havoc on Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.', '/path/to/poster/the-dark-knight.jpg'),
+(UUID(), 'inception-2010', 13, 'Inception', 'Christopher Nolan', 2010, 148, 'A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO.', '/path/to/poster/inception.jpg'),
+(UUID(), 'interstellar-2014', 10, 'Interstellar', 'Christopher Nolan', 2014, 169, 'A team of explorers travel through a wormhole in space in an attempt to ensure humanity’s survival.', '/path/to/poster/interstellar.jpg'),
+(UUID(), 'parasite-2019', 15, 'Parasite', 'Bong Joon Ho', 2019, 132, 'Greed and class discrimination threaten the newly formed symbiotic relationship between the wealthy Park family and the destitute Kim clan.', '/path/to/poster/parasite.jpg'),
+(UUID(), 'whiplash-2014', 16, 'Whiplash', 'Damien Chazelle', 2014, 106, 'A promising young drummer enrolls at a cut-throat music conservatory where his dreams of greatness are mentored by an instructor who will stop at nothing to realize a student’s potential.', '/path/to/poster/whiplash.jpg');
+
+
 
 INSERT INTO employees (name, email, phone, role, address) VALUES
 ('Michael Scott', 'michael@dundermifflin.com', '5551234', 'Manager', '1725 Slough Avenue'),
@@ -120,19 +133,13 @@ INSERT INTO `spots` (`spot_number`, `status`) VALUES
 (46, 'available'), (47, 'available'), (48, 'available'), (49, 'available'), (50, 'available');
 
 -- Tilføj eksempeldata i `showtimes`-tabellen
-INSERT INTO `showtimes` (`movie_id`, `show_date`, `show_time`) VALUES
-(1, '2023-12-01', '18:00:00'),
-(1, '2023-12-01', '20:30:00'),
-(2, '2023-12-15', '18:00:00'),
-(2, '2023-12-15', '20:30:00');
+INSERT INTO `showtimes` (`movie_id`, `show_date`, `show_time`)
+VALUES
+((SELECT id FROM movies WHERE slug = 'the-dark-knight-2008'), '2023-12-01', '18:00:00'),
+((SELECT id FROM movies WHERE slug = 'the-dark-knight-2008'), '2023-12-01', '20:30:00'),
+((SELECT id FROM movies WHERE slug = 'inception-2010'), '2023-12-15', '18:00:00'),
+((SELECT id FROM movies WHERE slug = 'inception-2010'), '2023-12-15', '20:30:00');
 
-INSERT INTO pages (page_name, title, content, css_file, template_file) VALUES
-('home', 'Hjem - Drive-In Bio', 'Velkommen til Drive-In Bio.', 'assets/css/homePage.css', 'views/user/homePage.php'),
-('program', 'Program - Drive-In Bio', 'Film for alle.', 'assets/css/program.css', 'views/user/program.php'),
-('movie', 'Film - Drive-In Bio', 'Her er vores filmoversigt.', 'assets/css/movie.css', 'views/user/movie.php'),
-('spots', 'Pladser - Drive-In Bio', 'Find din parkering.', 'assets/css/spots.css', 'views/user/spots.php'),
-('ticket', 'Køb din spot - Drive-In Bio', 'Køb plads til den næste forestilling.', 'assets/css/ticket.css', 'views/user/ticket.php'),
-('about', 'Om Os - Drive-In Bio', 'Lær mere om vores Drive-In biograf.', 'assets/css/about.css', 'views/user/about.php');
 
 INSERT INTO site_settings (setting_key, setting_value) VALUES
 ('site_title', 'Drive-In Bio'),
@@ -141,11 +148,14 @@ INSERT INTO site_settings (setting_key, setting_value) VALUES
 ('about_content', 'Drive-In Bio tilbyder en unik filmoplevelse i det fri. Kom og nyd en aften med de nyeste film fra komforten af din egen bil.');
 
 
-INSERT INTO pages (page_name, title, content, css_file, template_file) VALUES
-('home', 'Hjem - Drive-In Bio', 'Velkommen til Drive-In Bio.', 'assets/css/homePage.css', 'app/views/user/homePage.php'),
-('program', 'Program - Drive-In Bio', 'Film for alle.', 'assets/css/program.css', 'app/views/user/program.php'),
-('movie', 'Film - Drive-In Bio', 'Her er vores filmoversigt.', 'assets/css/movie.css', 'app/views/user/movie.php'),
-('spots', 'Pladser - Drive-In Bio', 'Find din parkering.', 'assets/css/spots.css', 'app/views/user/spots.php'),
-('ticket', 'Køb din spot - Drive-In Bio', 'Køb plads til den næste forestilling.', 'assets/css/ticket.css', 'app/views/user/ticket.php'),
-('about', 'Om Os - Drive-In Bio', 'Lær mere om vores Drive-In biograf.', 'assets/css/about.css', 'app/views/user/about.php');
+INSERT INTO `pages` (pages, title, content, css_file, template_file) VALUES
+('home', 'Hjem - Drive-In Bio', 'Velkommen til Drive-In Bio.', 'assets/css/homePage.css', 'app/view/user/homePage.php'),
+('program', 'Program - Drive-In Bio', 'Film for alle.', 'assets/css/program.css', 'app/view/user/program.php'),
+('movie', 'Film - Drive-In Bio', 'Her er vores filmoversigt.', 'assets/css/movie.css', 'app/view/user/movie.php'),
+('spots', 'Pladser - Drive-In Bio', 'Find din parkering.', 'assets/css/spots.css', 'app/view/user/spots.php'),
+('ticket', 'Køb din spot - Drive-In Bio', 'Køb plads til den næste forestilling.', 'assets/css/ticket.css', 'app/view/user/ticket.php'),
+('about', 'Om Os - Drive-In Bio', 'Lær mere om vores Drive-In biograf.', 'assets/css/about.css', 'app/view/user/about.php'),
+('admin_movie', 'Om Os - Drive-In Bio', 'Lær mere om vores Drive-In biograf.', 'assets/css/admin_movie.css', 'app/view/admin/admin_movie.php');
+
+
 

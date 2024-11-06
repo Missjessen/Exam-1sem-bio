@@ -1,5 +1,5 @@
 <?php
-session_start();
+
 require_once '/Applications/XAMPP/xamppfiles/htdocs/Exam-1sem-bio/config/connection.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/core/autoloader.php';
 

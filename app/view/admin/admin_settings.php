@@ -1,9 +1,6 @@
 <?php
-session_start();
-
-// Inkluder databaseforbindelse og autoloader
-require_once '/Applications/XAMPP/xamppfiles/htdocs/Exam-1sem-bio/config/connection.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/core/autoloader.php'; // Brug en absolut sti
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php'; // Inkluder init.php med $db og autoloader
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/app/services/pageLoader.php'; // Inkluder PageLoader-klassen
 
 // Brug AdminController til at håndtere logik
 $controller = new AdminController($db); // Videregiv $db til konstruktøren
