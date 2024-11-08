@@ -17,6 +17,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php'; // Inkludere
     <header>
         <nav>
             <ul>
+                
             <li><a href="/Exam-1sem-bio/index.php?page=admin_dashboard">Dashboard</a></li>
                 <li><a href="/Exam-1sem-bio/index.php?page=admin_movie">Admin Movie</a></li>
                 <li><a href="/Exam-1sem-bio/index.php?page=admin_ManageUser">Brugeradministration</a></li>
