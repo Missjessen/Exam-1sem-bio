@@ -141,7 +141,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php'; // Inkluder 
 }
 
 .content {
-    margin-top: 40px;
+    margin-top: 35px;
 }
 
 .cards {
