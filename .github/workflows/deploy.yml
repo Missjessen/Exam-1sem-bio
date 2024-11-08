@@ -21,4 +21,4 @@ jobs:
           username: ${{ secrets.SFTP_USERNAME }}
           password: ${{ secrets.SFTP_PASSWORD }}
           localPath: "./"
-          remotePath: "/path/to/your/server/directory"
+          remotePath: "webroots/a05056f"
