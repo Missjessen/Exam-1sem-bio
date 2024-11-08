@@ -8,7 +8,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php'; // Inkludere
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Sektion - Drive-In Biograf</title>
+    <title>Admin Sektion - Drive-In Biografsssssss</title>
     <link rel="stylesheet" href="/Exam-1sem-bio/assets/css/variables.css">
     <link rel="stylesheet" href="/Exam-1sem-bio' . $cssPath . '">
 </head>
@@ -17,7 +17,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php'; // Inkludere
     <header>
         <nav>
             <ul>
-                
+
             <li><a href="/Exam-1sem-bio/index.php?page=admin_dashboard">Dashboard</a></li>
                 <li><a href="/Exam-1sem-bio/index.php?page=admin_movie">Admin Movie</a></li>
                 <li><a href="/Exam-1sem-bio/index.php?page=admin_ManageUser">Brugeradministration</a></li>
