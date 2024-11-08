@@ -30,7 +30,7 @@ jobs:
           password: ${{ secrets.SFTP_PASSWORD }}
           port: 22
           uploads: |
-            ./ => /home/cjsfkt3sf_ssh/
+            ./ => /home/cjsfkt3sf_ssh/webroots/a050556f/
 
 
       # - name: Deploy via FTP
