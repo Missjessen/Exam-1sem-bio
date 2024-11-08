@@ -22,5 +22,6 @@ jobs:
           password: ${{ secrets.SFTP_PASSWORD }}
           source: "./*"
           target: "/webroots/a05056f"
+          method: sftp  # Specify SFTP method
           debug: true
           timeout: "120s"  
