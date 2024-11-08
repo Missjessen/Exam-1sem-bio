@@ -1,6 +1,6 @@
 body {
     background-color: var(--bg-color, #191818);
-    color: var(--text-color, #FFFFFF);
+    color: var(--text-color, #ede8e8);
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
