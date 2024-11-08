@@ -21,7 +21,7 @@ jobs:
           password: ${{ secrets.SFTP_PASSWORD }}
           server-dir: ./
           local-dir: ./
-          method: sftp
+          protocol: sftp
 
       # - name: Deploy via FTP
       #   uses: SamKirkland/FTP-Deploy-Action@4.3.2
