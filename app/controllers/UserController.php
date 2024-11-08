@@ -61,8 +61,10 @@ public function showMovie($slug) {
         echo "<p>Film ikke fundet.</p>";
         exit;
     }
-    require 'app/view/user/movie_details.php'; // Include view til at vise filmen
+    
+    // Gør filmen tilgængelig i movie_details.php
+    require 'app/view/user/movie_details.php';
+
+
 }
-
-
 }

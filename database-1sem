@@ -1,10 +1,10 @@
 -- Opret database, hvis den ikke findes
 -- Slet databasen, hvis den allerede findes
-DROP DATABASE IF EXISTS `drive-in-1sem`;
+DROP DATABASE IF EXISTS `cjsfkt3sf_cruisenightscinema`;
 
 -- Opret databasen, hvis den ikke findes
-CREATE DATABASE IF NOT EXISTS `drive-in-1sem`;
-USE `drive-in-1sem`;
+CREATE DATABASE IF NOT EXISTS `cjsfkt3sf_cruisenightscinema`;
+USE `cjsfkt3sf_cruisenightscinema`;
 
 
 
@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS `movies` (
     
 );
 
+
 -- Opret tabel for parkeringspladser
 CREATE TABLE IF NOT EXISTS `spots` (
     `spot_id` INT AUTO_INCREMENT PRIMARY KEY,
@@ -72,11 +73,12 @@ CREATE TABLE IF NOT EXISTS `bookings` (
 CREATE TABLE IF NOT EXISTS `reviews` (
     `review_id` INT AUTO_INCREMENT PRIMARY KEY,
     `movie_id` CHAR(36) NOT NULL,      -- Refererer til UUID i `movies` tabellen
-    `user_id` INT NOT NULL,            -- Brugeren, der har skrevet anmeldelsen (hvis nødvendigt)
+    `customer_id` INT NOT NULL,        -- Refererer til kunden, der har skrevet anmeldelsen
     `rating` INT NOT NULL CHECK (rating BETWEEN 1 AND 5), -- Rating fra 1 til 5
     `comment` TEXT,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (`movie_id`) REFERENCES `movies`(`id`) ON DELETE CASCADE
+    FOREIGN KEY (`movie_id`) REFERENCES `movies`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`customer_id`) REFERENCES `customers`(`id`) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS `pages` (
@@ -158,4 +160,9 @@ INSERT INTO `pages` (pages, title, content, css_file, template_file) VALUES
 ('admin_movie', 'Om Os - Drive-In Bio', 'Lær mere om vores Drive-In biograf.', 'assets/css/admin_movie.css', 'app/view/admin/admin_movie.php');
 
 
-
+INSERT INTO `reviews` (`movie_id`, `customer_id`, `rating`, `comment`)
+VALUES
+('550e8400-e29b-41d4-a716-446655440000', 1, 5, 'An incredible movie with stunning performances!'),
+('123e4567-e89b-12d3-a456-426614174000', 2, 4, 'Great concept and execution, though a bit confusing at times.'),
+('550e8400-e29b-41d4-a716-446655441111', 3, 5, 'A breathtaking space adventure with profound themes.'),
+('550e8400-e29b-41d4-a716-446655440000', 3, 4, 'Very intense and captivating from start to finish.');

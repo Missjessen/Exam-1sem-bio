@@ -80,10 +80,9 @@ class PageLoader {
 
     private function loadHeader($page) {
         // Vælg header baseret på sidetype
-        $headerPath = $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/app/layout/';
-        $headerFile = strpos($page, 'admin') === 0 ? 'header_admin.php' : 'header_user.php';
-        $headerPath .= $headerFile;
-
+        $headerFile = (strpos($page, 'admin') === 0) ? 'header_admin.php' : 'header_user.php';
+        $headerPath = $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/app/layout/' . $headerFile;
+    
         if (file_exists($headerPath)) {
             include $headerPath;
         } else {

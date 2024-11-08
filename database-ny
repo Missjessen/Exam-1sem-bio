@@ -114,5 +114,10 @@ INSERT INTO site_settings (setting_key, setting_value) VALUES
 ('about_content', 'Drive-In Bio tilbyder en unik filmoplevelse i det fri. Kom og nyd en aften med de nyeste film fra komforten af din egen bil.');
 
 
-
+INSERT INTO `reviews` (`movie_id`, `customer_id`, `rating`, `comment`)
+VALUES
+('550e8400-e29b-41d4-a716-446655440000', 1, 5, 'An incredible movie with stunning performances!'),
+('123e4567-e89b-12d3-a456-426614174000', 2, 4, 'Great concept and execution, though a bit confusing at times.'),
+('550e8400-e29b-41d4-a716-446655441111', 3, 5, 'A breathtaking space adventure with profound themes.'),
+('550e8400-e29b-41d4-a716-446655440000', 3, 4, 'Very intense and captivating from start to finish.');
 
