@@ -8,7 +8,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php'; // Inkludere
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Sektion - Drive-In Biografsssssss</title>
+    <title>Admin Sektion - Drive-In Biografsssssssgggggggg</title>
     <link rel="stylesheet" href="/Exam-1sem-bio/assets/css/variables.css">
     <link rel="stylesheet" href="/Exam-1sem-bio' . $cssPath . '">
 </head>
