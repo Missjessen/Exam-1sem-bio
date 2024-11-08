@@ -13,15 +13,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4  # Updated to v4 for Node.js 20 compatibility
 
-      - name: FTP delivery
-        uses: SamKirkland/FTP-Deploy-Action@4.3.3
+      # - name: FTP delivery
+      #   uses: SamKirkland/FTP-Deploy-Action@4.3.3
+      #   with:
+      #     server: ${{ secrets.SFTP_HOST }}
+      #     username: ${{ secrets.SFTP_USERNAME }}
+      #     password: ${{ secrets.SFTP_PASSWORD }}
+      #     server-dir: ./
+      #     local-dir: ./
+
+      - name: SFTP upload
+        uses: Dylan700/sftp-upload-action@latest
         with:
           server: ${{ secrets.SFTP_HOST }}
           username: ${{ secrets.SFTP_USERNAME }}
           password: ${{ secrets.SFTP_PASSWORD }}
-          server-dir: ./
-          local-dir: ./
-          protocol: sftp
+          port: 22
+          uploads: |
+            ./ => ./
+
 
       # - name: Deploy via FTP
       #   uses: SamKirkland/FTP-Deploy-Action@4.3.2
