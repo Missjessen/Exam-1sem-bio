@@ -47,4 +47,4 @@ Feel free to fork this repository, submit issues, or contribute with pull reques
 
 ### License
 
-This project is licensed under the MIT License
+This project is licensed under the MIT LicenseTrigger redeploy manually
