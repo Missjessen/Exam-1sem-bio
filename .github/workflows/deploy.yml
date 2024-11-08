@@ -13,13 +13,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4  # Updated to v4 for Node.js 20 compatibility
 
-      - name: Deploy via FTP
-        uses: SamKirkland/FTP-Deploy-Action@4.3.2
+      - name: FTP delivery
+        uses: SamKirkland/FTP-Deploy-Action@4.3.3
         with:
-          ftp-server: "ftp://${{ secrets.FTP_HOST }}"  # Example: ftp://ftp.yourdomain.com
-          ftp-username: ${{ secrets.FTP_USERNAME }}
-          ftp-password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: "./"  # Directory to upload
-          server-dir: "/webroots/a05056f"  # Remote directory on server
-          method: "ftp"  # Specifies FTP method
-          debug: true
+          server: ${{ vars.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: ./
+          local-dir: ./
+
+      # - name: Deploy via FTP
+      #   uses: SamKirkland/FTP-Deploy-Action@4.3.2
+      #   with:
+      #     ftp-server: "ftp://${{ secrets.FTP_HOST }}"  # Example: ftp://ftp.yourdomain.com
+      #     ftp-username: ${{ secrets.FTP_USERNAME }}
+      #     ftp-password: ${{ secrets.FTP_PASSWORD }}
+      #     local-dir: "./"  # Directory to upload
+      #     server-dir: "./"  # Remote directory on server
+      #     method: "ftp"  # Specifies FTP method
+      #     debug: true
