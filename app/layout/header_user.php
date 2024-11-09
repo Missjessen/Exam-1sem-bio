@@ -1,12 +1,12 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php'; // Inkluder init.php med autoloader og db
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/app/services/pageLoader.php';
+
 
 // Eksempel for at initialisere PageLoader og hente CSS'en for en specifik side
-$pageLoader = new PageLoader($db); 
+//$pageLoader = new PageLoader($db); 
 
 // Antag at `$page` hentes via en URL-parameter eller på anden vis
-$page = isset($_GET['page']) ? htmlspecialchars($_GET['page'], ENT_QUOTES, 'UTF-8') : 'homePage';
+
 ?>
 
 <!DOCTYPE html>
@@ -14,9 +14,9 @@ $page = isset($_GET['page']) ? htmlspecialchars($_GET['page'], ENT_QUOTES, 'UTF-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Drive-In Bio</title>
+    <title> Drive-In Biografsssssssgggggggg</title>
     <link rel="stylesheet" href="/Exam-1sem-bio/assets/css/variables.css">
-    <?php $pageLoader->loadCss($page); // Indlæs CSS for den aktuelle side ?>
+    <link rel="stylesheet" href="/Exam-1sem-bio<?php echo $cssPath; ?>">
 </head>
 
 <body>

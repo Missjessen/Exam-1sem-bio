@@ -1,7 +1,7 @@
 <?php
 // Inkluder databaseforbindelse og autoloader
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/config/connection.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/core/autoloader.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php';
+
 class FileUploadService {
     private $upload_dir;
 
@@ -28,4 +28,4 @@ class FileUploadService {
         return $poster_path;
     }
 }
-?>
+

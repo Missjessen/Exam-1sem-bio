@@ -13,7 +13,6 @@ try {
 } catch (PDOException $e) {
     die("Databaseforbindelse fejlede: " . $e->getMessage());
 }
-?>
 
 
 

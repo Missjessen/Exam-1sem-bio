@@ -1,6 +1,7 @@
 
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/core/constants.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php';
 
 
 spl_autoload_register(function ($class_name) {
@@ -18,6 +19,7 @@ spl_autoload_register(function ($class_name) {
         $basePathAbsolute . 'app/services/',
         $basePathAbsolute . 'core/',
         $basePathAbsolute . 'core/baseModel/',
+        $basePathAbsolute . 'app/layout/',
      
 
         $basePathRelative . 'app/controllers/',

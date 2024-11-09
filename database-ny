@@ -1,6 +1,6 @@
 -- Opret database, hvis den ikke findes
 -- Slet databasen, hvis den allerede findes
-DROP DATABASE IF EXISTS `drive-in-1sem`;
+DROP DATABASE IF EXISTS ``cjsfkt3sf_cruisenightscinema``;
 
 -- Opret databasen, hvis den ikke findes
 CREATE DATABASE IF NOT EXISTS `drive-in-1sem`;
@@ -121,3 +121,39 @@ VALUES
 ('550e8400-e29b-41d4-a716-446655441111', 3, 5, 'A breathtaking space adventure with profound themes.'),
 ('550e8400-e29b-41d4-a716-446655440000', 3, 4, 'Very intense and captivating from start to finish.');
 
+
+
+
+CREATE TABLE IF NOT EXISTS `reviews` (
+    `review_id` INT AUTO_INCREMENT PRIMARY KEY,
+    `movie_id` CHAR(36) NOT NULL,      -- Refererer til UUID i `movies` tabellen
+    `customer_id` INT NOT NULL,        -- Refererer til kunden, der har skrevet anmeldelsen
+    `rating` INT NOT NULL CHECK (rating BETWEEN 1 AND 5), -- Rating fra 1 til 5
+    `comment` TEXT,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`movie_id`) REFERENCES `movies`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`customer_id`) REFERENCES `customers`(`id`) ON DELETE CASCADE
+);
+
+-- Antag UUID'er for filmene i `movies` tabellen
+-- Opret relationer mellem film og genre i `movie_genre` tabellen
+INSERT INTO `movie_genre` (`movie_id`, `genre_id`)
+VALUES
+('4311770a-9e27-11ef-9e13-8e1b80f870b1', 1),
+('4311770a-9e27-11ef-9e13-8e1b80f870b1', 2),
+('43118a9c-9e27-11ef-9e13-8e1b80f870b1', 3),
+('43118a9c-9e27-11ef-9e13-8e1b80f870b1', 5),
+('43118b00-9e27-11ef-9e13-8e1b80f870b', 3),
+('43118b00-9e27-11ef-9e13-8e1b80f870b', 4);
+
+-- Opret relationer mellem film og skuespillere i `movie_actor` tabellen
+INSERT INTO `movie_actor` (`movie_id`, `actor_id`)
+VALUES
+-- The Dark Knight (UUID = '4311770a-9e27-11ef-9e13-8e1b80f870b1')
+('4311770a-9e27-11ef-9e13-8e1b80f870b1', 1),
+('4311770a-9e27-11ef-9e13-8e1b80f870b1', 2),
+-- Inception (UUID = '43118a9c-9e27-11ef-9e13-8e1b80f870b1')
+('43118a9c-9e27-11ef-9e13-8e1b80f870b1', 3),
+-- Interstellar (UUID = '43118b00-9e27-11ef-9e13-8e1b80f870b')
+('43118b00-9e27-11ef-9e13-8e1b80f870b', 4),
+('43118b00-9e27-11ef-9e13-8e1b80f870b', 5);

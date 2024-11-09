@@ -15,11 +15,11 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php'; // Inkluder 
         <nav>
             <ul>
                 <li><a href="admin_dashboard.php">Dashboard</a></li>
-                <li><a href="admin_ManageUsers.php">Profiler</a></li>
+                <li><a href="/Exam-1sem-bio/index.php?page=admin_ManageUsers">Profiler</a></li>
                 <li><a href="admin_movie.php">Movies</a></li>
                 <li><a href="admin_booking.php">Booking</a></li>
                 <li><a href="admin_parking.php">Spots</a></li>
-                <li><a href="admin_settings.php">Info Indstillinger</a></li>
+                <li><a href="/Exam-1sem-bio/index.php?page=admin_dashboard">Info Indstillinger</a></li>
             </ul>
         </nav>
     </aside>
@@ -60,128 +60,129 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php'; // Inkluder 
     </div>
 </div>
 <style>
+
+
     /* General Styles for Admin Dashboard */
     body {
-    background-color: #121212;
-    color: #ffffff;
-    font-family: 'Roboto', sans-serif;
-    margin: 0;
-    padding: 0;
-}
+        background-color: #181818; /* Samme baggrund som på homepage */
+        color: #ffffff;
+        font-family: 'Roboto', sans-serif;
+        margin: 0;
+        padding: 0;
+    }
 
-.dashboard {
-    display: flex;
-    height: 100vh;
-}
+    .dashboard {
+        display: flex;
+        height: 100vh;
+    }
 
-.sidebar {
-    width: 250px;
-    background: #1f1f1f;
-    padding: 20px;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
-}
+    .sidebar {
+        width: 250px;
+        background: #202020; /* Ensfarvet med homepage navbar */
+        padding: 20px;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+    }
 
-.sidebar h2 {
-    color: #ffb74d;
-    margin-bottom: 30px;
-}
+    .sidebar h2 {
+        color: #ff4c30; /* Rød accent som på homepage */
+        margin-bottom: 30px;
+    }
 
-.sidebar nav ul {
-    list-style-type: none;
-    padding: 0;
-}
+    .sidebar nav ul {
+        list-style-type: none;
+        padding: 0;
+    }
 
-.sidebar nav ul li {
-    margin: 15px 0;
-}
+    .sidebar nav ul li {
+        margin: 15px 0;
+    }
 
-.sidebar nav ul li a {
-    color: #e0e0e0;
-    text-decoration: none;
-    font-size: 1.1em;
-    padding: 10px;
-    display: block;
-    border-radius: 5px;
-    transition: background 0.3s;
-}
+    .sidebar nav ul li a {
+        color: #e0e0e0;
+        text-decoration: none;
+        font-size: 1.1em;
+        padding: 10px;
+        display: block;
+        border-radius: 5px;
+        transition: background 0.3s;
+    }
 
-.sidebar nav ul li a:hover {
-    background: #424242;
-    color: #ffb74d;
-}
+    .sidebar nav ul li a:hover {
+        background: #ff4c30; /* Rød hover baggrund */
+        color: #ffffff;
+    }
 
-.main-content {
-    flex-grow: 1;
-    padding: 30px;
-    background-color: #181818;
-}
+    .main-content {
+        flex-grow: 1;
+        padding: 30px;
+        background-color: #181818;
+    }
 
-.topbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #2c2c2c;
-}
+    .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #333;
+    }
 
-.topbar p {
-    color: #ffb74d;
-    font-size: 1.2em;
-}
+    .topbar p {
+        color: #ff4c30; /* Match med rød accent */
+        font-size: 1.2em;
+    }
 
-.topbar .logout {
-    color: #ff5252;
-    text-decoration: none;
-    font-weight: bold;
-    transition: color 0.3s;
-}
+    .topbar .logout {
+        color: #ff4c30;
+        text-decoration: none;
+        font-weight: bold;
+        transition: color 0.3s;
+    }
 
-.topbar .logout:hover {
-    color: #ff867c;
-}
+    .topbar .logout:hover {
+        color: #ff867c; /* Lysere rød ved hover */
+    }
 
-.content {
-    margin-top: 35px;
-}
+    .content {
+        margin-top: 35px;
+    }
 
-.cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-}
+    .cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+    }
 
-.card {
-    background: #1f1f1f;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    transition: transform 0.3s, box-shadow 0.3s;
-}
+    .card {
+        background: #252525; /* Ensartet med `movie-card` på homepage */
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
 
-.card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-}
+    .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    }
 
-.card h2 {
-    color: #ffb74d;
-    margin-bottom: 15px;
-}
+    .card h2 {
+        color: #ffb74d;
+        margin-bottom: 15px;
+    }
 
-.card p {
-    color: #e0e0e0;
-    margin-bottom: 15px;
-}
+    .card p {
+        color: #bbb; /* Lysere grå for tekst som på homepage */
+        margin-bottom: 15px;
+    }
 
-.card a {
-    color: #42a5f5;
-    text-decoration: none;
-    font-weight: bold;
-    transition: color 0.3s;
-}
+    .card a {
+        color: #42a5f5;
+        text-decoration: none;
+        font-weight: bold;
+        transition: color 0.3s;
+    }
 
-.card a:hover {
-    color: #90caf9;
-}
-
+    .card a:hover {
+        color: #90caf9; /* Lysere blå hover som på homepage */
+    }
 </style>

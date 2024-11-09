@@ -10,8 +10,42 @@ class PageController {
         $this->pageLoader = new PageLoader($db);
     }
 
-    // Indlæs en side (bruges til både bruger og admin)
-    public function loadPage($page) {
+    // Indlæs en bruger-side
+    public function loadUserPage($page) {
+        $this->loadHeader('user');
+        $this->pageLoader->loadCss($page);
         $this->pageLoader->loadPage($page);
+        $this->loadFooter();
     }
+
+    // Indlæs en admin-side
+    public function loadAdminPage($page) {
+        $this->loadHeader('admin');
+        $this->pageLoader->loadCss($page);
+        $this->pageLoader->loadPage($page);
+        $this->loadFooter();
+    }
+
+    // Indlæs header baseret på bruger-type
+    private function loadHeader($userType) {
+        $headerFile = $userType === 'admin' ? 'header_admin.php' : 'header_user.php';
+        $headerPath = $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/app/layout/' . $headerFile;
+
+        if (file_exists($headerPath)) {
+            include $headerPath;
+        } else {
+            echo "<p>Fejl: Header kunne ikke findes på stien: $headerPath</p>";
+        }
+    }
+
+    // Indlæs footer
+    private function loadFooter() {
+        $footerPath = $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/app/layout/footer.php';
+        if (file_exists($footerPath)) {
+            include $footerPath;
+        } else {
+            echo "<p>Fejl: Footer kunne ikke findes på stien: $footerPath</p>";
+        }
+    }
+    
 }

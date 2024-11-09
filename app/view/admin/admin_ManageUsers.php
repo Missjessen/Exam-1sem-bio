@@ -1,7 +1,5 @@
 <?php
-
-require_once '/Applications/XAMPP/xamppfiles/htdocs/Exam-1sem-bio/config/connection.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/core/autoloader.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php'; // Inkluder init.php med $db og autoloader
 
 // Instantiate necessary classes
 $adminController = new AdminController($db);
@@ -87,8 +85,30 @@ $editEmployee = isset($_GET['edit_employee_id']) ? $adminController->getEmployee
     <?php endforeach; ?>
 </table>
 
-<!-- HTML for Employees Section (Cards) -->
+<!-- HTML for Employees Section -->
 <h1>Administrer Ansatte</h1>
+<p>Tilføj nye ansatte eller opdater eksisterende medarbejdere.</p>
+
+<form method="POST" action="">
+    <input type="hidden" name="id" value="<?php echo $editEmployee['id'] ?? ''; ?>">
+    <label for="employee_name">Navn:</label>
+    <input type="text" name="employee_name" id="employee_name" value="<?php echo htmlspecialchars($editEmployee['name'] ?? ''); ?>" required>
+    <br>
+    <label for="employee_email">Email:</label>
+    <input type="email" name="employee_email" id="employee_email" value="<?php echo htmlspecialchars($editEmployee['email'] ?? ''); ?>" required>
+    <br>
+    <label for="employee_phone">Telefon:</label>
+    <input type="text" name="employee_phone" id="employee_phone" value="<?php echo htmlspecialchars($editEmployee['phone'] ?? ''); ?>" required>
+    <br>
+    <label for="employee_role">Rolle:</label>
+    <input type="text" name="employee_role" id="employee_role" value="<?php echo htmlspecialchars($editEmployee['role'] ?? ''); ?>" required>
+    <br>
+    <label for="employee_address">Adresse:</label>
+    <input type="text" name="employee_address" id="employee_address" value="<?php echo htmlspecialchars($editEmployee['address'] ?? ''); ?>" required>
+    <br>
+    <button type="submit" name="add_or_update_employee"><?php echo isset($editEmployee) ? 'Opdater Ansat' : 'Tilføj Ansat'; ?></button>
+</form>
+
 <div class="employee-cards-container">
     <?php foreach ($employees as $employee): ?>
         <div class="employee-card">
@@ -106,122 +126,140 @@ $editEmployee = isset($_GET['edit_employee_id']) ? $adminController->getEmployee
     <?php endforeach; ?>
 </div>
 
+
 <!-- CSS for Employee Cards -->
 <style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        color: #333;
+        margin: 0;
+        padding: 30px 40px; /* Mere margin i siderne */
+    }
+
+    h1 {
+        color: #444;
+    }
+
+    form {
+        background: #fff;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 25px;
+        max-width: 600px;
+    }
+
+    form label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: bold;
+    }
+
+    form input, form textarea {
+        width: calc(100% - 20px);
+        padding: 8px;
+        margin-bottom: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    form textarea {
+        resize: vertical;
+    }
+
+    form button {
+        background-color: #5cb85c;
+        color: white;
+        padding: 8px 18px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    form button:hover {
+        background-color: #4cae4c;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 25px;
+        background: #fff;
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    }
+
+    table th, table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+        font-size: 14px;
+    }
+
+    table th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    a {
+        color: #5bc0de;
+        text-decoration: none;
+        margin-right: 8px;
+        font-size: 14px;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    /* Styling for Employee Cards */
     .employee-cards-container {
         display: flex;
         flex-wrap: wrap;
-        gap: 20px;
-        margin-top: 20px;
+        gap: 16px;
+        margin-top: 25px;
+        justify-content: center;
     }
 
     .employee-card {
         background: #fff;
         border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
         overflow: hidden;
-        width: 250px;
+        width: 220px; /* Mindre bredde */
         text-align: center;
     }
 
     .employee-image {
         width: 100%;
-        height: 200px;
+        height: 150px; /* Mindre højde */
         object-fit: cover;
     }
 
     .employee-details {
-        padding: 15px;
+        padding: 12px;
     }
 
     .employee-details h3 {
-        margin: 10px 0;
+        margin: 8px 0;
+        font-size: 16px;
     }
 
     .employee-details p {
-        margin: 5px 0;
+        margin: 4px 0;
+        font-size: 14px;
     }
 
     .employee-details a {
         color: #5bc0de;
         text-decoration: none;
+        font-size: 14px;
     }
 
     .employee-details a:hover {
         text-decoration: underline;
     }
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
-    margin: 0;
-    padding: 20px;
-}
-
-h1 {
-    color: #444;
-}
-
-form {
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-}
-
-form label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: bold;
-}
-
-form input {
-    width: calc(100% - 22px);
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-form button {
-    background-color: #5cb85c;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-form button:hover {
-    background-color: #4cae4c;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-    background: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-table th, table td {
-    padding: 15px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
-
-table th {
-    background-color: #f2f2f2;
-}
-
-a {
-    color: #5bc0de;
-    text-decoration: none;
-    margin-right: 10px;
-}
-
-a:hover {
-    text-decoration: underline;
-}
 </style>
+

@@ -1,6 +1,5 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php'; // Inkluder init.php med $db og autoloader
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/app/services/pageLoader.php'; // Inkluder PageLoader-klassen
 
 // Brug AdminController til at håndtere logik
 $controller = new AdminController($db); // Videregiv $db til konstruktøren
@@ -23,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $controller->updateSettings($updatedSettings); // Brug controller til at opdatere indstillingerne
 
     // Genindlæs siden for at vise opdaterede data uden at genindlæse form
-    header("Location: settings.php");
+    header("Location: admin_settings.php");
     exit;
 }
 
@@ -36,7 +35,7 @@ $about_content = $settings['about_content'] ?? '';
 
 <h1>Indstillinger</h1>
 <p>Opdater website indstillinger som titel, kontaktinformation og farveskema.</p>
-<form action="settings.php" method="post">
+<form action="admin_settings.php" method="post">
     <label for="site_title">Website Titel:</label>
     <input type="text" id="site_title" name="site_title" value="<?php echo htmlspecialchars($site_title); ?>" required>
 

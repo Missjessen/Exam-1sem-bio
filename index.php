@@ -1,13 +1,16 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php'; // Inkluder init.php med $db og autoloader
-
-// Bestem hvilken side der skal vises, baseret på URL'en
-$page = isset($_GET['page']) ? $_GET['page'] : 'home';
-
-// Brug Router til at håndtere visning af siden
-Router::route($page);
-?>
-
+ require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php'; // Inkluder init.php med $db og autoloader
+ if (isset($_GET['page'])) {
+    $page = $_GET['page'];
+    if ($page === 'movieDetails' && isset($_GET['slug'])) {
+        $slug = $_GET['slug'];
+        Router::route($page, $slug); // Send slug til routeren
+    } else {
+        Router::route($page);
+    }
+} else {
+    Router::route('home'); // Standard side
+}
 
 
 

@@ -1,10 +1,10 @@
 -- Opret database, hvis den ikke findes
 -- Slet databasen, hvis den allerede findes
-DROP DATABASE IF EXISTS `cjsfkt3sf_cruisenightscinema`;
+DROP DATABASE IF EXISTS `drive-in-1sem`;
 
 -- Opret databasen, hvis den ikke findes
-CREATE DATABASE IF NOT EXISTS `cjsfkt3sf_cruisenightscinema`;
-USE `cjsfkt3sf_cruisenightscinema`;
+CREATE DATABASE IF NOT EXISTS `drive-in-1sem`;
+USE `drive-in-1sem`;
 
 
 
@@ -26,20 +26,56 @@ CREATE TABLE IF NOT EXISTS `employees` (
    
 );
 
+-- Create genres table
+CREATE TABLE genres (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
+);
+
+-- Create actors table
+CREATE TABLE actors (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
+);
+
 
 -- Opret tabel for film
 CREATE TABLE IF NOT EXISTS `movies` (
      id CHAR(36) PRIMARY KEY,       -- UUID
      slug VARCHAR(255) UNIQUE,      -- Slug
-    `age_limit` INT NOT NULL,
-    `title` VARCHAR(255) NOT NULL,
-    `director` VARCHAR(255) NOT NULL,
-    `release_year` YEAR NOT NULL,
-    `runtime` INT NOT NULL,
-    `description` TEXT,
-    `poster` VARCHAR(255)
+      title VARCHAR(255), -- Title for the movie
+    director VARCHAR(255),
+    release_year INT,
+    runtime INT,
+    age_limit VARCHAR(50),
+    description TEXT,
+    length TIME,
+    status VARCHAR(50),
+    premiere_date DATE,
+    language VARCHAR(50),
+    poster VARCHAR(255)
     
 );
+
+-- Create movie_genre relationship table
+CREATE TABLE movie_genre (
+    movie_id CHAR(36),
+    genre_id INT,
+    PRIMARY KEY (movie_id, genre_id),
+    FOREIGN KEY (movie_id) REFERENCES movies(id) ON DELETE CASCADE,
+    FOREIGN KEY (genre_id) REFERENCES genres(id) ON DELETE CASCADE
+);
+
+-- Create movie_actor relationship table
+CREATE TABLE movie_actor (
+    movie_id CHAR(36),
+    actor_id INT,
+    PRIMARY KEY (movie_id, actor_id),
+    FOREIGN KEY (movie_id) REFERENCES movies(id) ON DELETE CASCADE,
+    FOREIGN KEY (actor_id) REFERENCES actors(id) ON DELETE CASCADE
+);
+
+
 
 
 -- Opret tabel for parkeringspladser
@@ -70,16 +106,6 @@ CREATE TABLE IF NOT EXISTS `bookings` (
     FOREIGN KEY (`spot_id`) REFERENCES `spots`(`spot_id`)
 );
 
-CREATE TABLE IF NOT EXISTS `reviews` (
-    `review_id` INT AUTO_INCREMENT PRIMARY KEY,
-    `movie_id` CHAR(36) NOT NULL,      -- Refererer til UUID i `movies` tabellen
-    `customer_id` INT NOT NULL,        -- Refererer til kunden, der har skrevet anmeldelsen
-    `rating` INT NOT NULL CHECK (rating BETWEEN 1 AND 5), -- Rating fra 1 til 5
-    `comment` TEXT,
-    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (`movie_id`) REFERENCES `movies`(`id`) ON DELETE CASCADE,
-    FOREIGN KEY (`customer_id`) REFERENCES `customers`(`id`) ON DELETE CASCADE
-);
 
 CREATE TABLE IF NOT EXISTS `pages` (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -96,15 +122,32 @@ CREATE TABLE site_settings (
 
 
 
--- Tilføj eksempeldata i `films`-tabellen
-INSERT INTO `movies` (`id`, `slug`, `age_limit`, `title`, `director`, `release_year`, `runtime`, `description`, `poster`) VALUES
-(UUID(), 'the-dark-knight-2008', 13, 'The Dark Knight', 'Christopher Nolan', 2008, 152, 'When the menace known as the Joker wreaks havoc on Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.', '/path/to/poster/the-dark-knight.jpg'),
-(UUID(), 'inception-2010', 13, 'Inception', 'Christopher Nolan', 2010, 148, 'A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO.', '/path/to/poster/inception.jpg'),
-(UUID(), 'interstellar-2014', 10, 'Interstellar', 'Christopher Nolan', 2014, 169, 'A team of explorers travel through a wormhole in space in an attempt to ensure humanity’s survival.', '/path/to/poster/interstellar.jpg'),
-(UUID(), 'parasite-2019', 15, 'Parasite', 'Bong Joon Ho', 2019, 132, 'Greed and class discrimination threaten the newly formed symbiotic relationship between the wealthy Park family and the destitute Kim clan.', '/path/to/poster/parasite.jpg'),
-(UUID(), 'whiplash-2014', 16, 'Whiplash', 'Damien Chazelle', 2014, 106, 'A promising young drummer enrolls at a cut-throat music conservatory where his dreams of greatness are mentored by an instructor who will stop at nothing to realize a student’s potential.', '/path/to/poster/whiplash.jpg');
+INSERT INTO `movies` (`id`, `slug`, `title`, `director`, `release_year`, `runtime`, `age_limit`, `description`, `length`, `status`, `premiere_date`, `language`, `poster`)
+VALUES
+(UUID(), 'the-dark-knight-2008', 'The Dark Knight', 'Christopher Nolan', 2008, 152, 'PG-13', 'When the menace known as the Joker wreaks havoc on Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.', '02:32:00', 'Released', '2008-07-18', 'English', '/path/to/poster/the-dark-knight.jpg'),
+(UUID(), 'inception-2010', 'Inception', 'Christopher Nolan', 2010, 148, 'PG-13', 'A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO.', '02:28:00', 'Released', '2010-07-16', 'English', '/path/to/poster/inception.jpg'),
+(UUID(), 'interstellar-2014', 'Interstellar', 'Christopher Nolan', 2014, 169, 'PG-13', 'A team of explorers travel through a wormhole in space in an attempt to ensure humanity’s survival.', '02:49:00', 'Released', '2014-11-07', 'English', '/path/to/poster/interstellar.jpg');
 
+INSERT INTO `actors` (`id`, `name`)
+VALUES
+(1, 'Christian Bale'),
+(2, 'Heath Ledger'),
+(3, 'Leonardo DiCaprio'),
+(4, 'Matthew McConaughey'),
+(5, 'Anne Hathaway'),
+(6, 'Robert Downey Jr.'),
+(7, 'Scarlett Johansson'),
+(8, 'Chris Hemsworth'),
+(9, 'Tom Hanks'),
+(10, 'Natalie Portman');
 
+-- Insert sample data into genres table
+INSERT INTO genres (name) VALUES 
+('Action'),
+('Comedy'),
+('Drama'),
+('Horror'),
+('Sci-Fi');
 
 INSERT INTO employees (name, email, phone, role, address) VALUES
 ('Michael Scott', 'michael@dundermifflin.com', '5551234', 'Manager', '1725 Slough Avenue'),
@@ -153,16 +196,16 @@ INSERT INTO site_settings (setting_key, setting_value) VALUES
 INSERT INTO `pages` (pages, title, content, css_file, template_file) VALUES
 ('home', 'Hjem - Drive-In Bio', 'Velkommen til Drive-In Bio.', 'assets/css/homePage.css', 'app/view/user/homePage.php'),
 ('program', 'Program - Drive-In Bio', 'Film for alle.', 'assets/css/program.css', 'app/view/user/program.php'),
-('movie', 'Film - Drive-In Bio', 'Her er vores filmoversigt.', 'assets/css/movie.css', 'app/view/user/movie.php'),
+('movie', 'Film - Drive-In Bio', 'Her er vores filmoversigt.', 'assets/css/movie.css', '/app/view/user/movie.php'),
 ('spots', 'Pladser - Drive-In Bio', 'Find din parkering.', 'assets/css/spots.css', 'app/view/user/spots.php'),
 ('ticket', 'Køb din spot - Drive-In Bio', 'Køb plads til den næste forestilling.', 'assets/css/ticket.css', 'app/view/user/ticket.php'),
 ('about', 'Om Os - Drive-In Bio', 'Lær mere om vores Drive-In biograf.', 'assets/css/about.css', 'app/view/user/about.php'),
-('admin_movie', 'Om Os - Drive-In Bio', 'Lær mere om vores Drive-In biograf.', 'assets/css/admin_movie.css', 'app/view/admin/admin_movie.php');
+('admin_movie', 'Om Os - Drive-In Bio', 'Lær mere om vores Drive-In biograf.', 'assets/css/admin_movie.css', 'app/view/admin/admin_movie.php'),
+('admin_dashboard', 'Dashboard - Drive-In Bio', 'Dashboard for admin.', 'assets/css/admin_dashboard.css', 'app/view/admin/admin_dashboard.php'),
+('admin_ManageUser', 'Manage User - Drive-In Bio', 'Manage User for admin.', 'assets/css/admin_ManageUser.css', 'app/view/admin/admin_ManageUser.php'),
+('admin_settings', 'Settings - Drive-In Bio', 'Settings for admin.', 'assets/css/admin_settings.css', 'app/view/admin/admin_settings.php');
 
 
-INSERT INTO `reviews` (`movie_id`, `customer_id`, `rating`, `comment`)
-VALUES
-('550e8400-e29b-41d4-a716-446655440000', 1, 5, 'An incredible movie with stunning performances!'),
-('123e4567-e89b-12d3-a456-426614174000', 2, 4, 'Great concept and execution, though a bit confusing at times.'),
-('550e8400-e29b-41d4-a716-446655441111', 3, 5, 'A breathtaking space adventure with profound themes.'),
-('550e8400-e29b-41d4-a716-446655440000', 3, 4, 'Very intense and captivating from start to finish.');
+
+ 
+
