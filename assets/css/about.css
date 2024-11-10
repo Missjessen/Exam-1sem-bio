@@ -1,0 +1,120 @@
+/* Generel stil for hele siden */
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+h1, h2 {
+    color: #444;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+/* Stil til eksisterende film sektionen */
+#existing-movies {
+    flex: 1;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#existing-movies .movies-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.movie-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.movie-item img {
+    width: 60px;
+    height: auto;
+    border-radius: 4px;
+}
+
+.search-bar {
+    margin-bottom: 20px;
+}
+
+.search-bar input[type="text"] {
+    padding: 8px;
+    width: calc(100% - 20px);
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Stil til opret film sektionen */
+#create-movie {
+    flex: 1;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#create-movie form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#create-movie label {
+    font-weight: bold;
+}
+
+#create-movie input[type="text"],
+#create-movie input[type="number"],
+#create-movie textarea,
+#create-movie input[type="file"] {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 100%;
+}
+
+#create-movie button {
+    padding: 10px;
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#create-movie button:hover {
+    background-color: #0056b3;
+}
+
+/* Stil for flexbox til at organisere opret og eksisterende film sektionerne */
+.movie-admin-container {
+    display: flex;
+    gap: 20px;
+}
+
+/* Responsiv stil */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .movie-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+} 

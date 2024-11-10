@@ -85,11 +85,11 @@ class AdminModel extends CrudBase {
            return $this->read('Movies', '*', ['id' => $movieUUID], true); // Opdateret til at bruge 'id' (UUID)
        }
    
-       // Method to retrieve all movies
-       public function getAllMovies()
-       {
-           return $this->read('Movies');
-       }
+       public function getAllMovies() {
+        // Eksempel på SQL forespørgsel
+        $stmt = $this->db->query("SELECT * FROM movies");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
    }
 
 

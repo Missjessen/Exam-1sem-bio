@@ -19,9 +19,9 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php'; // Inkludere
             <ul>
 
             <li><a href="/Exam-1sem-bio/index.php?page=admin_dashboard">Dashboard</a></li>
-                <li><a href="/Exam-1sem-bio/app/view/admin/admin_movie.php">Admin Movie</a></li>
-                <li><a href="/Exam-1sem-bio/app/view/admin/admin_ManageUsers.php">Brugeradministration</a></li>
-                <li><a href="/Exam-1sem-bio/app/view/admin/admin_settings.php">Indstillinger</a></li>
+                <li><a href="/Exam-1sem-bio/index.php?page=admin_movie">Admin Movie</a></li>
+                <li><a href="/Exam-1sem-bio/index.php?page=admin_ManageUsers">Brugeradministration</a></li>
+                <li><a href="/Exam-1sem-bio/index.php?page=admin_settings">Indstillinger</a></li>
                 <li><a href="Exam-1sem-bio/index.php?page=admin_logout">Log Ud</a></li>
             </ul>
         </nav>

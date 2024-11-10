@@ -114,7 +114,7 @@ function prepareMovieData($poster_path, $isUpdate = false) {
             } else {
                 echo "<p>Ingen film tilgængelige.</p>";
             }
-            ob_end_flush();
+            
             ?>
         </div>
     </section>

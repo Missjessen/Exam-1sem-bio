@@ -8,6 +8,8 @@ class AdminController {
         $this->model = new AdminModel($db);
     }
 
+    
+
     // Customers methods
     public function getAllCustomers() {
         return $this->model->getAllCustomers();
