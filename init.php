@@ -5,6 +5,8 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/config/connection.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/config/loadPages.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/core/utility.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/core/baseController.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/app/services/FileUploadService.php';
+
 
 session_start();
 

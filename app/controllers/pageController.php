@@ -28,12 +28,12 @@ class PageController {
     public function showMoviePage($slug) {
         $this->userController->showMovie($slug);
     }
-
+// nye functoner til at vise og redigere film
     public function addMovie() {
         $this->adminController->addMovie();
     }
 
-    public function editMovie($movieId) {
+   /*  public function editMovie($movieId) {
         $this->adminController->editMovie($movieId);
-    }
+    } */
 }

@@ -1,127 +1,87 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php'; // Inkluder init.php med $db og autoloader
 
-// Inkluder FileUploadService-filen
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/app/controllers/fileUploader.php';
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php';
 
-// Opret en instans af controlleren og filuploadservicen
-$controller = new AdminController($db);
-$fileUploadService = new FileUploadService(); // Tilføj filuploadservicen
+$movieController = new MovieAdminController($db);
 
-// Håndter forskellige CRUD-operationer baseret på handling
+$actors = $movieController->getAllActors();
+$genres = $movieController->getAllGenres();
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['action'])) {
-        handlePostAction($controller, $fileUploadService, $_POST['action']);
+    $action = $_POST['action'];
+    $movieId = $_POST['movie_id'] ?? null;
+    $file = $_FILES['poster'] ?? null;
 
-        // Genindlæs siden efter `POST`-anmodningen for at forhindre gentagelse ved opdatering
-        header("Location: admin_movie.php");
-        exit;
-    }
-}
-
-/**
- * Håndterer forskellige CRUD-operationer baseret på handling
- */
-function handlePostAction($controller, $fileUploadService, $action) {
-    $poster_path = '';
-    try {
-        // Upload filen, hvis den er tilgængelig
-        if (isset($_FILES['poster']) && $_FILES['poster']['error'] === UPLOAD_ERR_OK) {
-            $poster_path = $fileUploadService->uploadFile($_FILES['poster']);
-        }
-    } catch (Exception $e) {
-        echo $e->getMessage();
-    }
-
-    switch ($action) {
-        case 'create':
-            $data = prepareMovieData($poster_path);
-            $controller->createMovie($data);
-            break;
-
-        case 'update':
-            $id = $_POST['movie_id']; // Ingen `intval`, da UUID er en streng
-            $data = prepareMovieData($poster_path, true);
-            $controller->updateMovie($id, $data);
-            break;
-
-        case 'delete':
-            $id = $_POST['movie_id']; // Ingen `intval`
-            $controller->deleteMovie($id);
-            break;
-
-        default:
-            echo "Ugyldig handling!";
-    }
-}
-
-/**
- * Forbereder data til oprettelse eller opdatering af en film.
- */
-function prepareMovieData($poster_path, $isUpdate = false) {
     $data = [
-        'age_limit' => $_POST['age_limit'],
-        'title' => $_POST['title'],
-        'director' => $_POST['director'],
-        'release_year' => $_POST['release_year'],
-        'runtime' => $_POST['runtime'],
-        'description' => $_POST['description']
+        'title' => htmlspecialchars($_POST['title']),
+        'director' => htmlspecialchars($_POST['director']),
+        'release_year' => htmlspecialchars($_POST['release_year']),
+        'runtime' => htmlspecialchars($_POST['runtime']),
+        'age_limit' => htmlspecialchars($_POST['age_limit']),
+        'description' => htmlspecialchars($_POST['description']),
     ];
 
-    if ($poster_path && !$isUpdate) {
-        $data['poster'] = $poster_path; // Inkludér altid billede for oprettelse
-    } elseif ($poster_path && $isUpdate) {
-        $data['poster'] = $poster_path; // Kun opdatér billede, hvis der er et nyt upload
+    if ($action === 'create') {
+        $actorIds = $_POST['actor_ids'] ?? [];
+        $genreIds = $_POST['genre_ids'] ?? [];
+        $movieController->createMovie($data, $file, $actorIds, $genreIds, $_POST['new_actors'], $_POST['new_genres']);
+    } elseif ($action === 'update') {
+        $actorIds = $_POST['actor_ids'] ?? [];
+        $genreIds = $_POST['genre_ids'] ?? [];
+        $movieController->updateMovie($movieId, $data, $file, $actorIds, $genreIds);
+    } elseif ($action === 'delete') {
+        $movieController->deleteMovie($movieId);
     }
 
-    return $data;
+    header("Location: admin_movie.php");
+    exit;
 }
-?>
 
+if (isset($_POST['action']) && $_POST['action'] === 'edit') {
+    $movieToEdit = $movieController->getMovie($_POST['movie_id']);
+}
+
+$movies = $movieController->getAllMovies();
+?>
 
 <h1>Film Administration</h1>
 
 <div class="container">
-    <!-- Vis eksisterende film -->
     <section id="existing-movies">
         <h2>Eksisterende Film</h2>
         <div class="search-bar">
             <input type="text" id="search" placeholder="Søg efter film..." onkeyup="filterMovies()">
         </div>
-        <div class="movies-list" id="movies-list">
-            <?php
-            // Brug controlleren til at hente alle film
-            $movies = $controller->getAllMovies();
-            if (!empty($movies)) {
-                foreach ($movies as $movie) {
-                    echo "
-                    <div class='movie-item' data-title='{$movie['title']}'>
-                        <img src='{$movie['poster']}' alt='Film Plakat' class='movie-poster'>
-                        <div class='movie-details'>
-                            <h3>{$movie['title']}</h3>
-                            <p>Instruktør: {$movie['director']}</p>
-                            <p>År: {$movie['release_year']}</p>
-                            <p>Varighed: {$movie['runtime']} minutter</p>
-                            <p>Aldersgrænse: {$movie['age_limit']}</p>
-                            <p>Beskrivelse: {$movie['description']}</p>
-                        </div>
-                        <form action='admin_movie.php' method='post'>
-                            <input type='hidden' name='movie_id' value='{$movie['id']}'> <!-- Brug 'id' som UUID -->
-                            <button type='submit' name='action' value='delete'>Slet Film</button>
+        <div class="movies-list">
+            <?php foreach ($movies as $movie): ?>
+                <div class="movie-item">
+                    <img src="<?= $movie['poster'] ?>" alt="Film Plakat" class="movie-poster">
+                    <div class="movie-details">
+                        <h3><?= htmlspecialchars($movie['title']) ?></h3>
+                        <p>Instruktør: <?= htmlspecialchars($movie['director']) ?></p>
+                        <p>År: <?= htmlspecialchars($movie['release_year']) ?></p>
+                        <p>Varighed: <?= htmlspecialchars($movie['runtime']) ?> minutter</p>
+                        <p>Aldersgrænse: <?= htmlspecialchars($movie['age_limit']) ?></p>
+                        <p>Beskrivelse: <?= htmlspecialchars($movie['description']) ?></p>
+                        <p>Genrer: <?= implode(', ', $movieController->getGenresByMovie($movie['id'])) ?></p>
+                        <p>Skuespillere: <?= implode(', ', $movieController->getActorsByMovie($movie['id'])) ?></p>
+
+                        <form action="admin_movie.php" method="post">
+                            <input type="hidden" name="movie_id" value="<?= $movie['id'] ?>">
+                            <button type="submit" name="action" value="edit">Rediger</button>
+                            <button type="submit" name="action" value="delete" onclick="return confirm('Er du sikker på, at du vil slette denne film?');">Slet</button>
                         </form>
-                    </div>";
-                }
-            } else {
-                echo "<p>Ingen film tilgængelige.</p>";
-            }
-            
-            ?>
+                    </div>
+                </div>
+            <?php endforeach; ?>
         </div>
     </section>
 
-    <!-- Opret ny film -->
     <section id="create-movie">
-        <h2>Opret Ny Film</h2>
+        <h2><?= isset($movieToEdit) ? 'Rediger Film' : 'Opret Ny Film' ?></h2>
         <form action="admin_movie.php" method="post" enctype="multipart/form-data">
             <label for="title">Titel:</label>
             <input type="text" id="title" name="title" required>
@@ -132,47 +92,61 @@ function prepareMovieData($poster_path, $isUpdate = false) {
             <label for="release_year">Udgivelsesår:</label>
             <input type="number" id="release_year" name="release_year" required>
 
-            <label for="runtime">Varighed (i minutter):</label>
+            <label for="runtime">Varighed:</label>
             <input type="number" id="runtime" name="runtime" required>
 
             <label for="age_limit">Aldersgrænse:</label>
-            <input type="text" id="age_limit" name="age_limit" required>
+            <input type="number" id="age_limit" name="age_limit" required>
 
             <label for="description">Beskrivelse:</label>
-            <textarea id="description" name="description" rows="5" required></textarea>
+            <textarea id="description" name="description" required></textarea>
 
             <label for="poster">Filmplakat:</label>
-            <input type="file" id="poster" name="poster" accept="image/*" required>
+            <input type="file" id="poster" name="poster" accept="image/*">
 
-            <button type="submit" name="action" value="create">Opret Film</button>
+            <label for="actors">Vælg eksisterende skuespillere:</label>
+            <select name="actor_ids[]" multiple>
+                <?php foreach ($actors as $actor): ?>
+                    <option value="<?= $actor['id'] ?>"><?= htmlspecialchars($actor['name']) ?></option>
+                <?php endforeach; ?>
+            </select>
+
+            <label for="new_actors">Tilføj nye skuespillere (kommasepareret):</label>
+            <input type="text" id="new_actors" name="new_actors" placeholder="F.eks. Brad Pitt, Tom Hanks">
+
+            <label for="genres">Vælg eksisterende genrer:</label>
+            <select name="genre_ids[]" multiple>
+                <?php foreach ($genres as $genre): ?>
+                    <option value="<?= $genre['id'] ?>"><?= htmlspecialchars($genre['name']) ?></option>
+                <?php endforeach; ?>
+            </select>
+
+            <label for="new_genres">Tilføj nye genrer (kommasepareret):</label>
+            <input type="text" id="new_genres" name="new_genres" placeholder="F.eks. Thriller, Komedie">
+
+            <button type="submit" name="action" value="<?= isset($movieToEdit) ? 'update' : 'create' ?>">
+                <?= isset($movieToEdit) ? 'Opdater Film' : 'Opret Film' ?>
+            </button>
         </form>
     </section>
-    
 </div>
 
 <script>
-    // Funktion til at filtrere film baseret på søgeinput
     function filterMovies() {
         const searchValue = document.getElementById('search').value.toLowerCase();
         const movies = document.querySelectorAll('.movie-item');
 
         movies.forEach(movie => {
-            const title = movie.getAttribute('data-title').toLowerCase();
-            if (title.includes(searchValue)) {
-                movie.style.display = 'flex';
-            } else {
-                movie.style.display = 'none';
-            }
+            const title = movie.querySelector('.movie-details h3').textContent.toLowerCase();
+            movie.style.display = title.includes(searchValue) ? 'flex' : 'none';
         });
     }
 </script>
 
-</body>
-
-
 
 <style>
-    /* Generel stil for hele siden */
+
+  /* Generel stil for hele siden */
 body {
     font-family: Arial, sans-serif;
     margin: 20px;
@@ -182,6 +156,7 @@ body {
 
 h1, h2 {
     color: #444;
+    text-align: center;
 }
 
 .container {
@@ -217,18 +192,34 @@ h1, h2 {
 }
 
 .movie-item img {
-    width: 60px;
+    width: 80px;
     height: auto;
     border-radius: 4px;
 }
 
+.movie-details {
+    flex: 1;
+}
+
+.movie-details h3 {
+    margin: 0;
+    font-size: 1.2em;
+}
+
+.movie-details p {
+    margin: 5px 0;
+    font-size: 0.9em;
+    color: #666;
+}
+
 .search-bar {
     margin-bottom: 20px;
+    text-align: center;
 }
 
 .search-bar input[type="text"] {
     padding: 8px;
-    width: calc(100% - 20px);
+    width: 80%;
     border: 1px solid #ddd;
     border-radius: 4px;
 }
@@ -250,6 +241,7 @@ h1, h2 {
 
 #create-movie label {
     font-weight: bold;
+    margin-bottom: 5px;
 }
 
 #create-movie input[type="text"],
@@ -275,10 +267,22 @@ h1, h2 {
     background-color: #0056b3;
 }
 
-/* Stil for flexbox til at organisere opret og eksisterende film sektionerne */
-.movie-admin-container {
-    display: flex;
-    gap: 20px;
+/* Stil for rediger og slet knapper */
+.movie-item form button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.movie-item form button[type="submit"][value="edit"] {
+    background-color: #28a745;
+    color: white;
+}
+
+.movie-item form button[type="submit"][value="delete"] {
+    background-color: #dc3545;
+    color: white;
 }
 
 /* Responsiv stil */
@@ -291,5 +295,10 @@ h1, h2 {
         flex-direction: column;
         align-items: flex-start;
     }
+
+    .search-bar input[type="text"] {
+        width: 100%;
+    }
 } 
+  
 </style>

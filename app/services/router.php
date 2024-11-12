@@ -31,8 +31,16 @@ class Router {
                 case 'admin_movie':
                 case 'admin_MangeUsers':
                 case 'admin_settings':
-                        $pageController->showAdminPage($page);
+                        //$pageController->showAdminPage($page);
                         break;
+
+            case '/Exam-1sem-bio/upload':
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    $controller = new UploadController();
+                    $controller->handleFileUpload($_FILES['poster'], $_POST['desc']);
+                    }
+                     break;
+                        
 
                 default:
                         // Hvis siden ikke findes, kan du omdirigere til en 404-side
