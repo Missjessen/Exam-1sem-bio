@@ -1,50 +1,62 @@
-# **Drive-in Cinema Admin Dashboard**
 
-This repository contains the source code for a responsive admin dashboard developed in vanilla PHP and CSS. The dashboard is tailored for managing a drive-in cinema website, allowing administrators to efficiently manage movies, customers, bookings, and general information.
+# **Cruise Nights Cinema Admin Dashboard**
+
+Welcome to the Cruise Nights Cinema Admin Dashboard repository, a comprehensive PHP-based platform designed to manage all aspects of the drive-in cinema website, *cruise-nights-cinema.dk*. This dashboard empowers administrators with tools to oversee movies, customers, bookings, actors, genres, and general site information in a secure and efficient environment.
+
+## **Project Overview**
+
+Cruise Nights Cinema is a dynamic platform that combines a responsive user interface with robust administrative capabilities. Developed using vanilla PHP and CSS, this project adheres to the Model-View-Controller (MVC) architecture and prioritizes data security, modularity, and ease of use for cinema staff.
 
 ## **Features**
 
-- **Responsive Design**: Adapts seamlessly to both desktop and mobile devices, ensuring a consistent user experience.
-- **Modular Card Layout**: Different management sections, such as movies, bookings, and customers, are organized in card-based layouts for clear navigation.
-- **Admin Tools**: Allows admins to create, edit, and delete movies, customers, actors, and news entries with simple form submissions.
-- **Automated Updates**: Can be configured to automatically archive expired movies into the news section based on their premiere dates.
+### **Admin Dashboard**
+- **Responsive Layout**: Designed to ensure an optimal experience on both desktop and mobile devices.
+- **Modular Card Design**: Management sections are organized with card layouts, providing clear, intuitive navigation for administrators.
+
+### **Core Functionalities**
+- **Movies Management**: Add, edit, delete, and categorize movies. Manage associated genres and actors through join tables for a structured and relational database.
+- **Customer and Booking Management**: Efficiently handle customer details and reservations, including secure booking options and customer reviews.
+- **Actors and Genres Management**: Link actors and genres to movies, leveraging foreign keys and SQL joins for efficient data retrieval.
+- **News and Updates**: Expired movies are automatically archived into a news section based on their release date, keeping the site content fresh.
   
-## Installation
-To get the project up and running locally:
+### **Security and Privacy**
+- **Secure Authentication**: Admin login system secured against unauthorized access.
+- **Data Protection**: High security for sensitive data, especially in customer and booking sections. Uses UUIDs for specific data to prevent direct ID exposure.
+- **CSRF Protection and HTTPS Compatibility**: Designed to support CSRF tokens and HTTPS for secure data transmission.
+
+## **Getting Started**
+
+### **Installation**
 
 1. **Clone the Repository**:
    ```bash
-   `git clone https://github.com/yourusername/drive-in-cinema-admin-dashboard.git`
-   `cd drive-in-cinema-admin-dashboard`
+   git clone https://github.com/Missjessen/Exam-1sem-bio.git
+   cd Exam-1sem-bio
+   ```
+
+2. **Set Up Your Server**:
+   - Place the cloned repository in your XAMPP `htdocs` folder.
+   - Ensure Apache and MySQL services are running.
+
+3. **Database Configuration**:
+   - Import the included `.sql` file into your MySQL database.
+   - Update `config/connection.php` with your database credentials.
 
 
-### Set up XAMPP (or your preferred local server):
+### **Automated Tasks**
+To automate archival of expired movies, set up a scheduled task (cron, launchd, or Task Scheduler) on your server to periodically run the archival script.
 
-Ensure that XAMPP is running Apache and MySQL services.
+## **Usage**
 
-Place the cloned repository in your htdocs folder.
+Once logged in, administrators can:
+- Manage movies, customers, and booking details.
+- Update general information such as operating hours and contact details.
+- Archive expired movies automatically to keep news relevant.
 
-### Database Configuration:
+## **Contributing**
 
-Import the included .sql file into your MySQL database to set up the necessary tables.
+Contributions are welcome! Feel free to fork the repository, submit issues, or create pull requests.
 
-Update the connection.php file in the includes directory with your database credentials.
+## **License**
 
-### Run the Application:
-
-Open a browser and go to [GitHub] (http://localhost/drive-in-cinema-admin-dashboard).
-Usage
-
-After logging in, you can access various admin functionalities to manage movies, customers, actors, and news entries.
-You can also use the settings section to update general information, such as opening hours, contact details, and more.
-Automated Tasks
-
-This project supports automatic updates for expired movies. On a live server, you can set up a cron job (Linux), launchd (macOS), or Task Scheduler (Windows) to periodically run the script that moves expired movies to the news section.
-
-### Contributing
-
-Feel free to fork this repository, submit issues, or contribute with pull requests to improve this project.
-
-### License
-
-This project is licensed under the MIT LicenseTrigger redeploy manually
+This project is licensed under the MIT License.
