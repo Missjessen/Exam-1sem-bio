@@ -1,4 +1,5 @@
 <?php
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php';
 // /core/CrudBase.php
 class CrudBase {
     protected $db;
@@ -169,6 +170,60 @@ public function updateItem($table, $data, $where) {
     return true;
 }
 
+
+// Tilføj denne funktion til CrudBase
+public function readWithJoin($table, $columns, $joins, $where = [], $single = false) {
+    try {
+        // Bygger JOIN-klausulen
+        $joinClause = implode(' ', $joins); // Fx: ["INNER JOIN other_table ON table.id = other_table.foreign_key"]
+
+        // Bygger WHERE-klausulen
+        $whereClause = '';
+        if (!empty($where)) {
+            $whereConditions = array_map(fn($key) => "$key = :$key", array_keys($where));
+            $whereClause = 'WHERE ' . implode(' AND ', $whereConditions);
+        }
+
+        // SQL-sætning
+        $sql = "SELECT $columns FROM $table $joinClause $whereClause";
+        $stmt = $this->db->prepare($sql);
+
+        // Binder parametre
+        foreach ($where as $key => $value) {
+            $stmt->bindValue(":$key", $value);
+        }
+
+        $stmt->execute();
+
+        // Returnerer resultatet
+        return $single ? $stmt->fetch(PDO::FETCH_ASSOC) : $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Fejl ved læsning med JOIN: " . $e->getMessage());
+        return false;
+    }
+}
+
+ // Funktion til at administrere mange-til-mange relationer
+ public function manageManyToMany($pivotTable, $foreignKeys, $id, $relatedIds) {
+    try {
+        // Fjern eksisterende relationer
+        $deleteSql = "DELETE FROM $pivotTable WHERE {$foreignKeys['main']} = :main_id";
+        $deleteStmt = $this->db->prepare($deleteSql);
+        $deleteStmt->execute(['main_id' => $id]);
+
+        // Tilføj nye relationer
+        $insertSql = "INSERT INTO $pivotTable ({$foreignKeys['main']}, {$foreignKeys['related']}) VALUES (:main_id, :related_id)";
+        $insertStmt = $this->db->prepare($insertSql);
+        foreach ($relatedIds as $relatedId) {
+            $insertStmt->execute(['main_id' => $id, 'related_id' => $relatedId]);
+        }
+
+        return true;
+    } catch (PDOException $e) {
+        error_log("Fejl ved mange-til-mange opdatering: " . $e->getMessage());
+        return false;
+    }
+}
  
 
 }

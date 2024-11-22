@@ -8,26 +8,27 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php'; // Inkludere
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Sektion - Drive-In Biografsssssssgggggggg</title>
+    <title><?= $current_page === 'admin_movie' ? 'Admin Movie - Drive-In Biograf' : 'Admin Sektion - Drive-In Biograf' ?></title>
     <link rel="stylesheet" href="/Exam-1sem-bio/assets/css/variables.css">
-    <link rel="stylesheet" href="/Exam-1sem-bio<?php echo $cssPath; ?>">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
+   
 </head>
 
 <body>
     <header>
         <nav>
-            <ul>
-
-            <li><a href="/Exam-1sem-bio/index.php?page=admin_dashboard">Dashboard</a></li>
-                <li><a href="/Exam-1sem-bio/index.php?page=admin_movie">Admin Movie</a></li>
-                <li><a href="/Exam-1sem-bio/index.php?page=admin_ManageUsers">Brugeradministration</a></li>
-                <li><a href="/Exam-1sem-bio/index.php?page=admin_settings">Indstillinger</a></li>
-                <li><a href="Exam-1sem-bio/index.php?page=admin_logout">Log Ud</a></li>
-            </ul>
-        </nav>
+    <ul>
+        <li class="<?= $current_page === 'admin_dashboard' ? 'active' : '' ?>"><a href="/Exam-1sem-bio/index.php?page=admin_dashboard">Dashboard</a></li>
+        <li class="<?= $current_page === 'admin_movie' ? 'active' : '' ?>"><a href="/Exam-1sem-bio/index.php?page=admin_movie">Admin Movie</a></li>
+        <li class="<?= $current_page === 'admin_ManageUsers' ? 'active' : '' ?>"><a href="/Exam-1sem-bio/index.php?page=admin_ManageUsers">Brugeradministration</a></li>
+        <li class="<?= $current_page === 'admin_settings' ? 'active' : '' ?>"><a href="/Exam-1sem-bio/index.php?page=admin_settings">Indstillinger</a></li>
+        <li><a href="/Exam-1sem-bio/index.php?page=admin_logout">Log Ud</a></li>
+    </ul>
+</nav>
     </header>
+    </body>
 
-    <style>
+<style>
     /* Basic reset */
         * {
             margin: 0;
@@ -82,4 +83,4 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php'; // Inkludere
                 margin: 10px 0;
             }
         }
-    </style>
+        </style>

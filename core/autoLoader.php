@@ -1,7 +1,10 @@
 
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/core/constants.php';
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php';
+
 
 
 spl_autoload_register(function ($class_name) {
@@ -18,15 +21,20 @@ spl_autoload_register(function ($class_name) {
         $basePathAbsolute . 'app/models/',
         $basePathAbsolute . 'app/services/',
         $basePathAbsolute . 'core/',
-        $basePathAbsolute . 'core/baseModel/',
+        $basePathAbsolute . 'core/baseModel.php',
         $basePathAbsolute . 'app/layout/',
-     
+        $basePathAbsolute . 'app/view/admin/',
+        $basePathAbsolute . 'app/view/user/',
+        $basePathAbsolute . 'config/',
 
         $basePathRelative . 'app/controllers/',
         $basePathRelative . 'app/models/',
         $basePathRelative . 'app/services/',
         $basePathRelative . 'core/',
         $basePathRelative . 'core/baseModel/',
+        $basePathRelative . 'app/layout/',
+        $basePathRelative . 'app/view/',
+        $basePathRelative . 'config/', 
     ];
 
     foreach ($paths as $path) {
@@ -36,6 +44,7 @@ spl_autoload_register(function ($class_name) {
             // Debugging - du kan kommentere denne linje ud, når alt fungerer som forventet
             echo "Klasse $class_name fundet i $file <br>";
             return;
+           
         }
     }
 
@@ -44,4 +53,5 @@ spl_autoload_register(function ($class_name) {
     foreach ($paths as $path) {
         echo "Leder i: $path <br>";
     }
+  
 });

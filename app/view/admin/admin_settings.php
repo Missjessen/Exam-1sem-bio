@@ -1,12 +1,12 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php'; // Inkluder init.php med $db og autoloader
 
-// Brug AdminController til at håndtere logik
+// håndtere logik fra admin controller
 $controller = new AdminController($db); // Videregiv $db til konstruktøren
 
-// Hent nuværende indstillinger fra databasen
+// Hent indstillinger fra databasen
 $keys = ['site_title', 'contact_email', 'opening_hours', 'about_content'];
-$settings = $controller->getSettings($keys); // Hent de aktuelle indstillinger ved hjælp af de eksisterende nøgler
+$settings = $controller->getSettings($keys); // Hent de aktuelle indstillinger ved hjælp af de eksisterende keys
 
 // Håndter opdatering af indstillinger via formularindsendelse
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -18,15 +18,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'about_content' => $_POST['about_content']
     ];
 
-    // Opdater hver indstilling i databasen via AdminController
-    $controller->updateSettings($updatedSettings); // Brug controller til at opdatere indstillingerne
+    // Opdater indholdet databasen 
+    $controller->updateSettings($updatedSettings); 
 
-    // Genindlæs siden for at vise opdaterede data uden at genindlæse form
+    
     header("Location: admin_settings.php");
     exit;
 }
 
-// Brug controlleren til at hente indstillingerne, hvis de ikke blev opdateret
+// hente indstillingerne, hvis de ikke blev opdateret
 $site_title = $settings['site_title'] ?? '';
 $contact_email = $settings['contact_email'] ?? '';
 $opening_hours = $settings['opening_hours'] ?? '';
@@ -34,7 +34,7 @@ $about_content = $settings['about_content'] ?? '';
 ?>
 
 <h1>Indstillinger</h1>
-<p>Opdater website indstillinger som titel, kontaktinformation og farveskema.</p>
+<p>Opdater website indstillinger som titel & kontaktinformation </p>
 <form action="admin_settings.php" method="post">
     <label for="site_title">Website Titel:</label>
     <input type="text" id="site_title" name="site_title" value="<?php echo htmlspecialchars($site_title); ?>" required>

@@ -1,4 +1,4 @@
-php_flag display_errors off
+php_flag display_errors on
 php_value error_reporting 32767
 
 RewriteEngine On
@@ -11,7 +11,7 @@ RewriteBase /Exam-1sem-bio/
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
-#RewriteRule ^([^/]+)$ index.php?page=$1 [QSA,L]
+RewriteRule ^([a-zA-Z0-9-_]+)$ index.php?page=$1 [L,QSA]
 
 # Rewriter URL'er der har en slug som 'movie/film-titel'
 RewriteRule ^movie/([a-zA-Z0-9-_]+)$ index.php?page=movieDetails&slug=$1 [L,QSA]

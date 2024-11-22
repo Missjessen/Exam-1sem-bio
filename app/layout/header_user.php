@@ -6,8 +6,12 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php'; // Inkluder 
 //$pageLoader = new PageLoader($db); 
 
 // Antag at `$page` hentes via en URL-parameter eller på anden vis
-
+if (isset($_GET['page']) && $_GET['page'] === 'admin_dashboard') {
+    header("Location: /Exam-1sem-bio/index.php?page=admin_dashboard");
+    exit();
+}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="da">
@@ -18,6 +22,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php'; // Inkluder 
     <link rel="stylesheet" href="/Exam-1sem-bio/assets/css/variables.css">
     <link rel="stylesheet" href="/Exam-1sem-bio<?php echo $cssPath; ?>">
 </head>
+
 
 <body>
    
@@ -33,6 +38,8 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php'; // Inkluder 
                 <li><a href="/Exam-1sem-bio/index.php?page=admin_dashboard">Admin</a></li>
             </ul>
         </nav>
+
+
   <style>
         /* Basic reset */
         * {

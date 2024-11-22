@@ -35,7 +35,8 @@ CREATE TABLE genres (
 -- Create actors table
 CREATE TABLE actors (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL
+    name VARCHAR(255) NOT NULL,
+    birthdate DATE NOT NULL
 );
 
 

@@ -1,4 +1,5 @@
 <?php
+
 $constantsPath = __DIR__ . '/../core/constants.php';
 if (!is_readable($constantsPath)) {
     die("Filen constants.php kunne ikke findes på stien: $constantsPath");

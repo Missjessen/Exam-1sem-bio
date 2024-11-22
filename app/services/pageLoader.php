@@ -8,64 +8,65 @@ class PageLoader {
 
     public function __construct($db) {
         $this->config = require $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/config/loadPages.php';
+        if ($db instanceof PDO) {
+            error_log("PageLoader: Gyldig databaseforbindelse modtaget.");
+        } else {
+            error_log("PageLoader: Ugyldig databaseforbindelse.");
+        }
         $this->db = $db;
     }
 
-    public function loadCss($page) {
-        $cssPath = $this->config['pages'][$page]['css'] ?? $this->config['default_css'];
-        $cssPath = htmlspecialchars($cssPath, ENT_QUOTES, 'UTF-8');
-        
-        // Tilføj 'Exam-1sem-bio' præfix, hvis det mangler
-        if (!str_starts_with($cssPath, '/Exam-1sem-bio')) {
-            $cssPath = '/Exam-1sem-bio' . $cssPath;
-        }
-    
-        // Debugging: Tjek om filen eksisterer
-        $absolutePath = $_SERVER['DOCUMENT_ROOT'] . $cssPath;
-        if (!file_exists($absolutePath)) {
-            error_log("Fejl: CSS filen kunne ikke findes på stien: $absolutePath", 3, $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/logs/errors.log');
-            echo "<!-- CSS filen kunne ikke findes: $cssPath -->";
-        } else {
-            echo "<!-- CSS Path: $cssPath -->"; // Debugging linje
-            echo "<link rel='stylesheet' href='$cssPath'>";
-        }
-    }
-
-    
-
     public function loadUserPage($page) {
-        $this->loadPageWithLayout($page, 'header_user.php');
+        $this->includeCSS($page);
+        $this->includeLayout('header_user.php');
+        $this->includeView($page);
+        $this->includeLayout('footer.php');
     }
 
     public function loadAdminPage($page, $data = []) {
-        extract($data); // Gør det muligt at bruge $movies direkte i view
-        $this->loadPageWithLayout($page, 'header_admin.php');
+        extract($data); // Gør $movies, $actors, $genres tilgængelige i viewet
+        $this->includeCSS($page);
+        $this->includeLayout('header_admin.php');
+        $this->includeView($page);
+        $this->includeLayout('footer.php');
     }
 
-    private function loadPageWithLayout($page, $headerFile) {
-        $headerPath = $_SERVER['DOCUMENT_ROOT'] . "/Exam-1sem-bio/app/layout/$headerFile";
-        $footerPath = $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/app/layout/footer.php';
+    private function includeCSS($page) {
+        $cssPath = $this->config['pages'][$page]['css'] ?? $this->config['default_css'];
 
-        if (file_exists($headerPath)) {
-            include $headerPath;
-        }
-        
-        $viewPath = $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio' . ($this->config['pages'][$page]['view'] ?? '/app/view/user/homePage.php');
-        if (file_exists($viewPath)) {
-            include $viewPath;
-        } else {
-            $this->logAndDisplayError("Fejl: Filen kunne ikke findes på stien: $viewPath");
+        // Sørg for, at CSS-stien er korrekt formatteret
+        if (!str_starts_with($cssPath, '/Exam-1sem-bio')) {
+            $cssPath = '/Exam-1sem-bio' . $cssPath;
         }
 
-        if (file_exists($footerPath)) {
-            include $footerPath;
+        echo "<link rel='stylesheet' href='" . htmlspecialchars($cssPath, ENT_QUOTES, 'UTF-8') . "'>";
+    }
+
+    private function includeLayout($layout) {
+        $path = $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/app/layout/' . $layout;
+        if (file_exists($path)) {
+            include $path;
         } else {
-            $this->logAndDisplayError("Fejl: Footer filen kunne ikke findes på stien: $footerPath");
+            error_log("Layout $layout ikke fundet.");
         }
     }
 
-    private function logAndDisplayError($message) {
-        error_log($message . "\n", 3, $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/logs/errors.log');
-        echo "<p>Der opstod en fejl. Kontakt administratoren.</p>";
+    private function includeView($page) {
+        $viewPath = $this->config['pages'][$page]['view'] ?? null;
+
+        if ($viewPath) {
+            $fullPath = $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio' . $viewPath;
+            if (file_exists($fullPath)) {
+                $db = $this->db;
+                include $fullPath;
+            } else {
+                error_log("View $viewPath ikke fundet.");
+                echo "<p>Fejl: Viewet kunne ikke findes.</p>";
+            }
+        } else {
+            error_log("Ingen view konfiguration fundet for $page.");
+            echo "<p>Fejl: Ingen view konfiguration fundet.</p>";
+           
+        }
     }
 }

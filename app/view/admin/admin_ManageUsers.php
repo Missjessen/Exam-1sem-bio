@@ -55,13 +55,13 @@ $editEmployee = isset($_GET['edit_employee_id']) ? $adminController->getEmployee
     <input type="hidden" name="id" value="<?php echo $editCustomer['id'] ?? ''; ?>">
     <label for="name">Navn:</label>
     <input type="text" name="name" id="name" value="<?php echo htmlspecialchars($editCustomer['name'] ?? ''); ?>" required>
-    <br>
+    
     <label for="email">Email:</label>
     <input type="email" name="email" id="email" value="<?php echo htmlspecialchars($editCustomer['email'] ?? ''); ?>" required>
-    <br>
+
     <label for="phone">Telefon:</label>
     <input type="text" name="phone" id="phone" value="<?php echo htmlspecialchars($editCustomer['phone'] ?? ''); ?>" required>
-    <br>
+    
     <button type="submit" name="add_or_update_customer"><?php echo isset($editCustomer) ? 'Opdater Kunde' : 'Tilføj Kunde'; ?></button>
 </form>
 
@@ -93,19 +93,19 @@ $editEmployee = isset($_GET['edit_employee_id']) ? $adminController->getEmployee
     <input type="hidden" name="id" value="<?php echo $editEmployee['id'] ?? ''; ?>">
     <label for="employee_name">Navn:</label>
     <input type="text" name="employee_name" id="employee_name" value="<?php echo htmlspecialchars($editEmployee['name'] ?? ''); ?>" required>
-    <br>
+    
     <label for="employee_email">Email:</label>
     <input type="email" name="employee_email" id="employee_email" value="<?php echo htmlspecialchars($editEmployee['email'] ?? ''); ?>" required>
-    <br>
+    
     <label for="employee_phone">Telefon:</label>
     <input type="text" name="employee_phone" id="employee_phone" value="<?php echo htmlspecialchars($editEmployee['phone'] ?? ''); ?>" required>
-    <br>
+    
     <label for="employee_role">Rolle:</label>
     <input type="text" name="employee_role" id="employee_role" value="<?php echo htmlspecialchars($editEmployee['role'] ?? ''); ?>" required>
-    <br>
+    
     <label for="employee_address">Adresse:</label>
     <input type="text" name="employee_address" id="employee_address" value="<?php echo htmlspecialchars($editEmployee['address'] ?? ''); ?>" required>
-    <br>
+    
     <button type="submit" name="add_or_update_employee"><?php echo isset($editEmployee) ? 'Opdater Ansat' : 'Tilføj Ansat'; ?></button>
 </form>
 
@@ -214,7 +214,7 @@ $editEmployee = isset($_GET['edit_employee_id']) ? $adminController->getEmployee
         text-decoration: underline;
     }
 
-    /* Styling for Employee Cards */
+    /* styling for employee Cards */
     .employee-cards-container {
         display: flex;
         flex-wrap: wrap;
