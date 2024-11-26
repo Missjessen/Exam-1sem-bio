@@ -1,20 +1,30 @@
 <?php
-
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php';
 
 class PageLoader {
     private $config;
     private $db;
 
-    public function __construct($db) {
-        $this->config = require $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/config/loadPages.php';
-        if ($db instanceof PDO) {
-            error_log("PageLoader: Gyldig databaseforbindelse modtaget.");
-        } else {
-            error_log("PageLoader: Ugyldig databaseforbindelse.");
+    public function __construct() {
+        try {
+            $this->config = require $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/config/loadPages.php';
+            if (!is_array($this->config)) {
+                throw new Exception("Konfigurationsfilen returnerede ikke et array.");
+            }
+    
+            $this->db = Database::getInstance()->getConnection(); // Brug singletonen her
+            if (!$this->db) {
+                throw new Exception("Kunne ikke oprette forbindelse til databasen.");
+            }
+        } catch (Exception $e) {
+            error_log("Fejl i PageLoader konstruktør: " . $e->getMessage());
+            die("Der opstod en fejl under initialiseringen af PageLoader.");
         }
-        $this->db = $db;
     }
+    
 
     public function loadUserPage($page) {
         $this->includeCSS($page);
@@ -23,50 +33,55 @@ class PageLoader {
         $this->includeLayout('footer.php');
     }
 
-    public function loadAdminPage($page, $data = []) {
-        extract($data); // Gør $movies, $actors, $genres tilgængelige i viewet
-        $this->includeCSS($page);
-        $this->includeLayout('header_admin.php');
-        $this->includeView($page);
-        $this->includeLayout('footer.php');
-    }
-
-    private function includeCSS($page) {
-        $cssPath = $this->config['pages'][$page]['css'] ?? $this->config['default_css'];
-
-        // Sørg for, at CSS-stien er korrekt formatteret
-        if (!str_starts_with($cssPath, '/Exam-1sem-bio')) {
-            $cssPath = '/Exam-1sem-bio' . $cssPath;
-        }
-
-        echo "<link rel='stylesheet' href='" . htmlspecialchars($cssPath, ENT_QUOTES, 'UTF-8') . "'>";
-    }
-
-    private function includeLayout($layout) {
-        $path = $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/app/layout/' . $layout;
-        if (file_exists($path)) {
-            include $path;
+    public function loadAdminPage($viewName, $data = []) {
+        $current_page = $viewName; // Markér den aktuelle side
+        extract($data); // Gør data tilgængelige som variabler
+    
+        // Inkludér CSS
+        $this->includeCSS($viewName);
+    
+        // Inkludér header, view og footer
+        $this->includeLayout('header_admin.php', compact('current_page'));
+        $viewPath = $_SERVER['DOCUMENT_ROOT'] . "/Exam-1sem-bio/app/view/admin/$viewName.php";
+        if (file_exists($viewPath)) {
+            require $viewPath;
         } else {
-            error_log("Layout $layout ikke fundet.");
+            error_log("View-fil $viewPath ikke fundet.");
+            echo "Fejl: View kunne ikke indlæses.";
+        }
+        $this->includeLayout('footer.php', compact('current_page'));
+    }
+    
+    private function includeCSS($page) {
+        // Håndter CSS-indlæsning
+        echo "<link rel='stylesheet' href='/Exam-1sem-bio/assets/css/$page.css'>";
+    }
+    
+    private function includeLayout($layout, $data = []) {
+        extract($data); // Gør data tilgængelige som variabler
+        $layoutPath = $_SERVER['DOCUMENT_ROOT'] . "/Exam-1sem-bio/app/layout/$layout";
+        if (file_exists($layoutPath)) {
+            require $layoutPath;
+        } else {
+            error_log("Layout-fil $layoutPath ikke fundet.");
+            echo "Fejl: Layout kunne ikke indlæses.";
         }
     }
 
     private function includeView($page) {
         $viewPath = $this->config['pages'][$page]['view'] ?? null;
-
+    
         if ($viewPath) {
             $fullPath = $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio' . $viewPath;
             if (file_exists($fullPath)) {
-                $db = $this->db;
                 include $fullPath;
             } else {
-                error_log("View $viewPath ikke fundet.");
+                error_log("View not found: $fullPath");
                 echo "<p>Fejl: Viewet kunne ikke findes.</p>";
             }
         } else {
             error_log("Ingen view konfiguration fundet for $page.");
             echo "<p>Fejl: Ingen view konfiguration fundet.</p>";
-           
         }
     }
 }

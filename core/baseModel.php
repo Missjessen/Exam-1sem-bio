@@ -99,48 +99,51 @@ class CrudBase {
         }
     
         $stmt->execute();
-        if ($single) {
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            return $result ? $result : null;
-        } else {
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        }
+    
+        return $single ? $stmt->fetch(PDO::FETCH_ASSOC) : $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function updateSettings($db, $settings) {
-        try {
-            // Start en transaktion
-            $db->beginTransaction();
     
-            // Forbered SQL-forespørgslen
-            $sql = "INSERT INTO site_settings (setting_key, setting_value) 
-                    VALUES (:key, :value) 
-                    ON DUPLICATE KEY UPDATE setting_value = :value";
-            $stmt = $db->prepare($sql);
-    
-            foreach ($settings as $key => $value) {
-                // Bind parametre for hver iteration
-                $stmt->bindValue(':key', $key, PDO::PARAM_STR);
-                $stmt->bindValue(':value', $value, PDO::PARAM_STR);
-    
-                // Udfør forespørgslen
-                if (!$stmt->execute()) {
-                    throw new Exception("Fejl ved opdatering af $key: " . implode(", ", $stmt->errorInfo()));
-                }
+  
+   public function updateSettings(array $settings): void {
+    try {
+        $this->db->beginTransaction();
+
+        $sql = "INSERT INTO site_settings (setting_key, setting_value)
+                VALUES (:key, :value)
+                ON DUPLICATE KEY UPDATE setting_value = :value";
+        $stmt = $this->db->prepare($sql);
+
+        foreach ($settings as $key => $value) {
+            $stmt->bindValue(':key', $key, PDO::PARAM_STR);
+            $stmt->bindValue(':value', $value, PDO::PARAM_STR);
+
+            if (!$stmt->execute()) {
+                throw new Exception("Fejl ved opdatering af $key: " . implode(", ", $stmt->errorInfo()));
             }
-    
-            // Commit transaktionen
-            $db->commit();
-            echo "Indstillinger opdateret med succes!";
-        } catch (Exception $e) {
-            // Rollback hvis der opstår en fejl
-            $db->rollBack();
-            error_log($e->getMessage(), 3, $_SERVER['DOCUMENT_ROOT'] . '/logs/errors.log');
-            echo "En fejl opstod under opdateringen. Kontakt venligst administrator.";
         }
+
+        $this->db->commit();
+    } catch (Exception $e) {
+        $this->db->rollBack();
+        error_log("Fejl i updateSettings: " . $e->getMessage());
+        throw new Exception("En fejl opstod under opdateringen.");
     }
+}
 
 
+
+// Method to retrieve a specific item from a table
+public function getItem($table, $where) {
+    return $this->read($table, '*', $where, true);
+}
+
+// Method to retrieve all items from a table
+public function getAllItems($table) {
+    return $this->read($table);
+}
+
+// Method to update a specific item in a table
 public function updateItem($table, $data, $where) {
     $updates = implode(", ", array_map(function ($key) {
         return "$key = :$key";
@@ -153,17 +156,12 @@ public function updateItem($table, $data, $where) {
     $sql = "UPDATE $table SET $updates WHERE $whereClause";
     $stmt = $this->db->prepare($sql);
 
-    // Debugging for at se SQL-forespørgsel og de aktuelle værdier
-    echo "SQL Forespørgsel: $sql<br>";
-    echo "Data til opdatering: " . json_encode(array_merge($data, $where)) . "<br>";
-
     foreach (array_merge($data, $where) as $key => $value) {
         $stmt->bindValue(":$key", $value);
     }
 
     if (!$stmt->execute()) {
-        // Log fejl, hvis eksekvering fejler
-        error_log("Fejl ved opdatering af $table: " . implode(", ", $stmt->errorInfo()), 3, $_SERVER['DOCUMENT_ROOT'] . '/logs/errors.log');
+        error_log("Fejl ved opdatering af $table: " . implode(", ", $stmt->errorInfo()));
         return false;
     }
 

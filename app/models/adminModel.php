@@ -1,11 +1,32 @@
 <?php
+
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php'; // Inkluder init.php med $db og autoloader
 
 class AdminModel extends CrudBase {
-    public function __construct($db) {
-        parent::__construct($db);
+
+    
+
+    public function __construct() {
+        parent::__construct(Database::getInstance()->getConnection());
     }
 
+
+// settttings.php
+    public function updateSettings(array $settings): void {
+        parent::updateSettings($settings);
+    }
+     
+    
+   // Metode i AdminModel til at hente indstillinger fra databasen
+// Hent eksisterende indstillinger
+public function getSettings(array $keys): array {
+    $settings = [];
+    foreach ($keys as $key) {
+        $result = $this->read('site_settings', '*', ['setting_key' => $key], true);
+        $settings[$key] = $result['setting_value'] ?? ''; // Standardværdi, hvis ikke fundet
+    }
+    return $settings;
+}
         // Customers methods
         public function getAllCustomers($limit = 50, $offset = 0) {
             return $this->read('customers', '*', [], false, $limit, $offset);
@@ -49,48 +70,13 @@ class AdminModel extends CrudBase {
         }
 
 
-       // Method to retrieve a specific item from a table
-       public function getItem($table, $where)
-       {
-           return $this->read($table, '*', $where, true);
-       }
-   
-       // Method to retrieve all items from a table
-       public function getAllItems($table)
-       {
-           return $this->read($table);
-       }
-   
-       // Method to create a new item in a table
-       public function createItem($table, $data)
-       {
-           return $this->create($table, $data);
-       }
-   
-       // Method to update a specific item in a table
-       public function updateItem($table, $data, $where)
-       {
-           return $this->update($table, $data, $where);
-       }
-   
-       // Method to delete a specific item from a table
-       public function deleteItem($table, $where)
-       {
-           return $this->delete($table, $where);
-       }
-   
-       // Method to retrieve a specific movie
-       public function getMovie($movieUUID)
-       {
-           return $this->read('Movies', '*', ['id' => $movieUUID], true); // Opdateret til at bruge 'id' (UUID)
-       }
-   
-       public function getAllMovies() {
-        // Eksempel på SQL forespørgsel
-        $stmt = $this->db->query("SELECT * FROM movies");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-   }
 
 
-?>
+
+}
+
+   
+   
+   
+
+

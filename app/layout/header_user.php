@@ -18,7 +18,7 @@ if (isset($_GET['page']) && $_GET['page'] === 'admin_dashboard') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Drive-In Biografsssssssgggggggg</title>
+    <title> Drive-In Biograf</title>
     <link rel="stylesheet" href="/Exam-1sem-bio/assets/css/variables.css">
     <link rel="stylesheet" href="/Exam-1sem-bio<?php echo $cssPath; ?>">
 </head>

@@ -7,7 +7,6 @@ $page = $_GET['page'] ?? 'home'; // Standard til 'home', hvis ingen side er angi
 
 try {
     // Log routing-handlingen
-    error_log("Routing til side: $page\n", 3, $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/logs/errors.log');
 
     // Instansier Router og kald dens route-metode
     $router = new Router();

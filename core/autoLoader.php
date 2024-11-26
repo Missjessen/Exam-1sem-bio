@@ -10,9 +10,9 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php';
 spl_autoload_register(function ($class_name) {
     // Definer base sti til roden af projektet
     $basePathAbsolute = $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/';
-    $basePathRelative = __DIR__ . '/../';
+    /* $basePathRelative = __DIR__ . '/../'; */
 
-    echo "Base path: $basePathRelative <br>";
+    echo "Base path: $basePathAbsolute<br>";
 
 
 
@@ -26,7 +26,7 @@ spl_autoload_register(function ($class_name) {
         $basePathAbsolute . 'app/view/admin/',
         $basePathAbsolute . 'app/view/user/',
         $basePathAbsolute . 'config/',
-
+/* 
         $basePathRelative . 'app/controllers/',
         $basePathRelative . 'app/models/',
         $basePathRelative . 'app/services/',
@@ -34,7 +34,7 @@ spl_autoload_register(function ($class_name) {
         $basePathRelative . 'core/baseModel/',
         $basePathRelative . 'app/layout/',
         $basePathRelative . 'app/view/',
-        $basePathRelative . 'config/', 
+        $basePathRelative . 'config/',  */
     ];
 
     foreach ($paths as $path) {

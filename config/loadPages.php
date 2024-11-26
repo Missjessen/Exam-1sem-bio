@@ -39,8 +39,8 @@ return [
           'admin_ManageUsers' => ['view' => '/app/view/admin/admin_ManageUsers.php', 
           'css' => '/assets/css/admin_styles.css'],
 
-          'admin_settings' => ['view' => '/app/view/admin//admin_settings.php', 
-          'css' => '/assets/css/admin_styles.css'],
+          'admin_settings' => ['view' => '/app/view/admin/admin_settings.php', 
+          'css' => '/assets/css/admin_settings.css'],
 
        //login og logout
 

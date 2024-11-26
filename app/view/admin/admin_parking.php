@@ -1,14 +1,7 @@
-<?php
-
+<?php 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php';
-
-
-
-$db = new PDO(DSN, DB_USER, DB_PASS);
-
-$model = new MovieAdminModel($db);
-$controller = new MovieAdminController($db);
-
-$movies = $controller->getAllMovies();
-print_r($movies);
-
+$adminController = new AdminController(new AdminModel(Database::getInstance()->getConnection()));
+$settings = $adminController->handleSettings();
+echo "<pre>";
+print_r($settings);
+echo "</pre>";

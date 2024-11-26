@@ -1,14 +1,55 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php'; // Inkluder init.php med $db og autoloader
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php';
 
 class AdminController {
     private $model;
 
-    public function __construct($db) {
-        $this->model = new AdminModel($db);
+    public function __construct(AdminModel $model) {
+        $this->model = $model;
     }
 
     
+  /*   // Metode til at hente indstillinger
+    public function getSettings(array $keys): array {
+        return $this->model->getSettings($keys);
+    } */
+    public function handleSettings() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Hent data fra POST og send til model for opdatering
+            $updatedSettings = [
+                'site_title' => $_POST['site_title'] ?? '',
+                'contact_email' => $_POST['contact_email'] ?? '',
+                'opening_hours' => $_POST['opening_hours'] ?? '',
+                'about_content' => $_POST['about_content'] ?? '',
+            ];
+    
+            $this->model->updateSettings($updatedSettings);
+    
+            // Rediriger for at undgå gentagne POST-forespørgsler (PRG Pattern)
+            header("Location: ?page=admin_settings");
+            exit;
+        }
+    
+        // Hent eksisterende indstillinger fra databasen
+        $keys = ['site_title', 'contact_email', 'opening_hours', 'about_content'];
+        return $this->model->getSettings($keys);
+    }
+    
+
+     public function getSettings($keys)
+    {
+        $settings = [];
+        foreach ($keys as $key) {
+            $result = $this->model->getItem('site_settings', ['setting_key' => $key]);
+            if ($result && isset($result['setting_value'])) {
+                $settings[$key] = $result['setting_value'];
+            } else {
+                $settings[$key] = ''; // Brug en tom streng, hvis der ikke findes en værdi
+            }
+        }
+        return $settings;
+    } 
+
 
     // Customers methods
     public function getAllCustomers() {
@@ -52,8 +93,8 @@ class AdminController {
         return $this->model->deleteEmployee($id);
     }
 
- // Method to retrieve specific settings
-    public function getSettings($keys)
+// Method to retrieve specific settings
+   /*  public function getSettings($keys)
     {
         $settings = [];
         foreach ($keys as $key) {
@@ -65,9 +106,9 @@ class AdminController {
             }
         }
         return $settings;
-    }
+    }  */
 
-    // Method to update settings
+    /* // Method to update settings
     public function updateSettings($settings)
     {
         foreach ($settings as $key => $value) {
@@ -76,9 +117,9 @@ class AdminController {
                 echo "Fejl ved opdatering af indstilling: $key<br>";
             }
         }
-    }
+    }  */
 
-    // Method to create a movie
+  /*   // Method to create a movie
     public function createMovie($data)
 {
     // Hvis `id` (UUID) ikke er inkluderet i dataene, generér et nyt
@@ -126,7 +167,6 @@ private function generateUUID()
     return trim($slug, '-'); // Trim eventuelle ekstra bindestreger fra begyndelsen eller slutningen
 }
     
+} */
+
 }
-
-
-?>

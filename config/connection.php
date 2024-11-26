@@ -1,5 +1,5 @@
-<?php
 
+<!-- 
 $constantsPath = __DIR__ . '/../core/constants.php';
 if (!is_readable($constantsPath)) {
     die("Filen constants.php kunne ikke findes på stien: $constantsPath");
@@ -11,7 +11,7 @@ try {
     // Fjern echo-linjen, da vi ikke ønsker at vise en meddelelse hver gang forbindelsen oprettes.
 } catch (PDOException $e) {
     die("Databaseforbindelse fejlede: " . $e->getMessage());
-}
+} -->
 
 
 
