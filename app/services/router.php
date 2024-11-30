@@ -34,6 +34,17 @@ class Router {
                     }
                     break;
 
+                    case 'admin_booking':
+                        $pageData = $pageController->handleBookingsAndInvoicesPage();
+                        $pageLoader->loadAdminPage('admin_booking', $pageData);
+                        break;
+                    
+
+                    case 'admin_ManageUsers':
+                            $pageData = $pageController->handleCustomersAndEmployeesPage();
+                            $pageLoader->loadAdminPage('admin_ManageUsers', $pageData);
+                            break;
+
                 case 'admin_settings':
                     $settings = $adminController->handleSettings();
                 

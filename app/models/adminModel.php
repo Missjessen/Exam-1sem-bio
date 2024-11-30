@@ -27,53 +27,54 @@ public function getSettings(array $keys): array {
     }
     return $settings;
 }
-        // Customers methods
-        public function getAllCustomers($limit = 50, $offset = 0) {
-            return $this->read('customers', '*', [], false, $limit, $offset);
-        }
 
+
+                            /* manages user section */
+
+
+        // Customers methods
+        public function getAllCustomers() {
+            return $this->read('customers');
+        }
+    
         public function getCustomerById($id) {
             return $this->read('customers', '*', ['id' => $id], true);
         }
-
+    
         public function createCustomer($data) {
             return $this->create('customers', $data);
         }
-
+    
         public function updateCustomer($id, $data) {
             return $this->update('customers', $data, ['id' => $id]);
         }
-
+    
         public function deleteCustomer($id) {
             return $this->delete('customers', ['id' => $id]);
         }
-
-        // Employees methods
+    
         public function getAllEmployees() {
             return $this->read('employees');
         }
-
+    
         public function getEmployeeById($id) {
             return $this->read('employees', '*', ['id' => $id], true);
         }
-
+    
         public function createEmployee($data) {
             return $this->create('employees', $data);
         }
-
+    
         public function updateEmployee($id, $data) {
             return $this->update('employees', $data, ['id' => $id]);
         }
-
+    
         public function deleteEmployee($id) {
             return $this->delete('employees', ['id' => $id]);
         }
+    }
 
 
-
-
-
-}
 
    
    

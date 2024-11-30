@@ -4,6 +4,8 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php';
 class PageController {
     private $pageLoader;
     private $MovieAdminController;
+    private $adminController;
+    private $adminBookingController;
 
     public function __construct() {
         // Hent databaseforbindelsen fra singletonen
@@ -11,13 +13,22 @@ class PageController {
         
         // Initialiser nødvendige komponenter
         $this->pageLoader = new PageLoader($db);
-       error_log("PageLoader blev initialiseret.");
+        error_log("PageLoader blev initialiseret.");
      
-        
         $this->MovieAdminController = new MovieAdminController($db);
         error_log("MovieAdminController blev initialiseret.");
+    
+        $this->adminController = new AdminController(new AdminModel($db));
+        error_log("AdminController blev initialiseret.");
+    
+        $this->adminBookingController = new AdminBookingController(
+            new AdminBookingModel($db),
+            $this->adminController // Tilføj dette for at fuldende instansiering
+        );
+        error_log("AdminBookingController blev initialiseret.");
     }
 
+    
     // Indlæser brugersider
     public function showPage($page) {
         $this->pageLoader->loadUserPage($page);
@@ -73,4 +84,38 @@ class PageController {
         
     }
     }
+
+   /**
+     * Håndterer siden for kunder og ansatte.
+     */
+    public function handleCustomersAndEmployeesPage() {
+        $this->adminController->handleCustomerAndEmployeeSubmission($_POST, $_GET);
+
+        return [
+            'customers' => $this->adminController->getAllCustomers(),
+            'employees' => $this->adminController->getAllEmployees(),
+            'editCustomer' => isset($_GET['edit_customer_id']) ? $this->adminController->getCustomerById($_GET['edit_customer_id']) : null,
+            'editEmployee' => isset($_GET['edit_employee_id']) ? $this->adminController->getEmployeeById($_GET['edit_employee_id']) : null,
+        ];
+    }
+
+
+    /* */
+    public function handleBookingsAndInvoicesPage() {
+        $this->adminBookingController->handleBookingSubmission($_POST, $_GET);
+
+        if (isset($_GET['generate_invoice_id'])) {
+            $this->adminBookingController->generateInvoice($_GET['generate_invoice_id']);
+        }
+
+        return [
+            'bookings' => $this->adminBookingController->getAllBookings(),
+            'invoices' => $this->adminBookingController->getAllInvoices(),
+            'movies' => $this->adminBookingController->getAllMovies(),
+            'parking_spots' => $this->adminBookingController->getAllParkingSpots(),
+            'customers' => $this->adminBookingController->getAllCustomers(),
+            'editBooking' => isset($_GET['edit_booking_id']) ? $this->adminBookingController->getBookingById($_GET['edit_booking_id']) : null
+        ];
+    }
+
 }

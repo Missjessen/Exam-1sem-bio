@@ -1,9 +1,3 @@
-# Deaktiver eksekvering af PHP eller andre scripts
-<FilesMatch "\.(php|phtml|php3|php4|php5|phps|cgi|pl|asp|aspx|shtml|sh|py|exe)$">
-    Deny from all
-</FilesMatch>
-
-# Kun tillad bestemte filtyper
 <FilesMatch "\.(jpg|jpeg|png|gif|bmp|webp)$">
     Allow from all
 </FilesMatch>

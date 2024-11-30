@@ -51,7 +51,50 @@ class AdminController {
     } 
 
 
+                      /* manege user  */
+
+
     // Customers methods
+   /**
+     * Håndterer indsendelse af data for kunder og ansatte.
+     */
+    public function handleCustomerAndEmployeeSubmission($postData, $getData) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Håndter tilføjelse/opdatering af kunder
+            if (isset($postData['add_or_update_customer'])) {
+                $this->saveCustomer([
+                    'id' => $postData['id'] ?? null,
+                    'name' => $postData['name'],
+                    'email' => $postData['email'],
+                    'phone' => $postData['phone'],
+                ]);
+            }
+
+            // Håndter tilføjelse/opdatering af ansatte
+            elseif (isset($postData['add_or_update_employee'])) {
+                $this->saveEmployee([
+                    'id' => $postData['id'] ?? null,
+                    'name' => $postData['employee_name'],
+                    'email' => $postData['employee_email'],
+                    'phone' => $postData['employee_phone'],
+                    'role' => $postData['employee_role'],
+                    'address' => $postData['employee_address'],
+                ]);
+            }
+        }
+
+        // Håndter sletning af kunder
+        if (isset($getData['delete_customer_id'])) {
+            $this->deleteCustomer($getData['delete_customer_id']);
+        }
+
+        // Håndter sletning af ansatte
+        elseif (isset($getData['delete_employee_id'])) {
+            $this->deleteEmployee($getData['delete_employee_id']);
+        }
+    }
+
+    // CRUD-metoder for kunder
     public function getAllCustomers() {
         return $this->model->getAllCustomers();
     }
@@ -72,7 +115,7 @@ class AdminController {
         return $this->model->deleteCustomer($id);
     }
 
-    // Employees methods
+    // CRUD-metoder for ansatte
     public function getAllEmployees() {
         return $this->model->getAllEmployees();
     }
@@ -92,6 +135,8 @@ class AdminController {
     public function deleteEmployee($id) {
         return $this->model->deleteEmployee($id);
     }
+}
+
 
 // Method to retrieve specific settings
    /*  public function getSettings($keys)
@@ -169,4 +214,4 @@ private function generateUUID()
     
 } */
 
-}
+

@@ -11,8 +11,37 @@ class MovieAdminModel extends CrudBase {
 
     // Opdater en eksisterende film
     public function updateMovie($movieId, $data) {
-        return $this->update('movies', $data, ['id' => $movieId]);
+        try {
+            // Forbindelse til database fra singleton
+            $db = Database::getInstance()->getConnection();
+    
+            // Bygger dynamisk SQL-sætning baseret på data
+            $columns = [];
+            foreach ($data as $key => $value) {
+                $columns[] = "$key = :$key";
+            }
+    
+            $sql = "UPDATE movies SET " . implode(', ', $columns) . " WHERE id = :id";
+    
+            $stmt = $db->prepare($sql); // Bruger singleton-forbindelsen
+    
+            // Binder værdier til SQL-parametrene
+            foreach ($data as $key => $value) {
+                $stmt->bindValue(":$key", $value);
+            }
+    
+            $stmt->bindValue(":id", $movieId, PDO::PARAM_STR); // Binder movie ID
+    
+            $stmt->execute(); // Udfører opdateringen
+    
+            return $stmt->rowCount(); // Returnerer antallet af opdaterede rækker
+        } catch (PDOException $e) {
+            // Log fejl og kast en exception for fejlhåndtering
+            error_log("Fejl ved opdatering af film med ID $movieId: " . $e->getMessage());
+            throw new Exception("Kunne ikke opdatere filmen med ID $movieId.");
+        }
     }
+    
 
     // Slet en film
     public function deleteMovie($movieId) {
@@ -56,15 +85,25 @@ class MovieAdminModel extends CrudBase {
     }
 
     public function getMovieDetails($movieId) {
-        $movie = $this->getMovie($movieId);
-        if (!$movie) {
-            throw new Exception("Filmen med ID $movieId blev ikke fundet.");
+        try {
+            // Hent filmen
+            $movie = $this->getMovie($movieId);
+            if (!$movie) {
+                error_log("Ingen film fundet for ID: $movieId");
+                throw new Exception("Filmen med ID $movieId blev ikke fundet.");
+            }
+    
+            // Hent genrer og skuespillere
+            $movie['genres'] = $this->getGenresByMovie($movieId) ?: [];
+            error_log("Genrer for film $movieId: " . print_r($movie['genres'], true));
+            $movie['actors'] = $this->getActorsByMovie($movieId) ?: [];
+            error_log("Skuespillere for film $movieId: " . print_r($movie['actors'], true));
+    
+            return $movie;
+        } catch (Exception $e) {
+            error_log("Fejl i getMovieDetails: " . $e->getMessage());
+            throw $e; // Genkast undtagelsen for at håndtere den længere oppe
         }
-    
-        $movie['genres'] = $this->getGenresByMovie($movieId);
-        $movie['actors'] = $this->getActorsByMovie($movieId);
-    
-        return $movie;
     }
     
 
