@@ -94,6 +94,25 @@ CREATE TABLE IF NOT EXISTS `showtimes` (
     `show_time` TIME NOT NULL,
     FOREIGN KEY (`movie_id`) REFERENCES `movies`(`id`) ON DELETE CASCADE
 );
+CREATE TABLE showings (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    movie_id INT NOT NULL,
+    screen ENUM('small', 'large') NOT NULL,
+    show_date DATE NOT NULL,
+    show_time TIME NOT NULL,
+    total_spots INT NOT NULL,
+    available_spots INT NOT NULL,
+    repeat_pattern ENUM('none', 'daily', 'weekly') DEFAULT 'none',
+    repeat_until DATE DEFAULT NULL,
+    FOREIGN KEY (movie_id) REFERENCES movies(id)
+);
+
+CREATE TABLE parking_prices (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    screen ENUM('small', 'large') NOT NULL,
+    row_type ENUM('front', 'middle', 'back') NOT NULL,
+    price_per_spot DECIMAL(10, 2) NOT NULL
+);
 
 -- Opret tabel for bookinger
 CREATE TABLE IF NOT EXISTS `bookings` (

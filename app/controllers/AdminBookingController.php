@@ -1,9 +1,10 @@
-use App\controllers\AdminMovieController; // Add the missing import statement
+
 <?php
 class AdminBookingController {
     private $model;
     private $adminController;
     private $movieAdminController;
+    
 
     public function __construct(AdminBookingModel $model, AdminController $adminController, MovieAdminController $movieAdminController) {
         $this->model = $model;

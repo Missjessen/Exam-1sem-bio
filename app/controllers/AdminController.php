@@ -1,5 +1,5 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php';
+//require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php';
 
 class AdminController {
     private $model;
@@ -55,12 +55,10 @@ class AdminController {
 
 
     // Customers methods
-   /**
-     * Håndterer indsendelse af data for kunder og ansatte.
-     */
-    public function handleCustomerAndEmployeeSubmission($postData, $getData) {
+     // Håndter alle POST- og GET-anmodninger for kunder og ansatte
+     public function handleCustomerAndEmployeeSubmission($postData, $getData) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Håndter tilføjelse/opdatering af kunder
+            // Tilføj eller opdater kunder
             if (isset($postData['add_or_update_customer'])) {
                 $this->saveCustomer([
                     'id' => $postData['id'] ?? null,
@@ -70,8 +68,8 @@ class AdminController {
                 ]);
             }
 
-            // Håndter tilføjelse/opdatering af ansatte
-            elseif (isset($postData['add_or_update_employee'])) {
+            // Tilføj eller opdater ansatte
+            if (isset($postData['add_or_update_employee'])) {
                 $this->saveEmployee([
                     'id' => $postData['id'] ?? null,
                     'name' => $postData['employee_name'],
@@ -83,26 +81,27 @@ class AdminController {
             }
         }
 
-        // Håndter sletning af kunder
+        // Håndter GET-anmodninger for sletning
         if (isset($getData['delete_customer_id'])) {
             $this->deleteCustomer($getData['delete_customer_id']);
         }
 
-        // Håndter sletning af ansatte
-        elseif (isset($getData['delete_employee_id'])) {
+        if (isset($getData['delete_employee_id'])) {
             $this->deleteEmployee($getData['delete_employee_id']);
         }
     }
 
-    // CRUD-metoder for kunder
-    public function getAllCustomers() {
-        return $this->model->getAllCustomers();
+    // Returnér data til visning
+    public function getCustomersAndEmployeesData() {
+        return [
+            'customers' => $this->getAllCustomers(),
+            'employees' => $this->getAllEmployees(),
+            'editCustomer' => isset($_GET['edit_customer_id']) ? $this->getCustomerById($_GET['edit_customer_id']) : null,
+            'editEmployee' => isset($_GET['edit_employee_id']) ? $this->getEmployeeById($_GET['edit_employee_id']) : null,
+        ];
     }
 
-    public function getCustomerById($id) {
-        return $this->model->getCustomerById($id);
-    }
-
+    // CRUD-metoder
     public function saveCustomer($data) {
         if (!empty($data['id'])) {
             return $this->model->updateCustomer($data['id'], $data);
@@ -113,15 +112,6 @@ class AdminController {
 
     public function deleteCustomer($id) {
         return $this->model->deleteCustomer($id);
-    }
-
-    // CRUD-metoder for ansatte
-    public function getAllEmployees() {
-        return $this->model->getAllEmployees();
-    }
-
-    public function getEmployeeById($id) {
-        return $this->model->getEmployeeById($id);
     }
 
     public function saveEmployee($data) {
@@ -135,7 +125,25 @@ class AdminController {
     public function deleteEmployee($id) {
         return $this->model->deleteEmployee($id);
     }
+
+    public function getAllCustomers() {
+        return $this->model->getAllCustomers();
+    }
+
+    public function getAllEmployees() {
+        return $this->model->getAllEmployees();
+    }
+
+    public function getCustomerById($id) {
+        return $this->model->getCustomerById($id);
+    }
+
+    public function getEmployeeById($id) {
+        return $this->model->getEmployeeById($id);
+    }
+    
 }
+
 
 
 // Method to retrieve specific settings

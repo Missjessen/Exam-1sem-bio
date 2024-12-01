@@ -35,7 +35,12 @@ class PageLoader {
 
     public function loadAdminPage($viewName, $data = []) {
         $current_page = $viewName; // Markér den aktuelle side
-        extract($data); // Gør data tilgængelige som variabler
+        // Sikrer at $data altid er et array
+    if (!is_array($data)) {
+        $data = [];
+    }
+
+    extract($data); 
     
         // Inkludér CSS
         $this->includeCSS($viewName);

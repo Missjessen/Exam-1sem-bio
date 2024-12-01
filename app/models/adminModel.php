@@ -1,6 +1,6 @@
 <?php
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php'; // Inkluder init.php med $db og autoloader
+//require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php'; // Inkluder init.php med $db og autoloader
 
 class AdminModel extends CrudBase {
 
@@ -33,46 +33,84 @@ public function getSettings(array $keys): array {
 
 
         // Customers methods
-        public function getAllCustomers() {
-            return $this->read('customers');
-        }
-    
-        public function getCustomerById($id) {
-            return $this->read('customers', '*', ['id' => $id], true);
-        }
-    
-        public function createCustomer($data) {
-            return $this->create('customers', $data);
-        }
-    
-        public function updateCustomer($id, $data) {
-            return $this->update('customers', $data, ['id' => $id]);
-        }
-    
-        public function deleteCustomer($id) {
-            return $this->delete('customers', ['id' => $id]);
-        }
-    
-        public function getAllEmployees() {
-            return $this->read('employees');
-        }
-    
-        public function getEmployeeById($id) {
-            return $this->read('employees', '*', ['id' => $id], true);
-        }
-    
-        public function createEmployee($data) {
-            return $this->create('employees', $data);
-        }
-    
-        public function updateEmployee($id, $data) {
-            return $this->update('employees', $data, ['id' => $id]);
-        }
-    
-        public function deleteEmployee($id) {
-            return $this->delete('employees', ['id' => $id]);
-        }
+            // CRUD-metoder for kunder
+    public function createCustomer($data) {
+        $stmt = $this->db->prepare("INSERT INTO customers (name, email, phone) VALUES (:name, :email, :phone)");
+        $stmt->bindParam(':name', $data['name']);
+        $stmt->bindParam(':email', $data['email']);
+        $stmt->bindParam(':phone', $data['phone']);
+        return $stmt->execute();
     }
+
+    public function updateCustomer($id, $data) {
+        $stmt = $this->db->prepare("UPDATE customers SET name = :name, email = :email, phone = :phone WHERE id = :id");
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':name', $data['name']);
+        $stmt->bindParam(':email', $data['email']);
+        $stmt->bindParam(':phone', $data['phone']);
+        return $stmt->execute();
+    }
+
+    public function deleteCustomer($id) {
+        $stmt = $this->db->prepare("DELETE FROM customers WHERE id = :id");
+        $stmt->bindParam(':id', $id);
+        return $stmt->execute();
+    }
+
+    public function getAllCustomers() {
+        $stmt = $this->db->query("SELECT * FROM customers");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getCustomerById($id) {
+        $stmt = $this->db->prepare("SELECT * FROM customers WHERE id = :id");
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    // CRUD-metoder for ansatte
+    public function createEmployee($data) {
+        $stmt = $this->db->prepare("INSERT INTO employees (name, email, phone, role, address) VALUES (:name, :email, :phone, :role, :address)");
+        $stmt->bindParam(':name', $data['name']);
+        $stmt->bindParam(':email', $data['email']);
+        $stmt->bindParam(':phone', $data['phone']);
+        $stmt->bindParam(':role', $data['role']);
+        $stmt->bindParam(':address', $data['address']);
+        return $stmt->execute();
+    }
+
+    public function updateEmployee($id, $data) {
+        $stmt = $this->db->prepare("UPDATE employees SET name = :name, email = :email, phone = :phone, role = :role, address = :address WHERE id = :id");
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':name', $data['name']);
+        $stmt->bindParam(':email', $data['email']);
+        $stmt->bindParam(':phone', $data['phone']);
+        $stmt->bindParam(':role', $data['role']);
+        $stmt->bindParam(':address', $data['address']);
+        return $stmt->execute();
+    }
+
+    public function deleteEmployee($id) {
+        $stmt = $this->db->prepare("DELETE FROM employees WHERE id = :id");
+        $stmt->bindParam(':id', $id);
+        return $stmt->execute();
+    }
+
+    public function getAllEmployees() {
+        $stmt = $this->db->query("SELECT * FROM employees");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getEmployeeById($id) {
+        $stmt = $this->db->prepare("SELECT * FROM employees WHERE id = :id");
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    
+}
 
 
 

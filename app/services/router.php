@@ -14,6 +14,8 @@ class Router {
         $MovieAdminController = new MovieAdminController($db);
         $pageLoader = new PageLoader($db);
         $adminController = new AdminController(new AdminModel($db));
+        $pageController = new PageController($pageLoader, $adminController);
+
       
 
         switch ($page) {
@@ -34,16 +36,25 @@ class Router {
                     }
                     break;
 
-                    case 'admin_booking':
+                   /*  case 'admin_booking':
                         $pageData = $pageController->handleBookingsAndInvoicesPage();
                         $pageLoader->loadAdminPage('admin_booking', $pageData);
-                        break;
+                        break; */
                     
 
-                    case 'admin_ManageUsers':
-                            $pageData = $pageController->handleCustomersAndEmployeesPage();
-                            $pageLoader->loadAdminPage('admin_ManageUsers', $pageData);
+                        case 'admin_ManageUsers':
+                            // Håndter POST- og GET-anmodninger
+                            if ($_SERVER['REQUEST_METHOD'] === 'POST' || !empty($_GET)) {
+                                $pageController->handleCustomerAndEmployeeSubmission($_POST, $_GET);
+                            }
+                        
+                            // Hent data til visning
+                            $data = $pageController->getCustomersAndEmployeesData();
+                        
+                            // Indlæs siden
+                            $pageLoader->loadAdminPage('admin_ManageUsers', $data);
                             break;
+                    
 
                 case 'admin_settings':
                     $settings = $adminController->handleSettings();

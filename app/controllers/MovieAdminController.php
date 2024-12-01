@@ -125,7 +125,15 @@ class MovieAdminController {
                 'premiere_date' => $_POST['premiere_date'] ?? '',
                 'language' => $_POST['language'] ?? '',
                 'age_limit' => $_POST['age_limit'] ?? '',
+                'status' => $_POST['status'] ?? '',
+
             ];
+
+             // Generer UUID og slug for nye film
+                if ($action === 'create') {
+                    $movieData['id'] = $this->generateUUID();
+                    $movieData['slug'] = $this->generateSlug($movieData['title']);
+                }
         
             // Håndter filupload, hvis en plakat er vedhæftet
             if (isset($_FILES['poster']) && $_FILES['poster']['error'] === UPLOAD_ERR_OK) {

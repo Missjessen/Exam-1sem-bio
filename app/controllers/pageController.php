@@ -5,7 +5,7 @@ class PageController {
     private $pageLoader;
     private $MovieAdminController;
     private $adminController;
-    private $adminBookingController;
+    
 
     public function __construct() {
         // Hent databaseforbindelsen fra singletonen
@@ -20,15 +20,10 @@ class PageController {
     
         $this->adminController = new AdminController(new AdminModel($db));
         error_log("AdminController blev initialiseret.");
-    
-        $this->adminBookingController = new AdminBookingController(
-            new AdminBookingModel($db),
-            $this->adminController // Tilføj dette for at fuldende instansiering
-        );
-        error_log("AdminBookingController blev initialiseret.");
+ 
     }
 
-    
+
     // Indlæser brugersider
     public function showPage($page) {
         $this->pageLoader->loadUserPage($page);
@@ -80,28 +75,27 @@ class PageController {
             $settings = $AdminController->handleSettings();
             // Indlæs admin-siden med settings
             $this->pageLoader->loadAdminPage('admin_settings', compact('settings'));
-        } catch (Exception $e) {
-        
-    }
+       } catch (Exception $e) {
+            error_log("Fejl i showAdminSettingsPage: " . $e->getMessage());
+            $this->pageLoader->loadErrorPage("Noget gik galt under indlæsningen af indstillinger.");
+        }
     }
 
    /**
-     * Håndterer siden for kunder og ansatte.
-     */
-    public function handleCustomersAndEmployeesPage() {
-        $this->adminController->handleCustomerAndEmployeeSubmission($_POST, $_GET);
-
-        return [
-            'customers' => $this->adminController->getAllCustomers(),
-            'employees' => $this->adminController->getAllEmployees(),
-            'editCustomer' => isset($_GET['edit_customer_id']) ? $this->adminController->getCustomerById($_GET['edit_customer_id']) : null,
-            'editEmployee' => isset($_GET['edit_employee_id']) ? $this->adminController->getEmployeeById($_GET['edit_employee_id']) : null,
-        ];
+     * Håndterer siden for kunder og ansatte.*/
+    public function handleCustomerAndEmployeeSubmission($postData, $getData) {
+        $this->adminController->handleCustomerAndEmployeeSubmission($postData, $getData);
     }
+    
+    public function getCustomersAndEmployeesData() {
+        return $this->adminController->getCustomersAndEmployeesData();
+    }
+    
+}
 
 
     /* */
-    public function handleBookingsAndInvoicesPage() {
+  /*   public function handleBookingsAndInvoicesPage() {
         $this->adminBookingController->handleBookingSubmission($_POST, $_GET);
 
         if (isset($_GET['generate_invoice_id'])) {
@@ -116,6 +110,5 @@ class PageController {
             'customers' => $this->adminBookingController->getAllCustomers(),
             'editBooking' => isset($_GET['edit_booking_id']) ? $this->adminBookingController->getBookingById($_GET['edit_booking_id']) : null
         ];
-    }
+    } */
 
-}
