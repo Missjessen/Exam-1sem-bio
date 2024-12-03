@@ -1,6 +1,9 @@
 
 <?php 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php';
+
+$current_page = $GLOBALS['current_page']; // Ingen redefinering
+
 ?>
 
 <!DOCTYPE html>
@@ -10,16 +13,22 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $current_page === 'admin_settings' ? 'Admin Settings - Drive-In Biograf' : 'Admin Sektion - Drive-In Biograf' ?></title>
     <link rel="stylesheet" href="/Exam-1sem-bio/assets/css/variables.css">
+    <?php
+    // Dynamisk CSS for hver side
+    if (isset($GLOBALS['current_page'])) {
+        echo "<link rel='stylesheet' href='/Exam-1sem-bio/assets/css/{$GLOBALS['current_page']}.css'>";
+    }
+    ?>
 </head>
 <body>
 <header>
     <nav>
         <ul>
-            <li class="<?= $current_page === 'admin_dashboard' ? 'active' : '' ?>"><a href="?page=admin_dashboard">Dashboard</a></li>
-            <li class="<?= $current_page === 'admin_booking' ? 'active' : '' ?>"><a href="?page=admin_booking">Admin Booking</a></li>
-            <li class="<?= $current_page === 'admin_movie' ? 'active' : '' ?>"><a href="?page=admin_movie">Admin Movie</a></li>
-            <li class="<?= $current_page === 'admin_ManageUsers' ? 'active' : '' ?>"><a href="?page=admin_ManageUsers">Manage User</a></li>
-            <li class="<?= $current_page === 'admin_settings' ? 'active' : '' ?>"><a href="?page=admin_settings">Indstillinger</a></li>
+            <li class="<?= $GLOBALS['current_page'] === 'admin_dashboard' ? 'active' : '' ?>"><a href="?page=admin_dashboard">Dashboard</a></li>
+            <li class="<?= $GLOBALS['current_page'] === 'admin_booking' ? 'active' : '' ?>"><a href="?page=admin_booking">Admin Booking</a></li>
+            <li class="<?= $GLOBALS['current_page'] === 'admin_movie' ? 'active' : '' ?>"><a href="?page=admin_movie">Admin Movie</a></li>
+            <li class="<?= $GLOBALS['current_page'] === 'admin_ManageUsers' ? 'active' : '' ?>"><a href="?page=admin_ManageUsers">Manage User</a></li>
+            <li class="<?= $GLOBALS['current_page'] === 'admin_settings' ? 'active' : '' ?>"><a href="?page=admin_settings">Indstillinger</a></li>
         </ul>
     </nav>
 </header>

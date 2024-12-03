@@ -8,17 +8,30 @@ error_reporting(E_ALL);
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php';
 
 
-// Læs den SEO-venlige route fra URL'en
-// Bestem hvilken side der skal loades
-$page = $_GET['page'] ?? 'home'; // Standard til 'home', hvis ingen side er angivet
-error_log("Side, der skal loades: $page");
+// Definér den aktuelle side
+$current_page = $_GET['page'] ?? 'home';
+
+// Kendte ruter
+$knownRoutes = [
+    'homePage', 'about', 'program', 'admin_dashboard',
+    'admin_movie', 'admin_settings', 'admin_ManageUsers',
+    'book', 'review', 'login', 'logout', 'register'
+];
+
+// Hvis siden ikke findes i de kendte ruter, sæt til '404'
+if (!in_array($current_page, $knownRoutes)) {
+    $current_page = '404';
+}
+
+// Gør den globalt tilgængelig
+$GLOBALS['current_page'] = $current_page;
 
 try {
     // Log routing-handlingen
 
     // Instansier Router og kald dens route-metode
     $router = new Router();
-    $router->route($page);
+    $router->route($current_page);
     
 } catch (Exception $e) {
     // Fejlhåndtering: Log fejl og vis en brugerdefineret fejlbesked

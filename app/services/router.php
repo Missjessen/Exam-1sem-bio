@@ -17,28 +17,9 @@ class Router {
         Security::startSession();
       
 
-        // Definer kendte og beskyttede ruter
-        $knownRoutes = [
-            'homePage', 'about', 'program',
-            'admin_dashboard', 'admin_movie', 'admin_settings', 'admin_ManageUsers',
-            'book', 'review', 'login', 'logout'
-        ];
-        if (!in_array($page, $knownRoutes)) {
-            header("HTTP/1.0 404 Not Found");
-            echo "404 - Siden blev ikke fundet";
-            return;
-        }
 
         $protectedUserRoutes = ['book', 'review'];
         $protectedAdminRoutes = ['admin_dashboard', 'admin_movie', 'admin_settings', 'admin_ManageUsers'];
-
-        // Valider, at ruten er kendt
-        if (!in_array($page, $knownRoutes)) {
-            header("HTTP/1.0 404 Not Found");
-            echo "<h1>404 - Siden blev ikke fundet</h1>";
-            echo "<p>Den side, du leder efter, eksisterer ikke. <a href='/Exam-1sem-bio/'>Gå tilbage til forsiden</a>.</p>";
-            return;
-        }
 
         // Check adgangsbeskyttelse
         if (in_array($page, $protectedAdminRoutes)) {
