@@ -4,6 +4,10 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 error_log("Aktuel rute: $page", print_r($page));
+echo $_SERVER['DOCUMENT_ROOT'];
+echo 'DOCUMENT_ROOT: ' . $_SERVER['DOCUMENT_ROOT'];
+echo 'DOCUMENT_ROOT: ' . $_SERVER['DOCUMENT_ROOT'] . '<br>';
+echo 'Base Path: ' . $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio';
 
 
 

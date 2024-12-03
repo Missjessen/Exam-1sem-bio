@@ -1,6 +1,6 @@
 <?php
 // Inkluder databaseforbindelse og autoloader
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php';
+require_once BASE_PATH . '/init.php';
 
 class FileUploadService {
     private $upload_dir;

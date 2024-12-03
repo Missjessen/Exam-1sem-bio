@@ -1,6 +1,7 @@
 <?php
-// Definer projektets rodmappe som en konstant
-define('BASE_PATH', __DIR__ . '/');
+// Hent autoloader og andre nødvendige filer
+define('BASE_PATH', $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio');
+require_once BASE_PATH . '/init.php';
 
 // Sikring mod direkte adgang
 if (basename($_SERVER['PHP_SELF']) === basename(__FILE__)) {
@@ -13,7 +14,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 // Inkluder autoloader
-require_once BASE_PATH . 'core/autoloader.php';
+require_once BASE_PATH . '/core/autoloader.php';
 
 // Debugging: Bekræft BASE_PATH
 error_log("BASE_PATH er: " . BASE_PATH);

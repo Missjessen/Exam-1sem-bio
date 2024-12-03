@@ -4,9 +4,9 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// Hent autoloader og andre nødvendige filer
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php';
 
+$documentRoot = $_SERVER['DOCUMENT_ROOT'] ?? __DIR__;
+require_once $documentRoot . '/Exam-1sem-bio/init.php';
 
 // Definér den aktuelle side
 $current_page = $_GET['page'] ?? 'home';
