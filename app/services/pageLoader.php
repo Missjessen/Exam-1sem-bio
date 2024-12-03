@@ -28,6 +28,9 @@ class PageLoader {
         $data = [];
     }
 
+     // Tilføj $page til data
+     $data['page'] = $viewName;
+
     extract($data); 
     
         // Inkludér CSS

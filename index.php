@@ -11,6 +11,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php';
 // Læs den SEO-venlige route fra URL'en
 // Bestem hvilken side der skal loades
 $page = $_GET['page'] ?? 'home'; // Standard til 'home', hvis ingen side er angivet
+error_log("Side, der skal loades: $page");
 
 try {
     // Log routing-handlingen

@@ -70,6 +70,7 @@ class Router {
                 break;
 
                 case 'admin_movie':
+                    
                     $MovieAdminController = new MovieAdminController($db);
                     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         // Håndter POST-forespørgsler direkte via controller
@@ -130,6 +131,7 @@ class Router {
                 echo "<h1>404 - Siden blev ikke fundet</h1>";
                 echo "<p>Den side, du leder efter, eksisterer ikke. <a href='/Exam-1sem-bio/'>Gå tilbage til forsiden</a>.</p>";
                 echo "Velkommen til $page.";
+                error_log("Ruter side: $page");
                 break;
         }
     }

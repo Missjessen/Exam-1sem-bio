@@ -32,3 +32,7 @@ try {
     error_log("Generel fejl: " . $e->getMessage());
     echo "Generel fejl opstod. Tjek logfilerne for detaljer.";
 }
+echo "Rewrite fungerer!";
+error_log("Ruter side: $page");
+
+error_log("Aktuel rute: $page");
