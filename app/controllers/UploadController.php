@@ -1,6 +1,6 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/services/fileUploadService.php';
+require_once __DIR__ . '/../services/fileUploadService.php';
 
 class UploadController {
     private $fileUploadService;

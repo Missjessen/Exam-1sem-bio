@@ -1,4 +1,4 @@
-<?php
+ <?php
 function validateComment($comment) {
     // Tjek for tom kommentar
     if (empty($comment)) {

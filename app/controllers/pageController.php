@@ -2,32 +2,26 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php';
 
 class PageController {
+    private $db;
     private $pageLoader;
     private $MovieAdminController;
     private $adminController;
-    
+    private $userController;
 
     public function __construct() {
-        // Hent databaseforbindelsen fra singletonen
-        $db = Database::getInstance()->getConnection();
-        
-        // Initialiser nødvendige komponenter
-        $this->pageLoader = new PageLoader($db);
-        error_log("PageLoader blev initialiseret.");
-     
-        $this->MovieAdminController = new MovieAdminController($db);
-        error_log("MovieAdminController blev initialiseret.");
-    
-        $this->adminController = new AdminController(new AdminModel($db));
-        error_log("AdminController blev initialiseret.");
- 
+        // Initialiser databaseforbindelsen og komponenter
+        $this->db = Database::getInstance()->getConnection();
+        $this->pageLoader = new PageLoader($this->db);
+        $this->MovieAdminController = new MovieAdminController($this->db);
+        $this->adminController = new AdminController(new AdminModel($this->db));
+        $this->userController = new UserController($this->db);
     }
-
 
     // Indlæser brugersider
     public function showPage($page) {
         $this->pageLoader->loadUserPage($page);
     }
+
     public function showAdminMoviePage() {
         try {
             // Hent alle film, genrer og skuespillere
@@ -65,7 +59,17 @@ class PageController {
             $this->pageLoader->loadErrorPage("Noget gik galt under indlæsningen af filmadministrationen.");
         }
     }
-    
+
+    public function handleCustomersAndEmployeesPage() {
+        $this->adminController->handleCustomerAndEmployeeSubmission($_POST, $_GET);
+
+        return [
+            'customers' => $this->adminController->getAllCustomers(),
+            'employees' => $this->adminController->getAllEmployees(),
+            'editCustomer' => isset($_GET['edit_customer_id']) ? $this->adminController->getCustomerById($_GET['edit_customer_id']) : null,
+            'editEmployee' => isset($_GET['edit_employee_id']) ? $this->adminController->getEmployeeById($_GET['edit_employee_id']) : null,
+        ];
+    }
 
     public function showAdminSettingsPage() {
         try {
@@ -81,34 +85,41 @@ class PageController {
         }
     }
 
-   /**
-     * Håndterer siden for kunder og ansatte.*/
     public function handleCustomerAndEmployeeSubmission($postData, $getData) {
         $this->adminController->handleCustomerAndEmployeeSubmission($postData, $getData);
     }
-    
+
     public function getCustomersAndEmployeesData() {
         return $this->adminController->getCustomersAndEmployeesData();
     }
-    
-}
 
-
-    /* */
-  /*   public function handleBookingsAndInvoicesPage() {
-        $this->adminBookingController->handleBookingSubmission($_POST, $_GET);
-
-        if (isset($_GET['generate_invoice_id'])) {
-            $this->adminBookingController->generateInvoice($_GET['generate_invoice_id']);
+    public function showRegisterPage($postData = null) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            try {
+                $message = $this->userController->registerUser($postData);
+                echo $message; // Succesbesked
+            } catch (Exception $e) {
+                echo "Fejl: " . $e->getMessage(); // Fejlhåndtering
+            }
+        } else {
+            require_once __DIR__ . '/../auth/register_form.php';
         }
+    }
 
-        return [
-            'bookings' => $this->adminBookingController->getAllBookings(),
-            'invoices' => $this->adminBookingController->getAllInvoices(),
-            'movies' => $this->adminBookingController->getAllMovies(),
-            'parking_spots' => $this->adminBookingController->getAllParkingSpots(),
-            'customers' => $this->adminBookingController->getAllCustomers(),
-            'editBooking' => isset($_GET['edit_booking_id']) ? $this->adminBookingController->getBookingById($_GET['edit_booking_id']) : null
-        ];
-    } */
+    public function showLoginPage($postData = null) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            try {
+                $message = $this->userController->loginUser($postData);
+                echo $message; // Velkomstbesked
+            } catch (Exception $e) {
+                echo "Fejl: " . $e->getMessage(); // Fejlhåndtering
+            }
+        } else {
+            require_once __DIR__ . '/../auth/login_form.php';
+        }
+    }
 
+    public function handleLogout() {
+        Security::logout();
+    }
+}

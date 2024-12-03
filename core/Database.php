@@ -1,12 +1,22 @@
-<?php 
+<?php
 
 class Database {
-    private static $instance = null; // Holder singleton-instansen
+    private static $instance = null; // Singleton-instansen
     private $connection; // PDO-forbindelsen
 
-    // Privat konstruktor forhindrer direkte oprettelse
     private function __construct() {
-        // Hent miljøvariabler eller brug standardværdier
+        // Definér stien til miljøfilerne i roden
+        $host = $_SERVER['SERVER_NAME'] ?? $_SERVER['HTTP_HOST'] ?? 'unknown';
+        $environment = (strpos($host, 'localhost') !== false || $host == '127.0.0.1') ? '.env.local' : '.env.production';
+        
+        echo "Host: $host<br>";
+        echo "Valgt miljøfil: $environment<br>";
+        
+        $filePath = dirname(__DIR__) . '/' . $environment;
+        echo "Miljøfil sti: $filePath<br>";
+
+
+        // Brug miljøvariabler eller standardværdier
         $host = $_ENV['DB_HOST'] ?? 'localhost';
         $dbName = $_ENV['DB_NAME'] ?? 'drive-in-1sem';
         $user = $_ENV['DB_USER'] ?? 'root';
@@ -17,12 +27,10 @@ class Database {
         $dsn = "mysql:host=$host;dbname=$dbName;charset=$charset";
 
         try {
-            // Opret PDO-forbindelse
             $this->connection = new PDO($dsn, $user, $password);
-            $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // Undtagelser på fejl
-            $this->connection->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC); // Standard fetch-mode
+            $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->connection->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            // Log fejl og afslut applikationen
             error_log("Databaseforbindelse fejlede: " . $e->getMessage());
             die("Databaseforbindelse fejlede. Kontakt administratoren.");
         }
@@ -47,14 +55,35 @@ class Database {
         return $this->connection;
     }
 
-    // Test forbindelsen (valgfri til debugging)
-    public static function testConnection() {
-        try {
-            $db = self::getInstance()->getConnection();
-            echo "Forbindelse til databasen er vellykket.";
-        } catch (Exception $e) {
-            error_log("Test af databaseforbindelse fejlede: " . $e->getMessage());
-            echo "Kunne ikke forbinde til databasen.";
+    // Indlæser miljøvariabler fra en .env-fil
+    public function loadEnvFile() {
+        // Bestem projektets rodmappe
+        $rootPath = dirname(__DIR__, 1); // Gå én mappe op fra 'core/'
+        
+        // Bestem miljøfil baseret på miljø
+        $environment = ($_SERVER['SERVER_NAME'] === 'localhost') ? '.env.local' : '.env.production';
+        $filePath = $rootPath . '/' . $environment;
+    
+        // Debugging: Udskriv filstien
+        echo "Indlæser miljøfil: $filePath<br>";
+    
+        // Tjek, om filen findes
+        if (!file_exists($filePath)) {
+            die("Miljøfilen $filePath blev ikke fundet.");
+        }
+    
+        // Debugging: Vis, at filen blev fundet
+        echo "Miljøfil fundet: $filePath<br>";
+    
+        // Indlæs miljøvariabler
+        $lines = file($filePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        foreach ($lines as $line) {
+            if (strpos(trim($line), '#') === 0) {
+                continue; // Ignorer kommentarer
+            }
+    
+            [$key, $value] = explode('=', $line, 2);
+            $_ENV[trim($key)] = trim($value);
         }
     }
 }

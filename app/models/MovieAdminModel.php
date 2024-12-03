@@ -1,4 +1,5 @@
 <?php
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php';
 class MovieAdminModel extends CrudBase {
     public function __construct() {
         parent::__construct(Database::getInstance()->getConnection());

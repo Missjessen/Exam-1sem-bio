@@ -1,29 +1,17 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php';
-
 class PageLoader {
     private $config;
     private $db;
 
-    public function __construct() {
-        try {
-            $this->config = require $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/config/loadPages.php';
-            if (!is_array($this->config)) {
-                throw new Exception("Konfigurationsfilen returnerede ikke et array.");
-            }
-    
-            $this->db = Database::getInstance()->getConnection(); // Brug singletonen her
-            if (!$this->db) {
-                throw new Exception("Kunne ikke oprette forbindelse til databasen.");
-            }
-        } catch (Exception $e) {
-            error_log("Fejl i PageLoader konstruktør: " . $e->getMessage());
-            die("Der opstod en fejl under initialiseringen af PageLoader.");
+     public function __construct($db) {
+        $this->db = $db; // Fjern singletonkald fra PageLoader
+        $this->config = require __DIR__ . '/../../config/loadPages.php'; // Opdateret sti
+        if (!is_array($this->config)) {
+            throw new Exception("Konfigurationsfilen returnerede ikke et array.");
         }
     }
+
     
 
     public function loadUserPage($page) {
@@ -47,7 +35,7 @@ class PageLoader {
     
         // Inkludér header, view og footer
         $this->includeLayout('header_admin.php', compact('current_page'));
-        $viewPath = $_SERVER['DOCUMENT_ROOT'] . "/Exam-1sem-bio/app/view/admin/$viewName.php";
+        $viewPath = __DIR__ . "/../../app/view/admin/$viewName.php";
         if (file_exists($viewPath)) {
             require $viewPath;
         } else {
@@ -64,7 +52,7 @@ class PageLoader {
     
     private function includeLayout($layout, $data = []) {
         extract($data); // Gør data tilgængelige som variabler
-        $layoutPath = $_SERVER['DOCUMENT_ROOT'] . "/Exam-1sem-bio/app/layout/$layout";
+        $layoutPath = __DIR__ . "/../../app/layout/$layout";
         if (file_exists($layoutPath)) {
             require $layoutPath;
         } else {
@@ -77,7 +65,7 @@ class PageLoader {
         $viewPath = $this->config['pages'][$page]['view'] ?? null;
     
         if ($viewPath) {
-            $fullPath = $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio' . $viewPath;
+            $fullPath = $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio' . $viewPath;// skal ændres
             if (file_exists($fullPath)) {
                 include $fullPath;
             } else {

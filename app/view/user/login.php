@@ -1,8 +1,3 @@
-
-
-
-
-
 <div class="login_sektion"><h2>Login</h2>
     <form action="/Exam-1sem-bio/app/controllers/loginController.php" method="POST">
         <label for="username">Brugernavn:</label>

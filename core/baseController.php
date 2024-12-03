@@ -1,7 +1,5 @@
 <?php
-
-// /core/BaseController.php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/core/baseModel.php';
+require_once __DIR__ . '/../core/baseModel.php';
 
 class BaseController {
     protected $model;

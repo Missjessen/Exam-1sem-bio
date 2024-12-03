@@ -1,4 +1,5 @@
 <?php
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php';
 class AdminBookingModel extends CrudBase {
     // Booking-funktioner
     public function getAllBookings() {

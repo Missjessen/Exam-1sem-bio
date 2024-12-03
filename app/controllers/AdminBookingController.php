@@ -1,5 +1,6 @@
 
 <?php
+require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php';
 class AdminBookingController {
     private $model;
     private $adminController;

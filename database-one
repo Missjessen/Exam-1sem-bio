@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS `customers` (
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
     phone VARCHAR(20) NOT NULL
+    
 );
 
 CREATE TABLE IF NOT EXISTS `employees` (
@@ -16,22 +17,28 @@ CREATE TABLE IF NOT EXISTS `employees` (
     phone VARCHAR(20) NOT NULL,
     role VARCHAR(100) NOT NULL,
     address VARCHAR(255) NOT NULL
+   
 );
 
+-- Create genres table
 CREATE TABLE genres (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL
 );
 
+-- Create actors table
 CREATE TABLE actors (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL
+    name VARCHAR(255) NOT NULL,
+    birthdate DATE NOT NULL
 );
 
+
+-- Opret tabel for film
 CREATE TABLE IF NOT EXISTS `movies` (
-    id CHAR(36) PRIMARY KEY,
-    slug VARCHAR(255) UNIQUE,
-    title VARCHAR(255),
+     id CHAR(36) PRIMARY KEY,       -- UUID
+     slug VARCHAR(255) UNIQUE,      -- Slug
+      title VARCHAR(255), -- Title for the movie
     director VARCHAR(255),
     release_year INT,
     runtime INT,
@@ -42,8 +49,10 @@ CREATE TABLE IF NOT EXISTS `movies` (
     premiere_date DATE,
     language VARCHAR(50),
     poster VARCHAR(255)
+    
 );
 
+-- Create movie_genre relationship table
 CREATE TABLE movie_genre (
     movie_id CHAR(36),
     genre_id INT,
@@ -52,6 +61,7 @@ CREATE TABLE movie_genre (
     FOREIGN KEY (genre_id) REFERENCES genres(id) ON DELETE CASCADE
 );
 
+-- Create movie_actor relationship table
 CREATE TABLE movie_actor (
     movie_id CHAR(36),
     actor_id INT,
@@ -60,12 +70,17 @@ CREATE TABLE movie_actor (
     FOREIGN KEY (actor_id) REFERENCES actors(id) ON DELETE CASCADE
 );
 
+
+
+
+-- Opret tabel for parkeringspladser
 CREATE TABLE IF NOT EXISTS `spots` (
     `spot_id` INT AUTO_INCREMENT PRIMARY KEY,
     `spot_number` INT NOT NULL UNIQUE,
     `status` ENUM('available', 'booked') DEFAULT 'available'
 );
 
+-- Opret tabel for visningstider
 CREATE TABLE IF NOT EXISTS `showtimes` (
     `showtime_id` INT AUTO_INCREMENT PRIMARY KEY,
     `movie_id` CHAR(36) NOT NULL,
@@ -73,17 +88,38 @@ CREATE TABLE IF NOT EXISTS `showtimes` (
     `show_time` TIME NOT NULL,
     FOREIGN KEY (`movie_id`) REFERENCES `movies`(`id`) ON DELETE CASCADE
 );
+CREATE TABLE showings (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    movie_id INT NOT NULL,
+    screen ENUM('small', 'large') NOT NULL,
+    show_date DATE NOT NULL,
+    show_time TIME NOT NULL,
+    total_spots INT NOT NULL,
+    available_spots INT NOT NULL,
+    repeat_pattern ENUM('none', 'daily', 'weekly') DEFAULT 'none',
+    repeat_until DATE DEFAULT NULL,
+    FOREIGN KEY (movie_id) REFERENCES movies(id)
+);
 
+CREATE TABLE parking_prices (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    screen ENUM('small', 'large') NOT NULL,
+    row_type ENUM('front', 'middle', 'back') NOT NULL,
+    price_per_spot DECIMAL(10, 2) NOT NULL
+);
+
+-- Opret tabel for bookinger
 CREATE TABLE IF NOT EXISTS `bookings` (
     `booking_id` INT AUTO_INCREMENT PRIMARY KEY,
-    `movie_id` CHAR(36) NOT NULL,
+    `movie_id` CHAR(36) NOT NULL,          -- Opdateret til CHAR(36) for at matche UUID-formatet
     `spot_id` INT NOT NULL,
     `customer_id` INT,
     `booking_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
     `price` INT,
-    FOREIGN KEY (`movie_id`) REFERENCES `movies`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`movie_id`) REFERENCES `movies`(`id`) ON DELETE CASCADE,   -- Refererer til `id` i `movies`
     FOREIGN KEY (`spot_id`) REFERENCES `spots`(`spot_id`)
 );
+
 
 CREATE TABLE IF NOT EXISTS `pages` (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -93,15 +129,10 @@ CREATE TABLE IF NOT EXISTS `pages` (
     css_file VARCHAR(255),
     template_file VARCHAR(255)
 );
-
 CREATE TABLE site_settings (
     setting_key VARCHAR(255) PRIMARY KEY,
     setting_value TEXT NOT NULL
 );
-
--- Tilføjelse af eksempeldata for `movies`, `actors`, `genres`, `employees`, `customers`, `spots`, `showtimes`, `site_settings`, og `pages`
--- Fortsæt her med INSERT-statements som i dit originale script.
-
 
 
 
@@ -187,8 +218,4 @@ INSERT INTO `pages` (pages, title, content, css_file, template_file) VALUES
 ('admin_dashboard', 'Dashboard - Drive-In Bio', 'Dashboard for admin.', 'assets/css/admin_dashboard.css', 'app/view/admin/admin_dashboard.php'),
 ('admin_ManageUser', 'Manage User - Drive-In Bio', 'Manage User for admin.', 'assets/css/admin_ManageUser.css', 'app/view/admin/admin_ManageUser.php'),
 ('admin_settings', 'Settings - Drive-In Bio', 'Settings for admin.', 'assets/css/admin_settings.css', 'app/view/admin/admin_settings.php');
-
-
-
- 
 

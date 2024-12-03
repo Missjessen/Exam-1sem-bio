@@ -4,11 +4,10 @@ class MovieAdminController {
     private $fileUploadService;
     private $pageLoader;
 
-    public function __construct() {
-        $db = Database::getInstance()->getConnection(); // Brug singleton
+    public function __construct($db) {
         $this->MovieAdminModel = new MovieAdminModel($db);
         $this->fileUploadService = new FileUploadService();
-        $this->pageLoader = new PageLoader($db);
+        $this->pageLoader = new PageLoader($db); 
     }
     public function getAllMoviesWithDetails() {
         return $this->MovieAdminModel->getAllMoviesWithDetails(); // Kalder modelens metode
@@ -169,17 +168,15 @@ class MovieAdminController {
             }
         }
 
-    private function prepareMovieEdit() {
-        if (isset($_GET['action']) && $_GET['action'] === 'edit') {
-            $movieId = $_GET['movie_id'] ?? null;
-            if ($movieId) {
-                $movieDetails = $this->MovieAdminModel->getMovieDetails($movieId);
-                error_log("Movie Details: " . print_r($movieDetails, true)); // Debug
-                return $movieDetails;
+        private function prepareMovieEdit() {
+            if (isset($_GET['action']) && $_GET['action'] === 'edit') {
+                $movieId = $_GET['movie_id'] ?? null;
+                if ($movieId) {
+                    return $this->MovieAdminModel->getMovieDetails($movieId);
+                }
             }
+            return null;
         }
-        return null;
-    }
 
     
 
