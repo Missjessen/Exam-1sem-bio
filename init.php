@@ -1,9 +1,12 @@
 <?php
 // Definer projektets rodmappe som en konstant
-define('BASE_PATH', $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio');
+if (!defined('BASE_PATH')) {
+    define('BASE_PATH', $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio');
+}
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/core/autoLoader.php';
+
 // Sikring mod direkte adgang
-if (basename($_SERVER['PHP_SELF']) === basename(__FILE__)) {
+if (realpath($_SERVER['SCRIPT_FILENAME']) === realpath(__FILE__)) {
     die('Direct access is not allowed.');
 }
 
