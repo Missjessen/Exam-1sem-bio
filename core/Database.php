@@ -56,34 +56,38 @@ class Database {
     }
 
     // Indlæser miljøvariabler fra en .env-fil
-    public function loadEnvFile() {
-        // Bestem projektets rodmappe
-        $rootPath = dirname(__DIR__, 1); // Gå én mappe op fra 'core/'
-        
-        // Bestem miljøfil baseret på miljø
-        $environment = ($_SERVER['SERVER_NAME'] === 'localhost') ? '.env.local' : '.env.production';
-        $filePath = $rootPath . '/' . $environment;
+   public function loadEnvFile() {
+    // Bestem miljøet
+    $environment = ($_SERVER['SERVER_NAME'] === 'localhost') ? '.env.local' : '.env.production';
     
-        // Debugging: Udskriv filstien
-        echo "Indlæser miljøfil: $filePath<br>";
-    
-        // Tjek, om filen findes
-        if (!file_exists($filePath)) {
-            die("Miljøfilen $filePath blev ikke fundet.");
-        }
-    
-        // Debugging: Vis, at filen blev fundet
-        echo "Miljøfil fundet: $filePath<br>";
-    
-        // Indlæs miljøvariabler
-        $lines = file($filePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-        foreach ($lines as $line) {
-            if (strpos(trim($line), '#') === 0) {
-                continue; // Ignorer kommentarer
-            }
-    
-            [$key, $value] = explode('=', $line, 2);
-            $_ENV[trim($key)] = trim($value);
-        }
+    // Byg den fulde sti til miljøfilen
+    $filePath = __DIR__ . '/' . $environment;
+
+    // Debugging: Vis, hvilken fil der bliver brugt
+    echo "Indlæser miljøfil: $filePath<br>";
+
+    // Tjek, om filen findes
+    if (!file_exists($filePath)) {
+        die("Miljøfilen $filePath blev ikke fundet.");
     }
+
+    // Debugging: Vis, at filen blev fundet
+    echo "Miljøfil fundet: $filePath<br>";
+
+    // Indlæs miljøvariabler
+    $lines = file($filePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        if (strpos(trim($line), '#') === 0) {
+            continue; // Ignorer kommentarer
+        }
+
+        [$key, $value] = explode('=', $line, 2);
+        $_ENV[trim($key)] = trim($value);
+    }
+
+    // Debugging: Vis de indlæste variabler
+    echo "<pre>";
+    print_r($_ENV);
+    echo "</pre>";
+}
 }

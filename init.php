@@ -1,9 +1,21 @@
 <?php
-// Definer projektets rodmappe som en konstant
-if (!defined('BASE_PATH')) {
-    define('BASE_PATH', $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio');
+// Lokal sti
+define('LOCAL_BASE_PATH', $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio');
+
+// Online sti
+define('SERVER_BASE_PATH', '/customers/8/1/a/cjsfkt3sf/webroots/a050556f/Exam-1sem-bio');
+
+// Brug dynamisk BASE_PATH som standard
+if (strpos($_SERVER['DOCUMENT_ROOT'], 'xamppfiles') !== false) {
+    define('BASE_PATH', LOCAL_BASE_PATH);
+} else {
+    define('BASE_PATH', SERVER_BASE_PATH);
 }
 
+// Debugging
+error_log("Lokal sti: " . LOCAL_BASE_PATH);
+error_log("Server sti: " . SERVER_BASE_PATH);
+error_log("Aktiv BASE_PATH: " . BASE_PATH);
 
 // Sikring mod direkte adgang
 //if (realpath($_SERVER['SCRIPT_FILENAME']) === realpath(__FILE__)) {
