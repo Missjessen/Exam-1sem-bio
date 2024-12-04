@@ -8,29 +8,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Midlertidig databaseforbindelse
-try {
-    $host = 'localhost';
-$dbName = 'cjsfkt3sf_cruisenightscinema';
-$user = 'root'; // Erstat med din One.com-databasebruger
-$password = '123456'; // Erstat med din One.com-databaseadgangskode
-$charset = 'utf8mb4';
 
-    $dsn = "mysql:host=$host;dbname=$dbName;charset=$charset";
-    $pdo = new PDO($dsn, $user, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-
-    // Debugging: Bekræft, at forbindelsen er oprettet
-    error_log("Midlertidig databaseforbindelse oprettet!");
-} catch (PDOException $e) {
-    // Log fejlen og afslut
-    error_log("Midlertidig databaseforbindelse fejlede: " . $e->getMessage());
-    die("Midlertidig databaseforbindelse fejlede. Kontakt administratoren.");
-}
-
-// Global variabel til at bruge forbindelsen i resten af projektet
-$GLOBALS['pdo'] = $pdo;
 
 
 // Initialiser Database-forbindelsen via singleton
