@@ -10,7 +10,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // Midlertidig databaseforbindelse
 try {
-    $host = 'localhost'; // Midlertidig DB_HOST (opdater hvis nødvendigt)
+    $host = 'cjsfkt3sf.mysql.service.one.com'; // Midlertidig DB_HOST (opdater hvis nødvendigt)
     $dbName = 'cjsfkt3sf_cruisenightscinema'; // Midlertidig DB_NAME
     $user = 'root'; // Midlertidig DB_USER
     $password = '123456'; // Midlertidig DB_PASS
