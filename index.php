@@ -5,8 +5,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 
-$documentRoot = $_SERVER['DOCUMENT_ROOT'] ?? __DIR__;
-require_once $documentRoot . '/Exam-1sem-bio/init.php';
+require_once __DIR__ . '/Exam-1sem-bio/init.php';
 
 // Definér den aktuelle side
 $current_page = $_GET['page'] ?? 'home';
