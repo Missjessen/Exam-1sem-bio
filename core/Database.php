@@ -1,6 +1,4 @@
-<?php
-
-class Database {
+<?php class Database {
     private static $instance = null; // Singleton-instansen
     private $connection; // PDO-forbindelsen
 
@@ -14,6 +12,7 @@ class Database {
         
         $filePath = dirname(__DIR__) . '/' . $environment;
         echo "Miljøfil sti: $filePath<br>";
+        
 
 
         // Brug miljøvariabler eller standardværdier
@@ -23,8 +22,13 @@ class Database {
         $password = $_ENV['DB_PASS'] ?? '';
         $charset = $_ENV['DB_CHARSET'] ?? 'utf8mb4';
 
+         // Debugging: Log værdierne
+         error_log("DB_HOST: $host, DB_NAME: $dbName, DB_USER: $user, DB_PASS: [hidden], DB_CHARSET: $charset");
+         
         // Data Source Name (DSN)
         $dsn = "mysql:host=$host;dbname=$dbName;charset=$charset";
+         // Debug DSN
+         error_log("DSN: $dsn");
 
         try {
             $this->connection = new PDO($dsn, $user, $password);
