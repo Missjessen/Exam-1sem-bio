@@ -1,5 +1,6 @@
 RewriteEngine On
 
+
 # Start omskrivning for alle anmodninger, der ikke er en fil eller mappe
 RewriteBase /
 RewriteCond %{REQUEST_FILENAME} !-f
