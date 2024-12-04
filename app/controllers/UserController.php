@@ -1,5 +1,5 @@
 <?php
-require_once BASE_PATH . 'init.php'; // Inkluder init.php med $db og autoloader
+require_once BASE_PATH . '/init.php'; // Inkluder init.php med $db og autoloader
 
 class UserController {
     private $userModel;

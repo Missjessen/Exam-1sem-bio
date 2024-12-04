@@ -5,7 +5,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 // Inkludér init.php for at centralisere afhængigheder
-require_once BASE_PATH . 'init.php';
+require_once BASE_PATH . '/init.php';
 
 class Router {
     

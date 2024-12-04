@@ -1,5 +1,5 @@
 <?php
-require_once BASE_PATH . 'init.php'; // 
+require_once BASE_PATH . '/init.php'; // 
 class PageLoader {
     private $config;
     private $db;

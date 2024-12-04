@@ -1,5 +1,5 @@
 <?php
-require_once BASE_PATH . 'init.php';
+require_once BASE_PATH . '/init.php';
 class AdminShowingModel extends CrudBase {
     public function getAllShowings() {
         $joins = [

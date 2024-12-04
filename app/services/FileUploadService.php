@@ -1,6 +1,6 @@
 <?php
 // Inkluder databaseforbindelse og autoloader
-require_once BASE_PATH . 'init.php';
+require_once BASE_PATH . '/init.php';
 
 class FileUploadService {
     private $upload_dir;

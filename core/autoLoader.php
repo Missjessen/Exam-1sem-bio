@@ -7,15 +7,15 @@ error_reporting(E_ALL);
 
 spl_autoload_register(function ($class_name) {
     $paths = [
-        BASE_PATH . 'app/controllers/',
-        BASE_PATH . 'app/models/',
-        BASE_PATH . 'app/services/',
-        BASE_PATH . 'app/view/admin/',
-        BASE_PATH . 'app/view/user/',
-        BASE_PATH . 'app/layout/',
-        BASE_PATH . 'core/',
-        BASE_PATH . 'config/',
-        BASE_PATH . 'auth/',
+        BASE_PATH . '/app/controllers/',
+        BASE_PATH . '/app/models/',
+        BASE_PATH . '/app/services/',
+        BASE_PATH . '/app/view/admin/',
+        BASE_PATH . '/app/view/user/',
+        BASE_PATH . '/app/layout/',
+        BASE_PATH . '/core/',
+        BASE_PATH . '/config/',
+        BASE_PATH . '/auth/',
     ];
 
     foreach ($paths as $path) {

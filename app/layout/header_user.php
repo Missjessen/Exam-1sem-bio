@@ -1,5 +1,5 @@
 <?php
-require_once BASE_PATH . 'init.php';
+require_once BASE_PATH . '/init.php';
 
 
 // Eksempel for at initialisere PageLoader og hente CSS'en for en specifik side
