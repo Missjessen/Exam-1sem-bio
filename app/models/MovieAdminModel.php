@@ -1,5 +1,5 @@
 <?php
-require_once BASE_PATH . '/init.php';
+require_once 'init.php';
 class MovieAdminModel extends CrudBase {
     public function __construct() {
         parent::__construct(Database::getInstance()->getConnection());

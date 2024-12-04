@@ -3,29 +3,37 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-require_once BASE_PATH . '/init.php';
 
+// Autoloader
 spl_autoload_register(function ($class_name) {
+    // Definer base sti til roden af projektet
+    $basePath = $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/';
+
+    // Definer de mapper, hvor autoloaderen skal lede efter filer
     $paths = [
-        BASE_PATH . '/app/controllers/',
-        BASE_PATH . '/app/models/',
-        BASE_PATH . '/app/services/',
-        BASE_PATH . '/app/view/admin/',
-        BASE_PATH . '/app/view/user/',
-        BASE_PATH . '/app/layout/',
-        BASE_PATH . '/core/',
-        BASE_PATH . '/config/',
-        BASE_PATH . '/auth/',
+        $basePath . 'app/controllers/',
+        $basePath . 'app/models/',
+        $basePath . 'app/services/',
+        $basePath . 'core/',
+        $basePath . 'app/layout/',
+        $basePath . 'config/',
+        $basePath . 'auth/',
     ];
 
+    // Loop gennem stierne og prøv at finde filen
     foreach ($paths as $path) {
         $file = $path . $class_name . '.php';
         if (file_exists($file)) {
             require_once $file;
-            error_log("Klasse $class_name fundet i $file");
+
+            // Debugging: Log, hvor klassen blev fundet
+            error_log("Klasse $class_name blev fundet i $file");
             return;
         }
     }
-    error_log("Klasse $class_name ikke fundet.");
+
+    // Hvis filen ikke blev fundet, log fejlen
+    error_log("Autoloader kunne ikke finde klasse: $class_name");
+    die("Fejl: Klassen $class_name blev ikke fundet.");
 });
 

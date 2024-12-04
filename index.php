@@ -5,7 +5,8 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php';
+require_once 'init.php';
+
 
 
 // Definér den aktuelle side

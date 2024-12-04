@@ -1,14 +1,7 @@
-php_flag display_errors on
-php_value error_reporting 32767
-RewriteRule ^test$ test.php [L]
-
 RewriteEngine On
 
-# Angiv PHP-filtyper
-AddType application/x-httpd-php .php
-
 # Start omskrivning for alle anmodninger, der ikke er en fil eller mappe
-RewriteBase /Exam-1sem-bio/
+RewriteBase /
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 

@@ -1,6 +1,6 @@
 
 <?php
-require_once BASE_PATH . '/init.php';
+require_once 'init.php';
 class AdminBookingController {
     private $model;
     private $adminController;

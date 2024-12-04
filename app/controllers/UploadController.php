@@ -1,6 +1,6 @@
 <?php
-require_once BASE_PATH . '/init.php';
-require_once BASE_PATH . '/app/services/fileUploadService.php';
+require_once 'init.php';
+require_once 'app/services/fileUploadService.php';
 
 class UploadController {
     private $fileUploadService;

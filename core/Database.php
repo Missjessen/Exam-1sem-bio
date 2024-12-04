@@ -56,38 +56,22 @@ class Database {
     }
 
     // Indlæser miljøvariabler fra en .env-fil
-   public function loadEnvFile() {
-    // Bestem miljøet
-    $environment = ($_SERVER['SERVER_NAME'] === 'localhost') ? '.env.local' : '.env.production';
-    
-    // Byg den fulde sti til miljøfilen
-    $filePath = __DIR__ . '/' . $environment;
-
-    // Debugging: Vis, hvilken fil der bliver brugt
-    echo "Indlæser miljøfil: $filePath<br>";
-
-    // Tjek, om filen findes
-    if (!file_exists($filePath)) {
-        die("Miljøfilen $filePath blev ikke fundet.");
-    }
-
-    // Debugging: Vis, at filen blev fundet
-    echo "Miljøfil fundet: $filePath<br>";
-
-    // Indlæs miljøvariabler
-    $lines = file($filePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    foreach ($lines as $line) {
-        if (strpos(trim($line), '#') === 0) {
-            continue; // Ignorer kommentarer
+    public function loadEnvFile($filePath) {
+        if (!file_exists($filePath)) {
+            die("Miljøfilen $filePath blev ikke fundet.");
         }
 
-        [$key, $value] = explode('=', $line, 2);
-        $_ENV[trim($key)] = trim($value);
-    }
+        // Debugging: Vis, at filen blev fundet
+        echo "Miljøfil fundet: $filePath<br>";
 
-    // Debugging: Vis de indlæste variabler
-    echo "<pre>";
-    print_r($_ENV);
-    echo "</pre>";
-}
+        $lines = file($filePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        foreach ($lines as $line) {
+            if (strpos(trim($line), '#') === 0) {
+                continue; // Ignorer kommentarer
+            }
+
+            [$key, $value] = explode('=', $line, 2);
+            $_ENV[trim($key)] = trim($value);
+        }
+    }
 }
