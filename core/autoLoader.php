@@ -13,9 +13,9 @@ spl_autoload_register(function ($class_name) {
         BASE_PATH . '/app/view/admin/',
         BASE_PATH . '/app/view/user/',
         BASE_PATH . '/app/layout/',
-        BASE_PATH . '/core/',
-        BASE_PATH . '/config/',
-        BASE_PATH . '/auth/',
+        BASE_PATH . '/core',
+        BASE_PATH . '/config',
+        BASE_PATH . '/auth',
     ];
 
     foreach ($paths as $path) {
