@@ -6,6 +6,7 @@ error_reporting(E_ALL);
 
 
 require_once __DIR__ . '/Exam-1sem-bio/init.php';
+require_once BASE_PATH . '/core/autoloader.php';
 
 // Definér den aktuelle side
 $current_page = $_GET['page'] ?? 'home';
