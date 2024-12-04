@@ -10,11 +10,11 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // Midlertidig databaseforbindelse
 try {
-    $host = 'cjsfkt3sf.mysql.service.one.com'; // Midlertidig DB_HOST (opdater hvis nødvendigt)
-    $dbName = 'cjsfkt3sf_cruisenightscinema'; // Midlertidig DB_NAME
-    $user = 'root'; // Midlertidig DB_USER
-    $password = '123456'; // Midlertidig DB_PASS
-    $charset = 'utf8mb4'; // Midlertidig DB_CHARSET
+    $host = 'localhost';
+$dbName = 'cjsfkt3sf_cruisenightscinema';
+$user = 'root'; // Erstat med din One.com-databasebruger
+$password = '123456'; // Erstat med din One.com-databaseadgangskode
+$charset = 'utf8mb4';
 
     $dsn = "mysql:host=$host;dbname=$dbName;charset=$charset";
     $pdo = new PDO($dsn, $user, $password);
