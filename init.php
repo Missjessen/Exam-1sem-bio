@@ -6,9 +6,9 @@ if (!defined('BASE_PATH')) {
 require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/core/autoLoader.php';
 
 // Sikring mod direkte adgang
-if (realpath($_SERVER['SCRIPT_FILENAME']) === realpath(__FILE__)) {
-    die('Direct access is not allowed.');
-}
+//if (realpath($_SERVER['SCRIPT_FILENAME']) === realpath(__FILE__)) {
+    //die('Direct access is not allowed.');
+//}
 
 // Start session, hvis ikke allerede startet
 if (session_status() === PHP_SESSION_NONE) {
