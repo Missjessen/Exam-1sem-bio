@@ -7,7 +7,7 @@ error_reporting(E_ALL);
 // Autoloader
 spl_autoload_register(function ($class_name) {
     // Definer base sti til roden af projektet
-    $basePath = $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/';
+    $basePath = dirname(__DIR__) . '/'; 
 
     // Definer de mapper, hvor autoloaderen skal lede efter filer
     $paths = [
@@ -18,6 +18,7 @@ spl_autoload_register(function ($class_name) {
         $basePath . 'app/layout/',
         $basePath . 'config/',
         $basePath . 'auth/',
+        
     ];
 
     // Loop gennem stierne og prøv at finde filen
