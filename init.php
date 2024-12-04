@@ -3,7 +3,7 @@
 if (!defined('BASE_PATH')) {
     define('BASE_PATH', $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio');
 }
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/core/autoLoader.php';
+
 
 // Sikring mod direkte adgang
 //if (realpath($_SERVER['SCRIPT_FILENAME']) === realpath(__FILE__)) {
