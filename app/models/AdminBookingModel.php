@@ -1,5 +1,5 @@
 <?php
-require_once BASE_PATH . '/init.php';
+require_once BASE_PATH . 'init.php';
 class AdminBookingModel extends CrudBase {
     // Booking-funktioner
     public function getAllBookings() {

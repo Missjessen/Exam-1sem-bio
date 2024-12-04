@@ -1,6 +1,6 @@
 
 <?php 
-require_once BASE_PATH . '/init.php';
+require_once BASE_PATH . 'init.php';
 
 $current_page = $GLOBALS['current_page']; // Ingen redefinering
 

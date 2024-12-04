@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../core/baseModel.php';
+require_once __DIR__ . '/init.php';
 
 class BaseController {
     protected $model;
