@@ -8,6 +8,30 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// Midlertidig databaseforbindelse
+try {
+    $host = 'localhost'; // Midlertidig DB_HOST (opdater hvis nødvendigt)
+    $dbName = 'cjsfkt3sf_cruisenightscinema'; // Midlertidig DB_NAME
+    $user = 'root'; // Midlertidig DB_USER
+    $password = '123456'; // Midlertidig DB_PASS
+    $charset = 'utf8mb4'; // Midlertidig DB_CHARSET
+
+    $dsn = "mysql:host=$host;dbname=$dbName;charset=$charset";
+    $pdo = new PDO($dsn, $user, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
+    // Debugging: Bekræft, at forbindelsen er oprettet
+    error_log("Midlertidig databaseforbindelse oprettet!");
+} catch (PDOException $e) {
+    // Log fejlen og afslut
+    error_log("Midlertidig databaseforbindelse fejlede: " . $e->getMessage());
+    die("Midlertidig databaseforbindelse fejlede. Kontakt administratoren.");
+}
+
+// Global variabel til at bruge forbindelsen i resten af projektet
+$GLOBALS['pdo'] = $pdo;
+
 
 // Initialiser Database-forbindelsen via singleton
 try {
