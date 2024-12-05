@@ -6,17 +6,25 @@ class MovieFrontendModel {
     public function __construct($db) {
         $this->db = $db;
     }
-
-    public function getUpcomingMovies() {
-        $query = "SELECT * FROM upcoming_movies ORDER BY release_date ASC";
+    public function getAllGenres() {
+        $query = "SELECT name FROM genres";
         return $this->db->query($query)->fetchAll(PDO::FETCH_ASSOC);
     }
     
-
-    public function getNewsMovies() {
-        $query = "SELECT * FROM news_movies ORDER BY release_date DESC";
-        return $this->db->query($query)->fetchAll(PDO::FETCH_ASSOC);
+    public function getMoviesByGenre($genreName) {
+        $query = "SELECT m.id, m.title, m.poster 
+                  FROM movies m
+                  JOIN movie_genre mg ON m.id = mg.movie_id
+                  JOIN genres g ON mg.genre_id = g.id
+                  WHERE g.name = :genre";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':genre', $genreName, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    
+    
+
     
 
     public function getDailyShowings() {
@@ -24,19 +32,56 @@ class MovieFrontendModel {
         return $this->db->query($query)->fetchAll(PDO::FETCH_ASSOC);
     }
     public function getRandomGenreMovies() {
-        $query = "SELECT id, title, poster, genre FROM genre_movies 
+        $query = "SELECT m.id, m.title, m.poster 
+                  FROM movies m
+                  JOIN movie_genre mg ON m.id = mg.movie_id
+                  JOIN genres g ON mg.genre_id = g.id
                   ORDER BY RAND() 
                   LIMIT 5";
-        return $this->db->query($query)->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public function getMoviesByGenre($genre) {
-        $query = "SELECT * FROM genre_movies WHERE genre = :genre";
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':genre', $genre, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?? []; // Returnér tomt array, hvis ingen data
+    }
+    
+
+    public function getGenreMovies($genre = null) {
+        if ($genre) {
+            // Hvis en genre er specificeret, hent film med den genre
+            $query = "SELECT m.id AS movie_id, m.title, m.poster, g.name AS genre
+                      FROM movies m
+                      JOIN movie_genre mg ON m.id = mg.movie_id
+                      JOIN genres g ON mg.genre_id = g.id
+                      WHERE g.name = :genre
+                      LIMIT 5";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':genre', $genre, PDO::PARAM_STR);
+        } else {
+            // Hent 5 tilfældige film
+            $query = "SELECT m.id AS movie_id, m.title, m.poster, g.name AS genre
+                      FROM movies m
+                      JOIN movie_genre mg ON m.id = mg.movie_id
+                      JOIN genres g ON mg.genre_id = g.id
+                      ORDER BY RAND()
+                      LIMIT 5";
+            $stmt = $this->db->prepare($query);
+        }
+
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+
+
+    public function getUpcomingMovies() {
+        $query = "SELECT * FROM upcoming_movies ORDER BY release_date ASC";
+        return $this->db->query($query)->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getNewsMovies() {
+        $query = "SELECT * FROM news_movies ORDER BY release_date DESC";
+        return $this->db->query($query)->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     
 
     public function getSiteSettings() {

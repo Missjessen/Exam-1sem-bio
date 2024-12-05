@@ -125,6 +125,7 @@ class MovieAdminController {
                 'language' => $_POST['language'] ?? '',
                 'age_limit' => $_POST['age_limit'] ?? '',
                 'status' => $_POST['status'] ?? '',
+              
 
             ];
 

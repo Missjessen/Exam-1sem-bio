@@ -27,7 +27,7 @@ $current_page = $GLOBALS['current_page'] ?? 'homePage'; // Standard til 'homePag
             <li class="<?= $current_page === 'movie' ? 'active' : '' ?>"><a href="?page=movie">Film</a></li>
             <li class="<?= $current_page === 'spots' ? 'active' : '' ?>"><a href="?page=spots">Pladser</a></li>
             <li class="<?= $current_page === 'tickets' ? 'active' : '' ?>"><a href="?page=tickets">Billetter</a></li>
-            <li class="<?= $current_page === 'about' ? 'active' : '' ?>"><a href="?page=about">Om Os</a></li>
+            
         </ul>
         <div class="header-menu">
             <a href="/login.php" class="<?= $current_page === 'login' ? 'active' : '' ?>">Login</a> | 

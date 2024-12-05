@@ -36,9 +36,9 @@ class Router {
         $pageLoader = new PageLoader($db);
         $adminController = new AdminController(new AdminModel($db));
         $pageController = new PageController($pageLoader, $adminController);
-        $movieFrontendModel = new MovieFrontendModel($db);
-        $pageUserController = new PageUserController($movieFrontendModel);
-        $movieFrontendController = new MovieFrontendController($movieFrontendModel);
+       
+        $pageUserController = new PageUserController(new MovieFrontendModel($db));
+            $movieFrontendController = new MovieFrontendController(new MovieFrontendModel($db));
 
         
 

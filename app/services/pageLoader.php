@@ -1,5 +1,5 @@
 <?php
-require_once 'init.php'; // 
+require_once 'init.php'; // require_once 'init.php'; // 
 class PageLoader {
     private $config;
     private $db;
@@ -103,6 +103,12 @@ class PageLoader {
     
         exit; // Stop yderligere eksekvering
     }
+    
+
+   
+
+    
+
     
 
    

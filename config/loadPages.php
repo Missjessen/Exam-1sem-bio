@@ -5,7 +5,7 @@ return [
     'default_css' => '/Exam-1sem-bio/assets/css/common.css',
     'pages' => [
         'homePage' => ['view' => '/app/view/user/homePage.php', 
-        'css' => 'app/assets/css/homePage.css'],
+        'css' => '/app/assets/css/homePage.css'],
 
         'program' => ['view' => '/app/view/user/program.php', 
         'css' => '/assets/css/program.css'],
