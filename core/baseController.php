@@ -11,5 +11,10 @@ class BaseController {
     protected function validateInput($input) {
         return htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
     }
+
+
+    
 }
+
+
 

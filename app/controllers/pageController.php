@@ -6,7 +6,7 @@ class PageController {
     private $pageLoader;
     private $MovieAdminController;
     private $adminController;
-    private $userController;
+   
 
     public function __construct() {
         // Initialiser databaseforbindelsen og komponenter
@@ -14,7 +14,7 @@ class PageController {
         $this->pageLoader = new PageLoader($this->db);
         $this->MovieAdminController = new MovieAdminController($this->db);
         $this->adminController = new AdminController(new AdminModel($this->db));
-        $this->userController = new UserController($this->db);
+
     }
 
     // Indlæser brugersider
@@ -122,4 +122,6 @@ class PageController {
     public function handleLogout() {
         Security::logout();
     }
+
+    
 }

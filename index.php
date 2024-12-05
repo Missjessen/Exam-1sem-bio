@@ -24,6 +24,7 @@ if (!in_array($current_page, $knownRoutes)) {
     $current_page = '404';
 }
 
+
 // Gør den globalt tilgængelig
 $GLOBALS['current_page'] = $current_page;
 
@@ -34,12 +35,13 @@ try {
     $router = new Router();
     $router->route($current_page);
     
-} catch (Exception $e) {
-    // Fejlhåndtering: Log fejl og vis en brugerdefineret fejlbesked
-    error_log("Fejl i routeren: " . $e->getMessage());
-    header("HTTP/1.0 500 Internal Server Error");
-    echo "Der opstod en fejl. Prøv venligst igen senere.";
+}  catch (Exception $e) {
+    // Global fejlhåndtering
+    $errorController = new ErrorController();
+    $errorController->show500("An error occurred.");
+
 }
+
 
 
 

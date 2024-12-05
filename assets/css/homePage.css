@@ -1,12 +1,13 @@
+/* Global Styles */
 body {
     font-family: Arial, sans-serif;
-    background-color: #181818;
+    background-color: #2e2e2e;
     color: #fff;
     margin: 0;
     padding: 0;
 }
 
-/* Container for page margins */
+/* Container */
 .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -19,7 +20,7 @@ nav {
     justify-content: space-between;
     align-items: center;
     padding: 20px;
-    background-color: #202020;
+    background-color: #1c1c1c;
 }
 
 nav a {
@@ -27,11 +28,16 @@ nav a {
     text-decoration: none;
     margin: 0 15px;
     font-weight: bold;
+    transition: color 0.3s;
 }
 
-/* Upcoming Section */
+nav a:hover {
+    color: #ff4c30;
+}
+
+/* Hero Section */
 .upcoming {
-    background-image: url('path/to/your/image.jpg'); /* Replace with your image URL */
+    background-image: url('path/to/your/upcoming-image.jpg'); /* Replace with your image */
     background-size: cover;
     background-position: center;
     color: #fff;
@@ -43,6 +49,7 @@ nav a {
 .upcoming h2 {
     font-size: 36px;
     margin-bottom: 20px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
 }
 
 .upcoming button {
@@ -54,17 +61,33 @@ nav a {
     font-weight: bold;
     margin: 10px;
     border-radius: 5px;
+    transition: background-color 0.3s, transform 0.3s;
 }
 
-/* Movie Grid Styles */
-.movies-grid, .news-grid, .top-5-grid {
+.upcoming button:hover {
+    background-color: #e8432c;
+    transform: scale(1.05);
+}
+
+/* News Section */
+.news {
+    margin: 50px 0;
+}
+
+.news h2 {
+    font-size: 28px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.news-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 20px;
     padding: 20px 0;
 }
 
-.movie-card, .news-item {
+.news-item {
     background-color: #252525;
     border-radius: 10px;
     overflow: hidden;
@@ -74,7 +97,50 @@ nav a {
     transition: transform 0.3s;
 }
 
-.movie-card:hover, .news-item:hover {
+.news-item:hover {
+    transform: scale(1.05);
+}
+
+.news-item img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-bottom: 1px solid #333;
+}
+
+.news-item h3 {
+    margin: 10px 0;
+    font-size: 18px;
+}
+
+.news-item p {
+    font-size: 14px;
+    color: #bbb;
+    padding: 10px;
+}
+
+/* Daily Showings Section */
+.daily-showings {
+    margin: 50px 0;
+}
+
+.daily-showings h2 {
+    font-size: 28px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.movie-card {
+    background-color: #252525;
+    border-radius: 10px;
+    overflow: hidden;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s;
+}
+
+.movie-card:hover {
     transform: scale(1.05);
 }
 
@@ -83,21 +149,6 @@ nav a {
     height: 300px;
     object-fit: cover;
     border-bottom: 1px solid #333;
-}
-
-.movie-card .details {
-    padding: 15px;
-}
-
-.movie-card .rating {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background-color: #ff4c30;
-    color: #fff;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-weight: bold;
 }
 
 .movie-card h3 {
@@ -110,33 +161,126 @@ nav a {
     color: #bbb;
 }
 
-/* Filter and Sorting Options */
-.filter-options {
+/* Genre Slider */
+.genre-movies {
+    margin: 50px 0;
+}
+
+.genre-slider {
     display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-bottom: 20px;
+    overflow-x: auto;
+    gap: 20px;
+    padding: 10px;
+    scroll-snap-type: x mandatory;
 }
 
-.filter-options button {
-    background-color: #444;
-    color: #fff;
-    border: none;
-    padding: 8px 15px;
-    cursor: pointer;
+.genre-slider::-webkit-scrollbar {
+    height: 8px;
+}
+
+.genre-slider::-webkit-scrollbar-thumb {
+    background: #444;
     border-radius: 5px;
-    transition: background-color 0.3s;
 }
 
-.filter-options button:hover {
-    background-color: #ff4c30;
+.genre-slider::-webkit-scrollbar-thumb:hover {
+    background: #ff4c30;
+}
+
+.slide {
+    flex: 0 0 auto;
+    width: 250px;
+    background-color: #252525;
+    border-radius: 10px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    scroll-snap-align: center;
+    transition: transform 0.3s;
+}
+
+.slide:hover {
+    transform: scale(1.05);
+}
+
+.slide img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-bottom: 1px solid #333;
+}
+
+.slide h3 {
+    margin: 10px 0;
+    font-size: 16px;
+}
+
+.slide p {
+    font-size: 14px;
+    color: #bbb;
+    margin-bottom: 10px;
 }
 
 /* Footer */
 footer {
     padding: 40px 20px;
-    background-color: #202020;
+    background-color: #1c1c1c;
     color: #bbb;
     text-align: center;
     font-size: 14px;
 }
+
+footer form input,
+footer form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: #333;
+    color: #fff;
+}
+
+footer form button {
+    padding: 10px 20px;
+    background-color: #ff4c30;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+footer form button:hover {
+    background-color: #e8432c;
+    transform: scale(1.05);
+}
+
+/* Cookies Banner */
+.cookies-banner {
+    background-color: #333;
+    color: #fff;
+    padding: 15px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    z-index: 1000;
+}
+
+.cookies-banner button {
+    background-color: #ff4c30;
+    border: none;
+    color: #fff;
+    padding: 10px 20px;
+    margin-left: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.cookies-banner button:hover {
+    background-color: #e8432c;
+}
+

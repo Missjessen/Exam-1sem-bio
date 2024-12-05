@@ -59,7 +59,7 @@ class PageLoader {
         if (file_exists($layoutPath)) {
             require $layoutPath;
         } else {
-            error_log("Layout-fil $layoutPath ikke fundet.");
+            ErrorController("Layout-fil $layoutPath ikke fundet.");
             echo "Fejl: Layout kunne ikke indlæses.";
         }
     }
@@ -68,16 +68,44 @@ class PageLoader {
         $viewPath = $this->config['pages'][$page]['view'] ?? null;
     
         if ($viewPath) {
-            $fullPath = $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio' . $viewPath;// skal ændres
+            $fullPath = __DIR__ . '/../..' . $viewPath;
+    
             if (file_exists($fullPath)) {
                 include $fullPath;
             } else {
-                error_log("View not found: $fullPath");
-                echo "<p>Fejl: Viewet kunne ikke findes.</p>";
+                // Hvis view-filen ikke findes, vis 404
+                $this->renderErrorPage(404, "View not found for page: $page");
             }
         } else {
-            error_log("Ingen view konfiguration fundet for $page.");
-            echo "<p>Fejl: Ingen view konfiguration fundet.</p>";
+            // Hvis view-konfigurationen mangler, vis 404
+            $this->renderErrorPage(404, "No view configuration found for page: $page");
         }
     }
+    
+    private function renderErrorPage($errorCode, $errorMessage) {
+        // Gør fejldata tilgængelige for view
+        $additionalData = [
+            'error_code' => $errorCode,
+            'message' => $errorMessage,
+            'timestamp' => date('Y-m-d H:i:s'),
+        ];
+    
+        // Find fejlsiden baseret på fejlkoden (404 eller 500)
+        $errorViewPath = __DIR__ . "/../view/errors/{$errorCode}.php";
+    
+        if (file_exists($errorViewPath)) {
+            include $errorViewPath;
+        } else {
+            // Simpel fallback, hvis fejlsiden mangler
+            echo "<h1>Error $errorCode</h1>";
+            echo "<p>$errorMessage</p>";
+        }
+    
+        exit; // Stop yderligere eksekvering
+    }
+    
+
+   
+
+    
 }

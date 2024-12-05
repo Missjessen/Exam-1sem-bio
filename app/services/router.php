@@ -36,11 +36,27 @@ class Router {
         $pageLoader = new PageLoader($db);
         $adminController = new AdminController(new AdminModel($db));
         $pageController = new PageController($pageLoader, $adminController);
+        $movieFrontendModel = new MovieFrontendModel($db);
+        $pageUserController = new PageUserController($movieFrontendModel);
+        $movieFrontendController = new MovieFrontendController($movieFrontendModel);
+
+        
+
         // Routing-logik
         switch ($page) {
             // Public Pages
             case 'homePage':
-            case 'about':
+                $pageUserController->showHomePage();
+                break;
+
+            case 'movieDetails':
+                if (isset($_GET['uuid'])) {
+                    $movieFrontendController->showMovieDetails($_GET['uuid']);
+                } else {
+                    throw new Exception("Movie UUID missing.");
+                }
+                break;
+
             case 'program':
                 $pageController->showPage($page);
                 break;
@@ -89,10 +105,10 @@ class Router {
             case 'book':
                 $pageController->showPage('book');
                 break;
-
+/* 
             case 'review':
                 $pageController->showPage('review');
-                break;
+                break; */
 
                 case 'register':
                     $pageController->showRegisterPage($_POST);
@@ -106,14 +122,16 @@ class Router {
                     $pageController->handleLogout();
                     break;
 
-            // Default (404 fallback)
-            default:
-                header("HTTP/1.0 404 Not Found");
-                echo "<h1>404 - Siden blev ikke fundet</h1>";
-                echo "<p>Den side, du leder efter, eksisterer ikke. <a href='/Exam-1sem-bio/'>Gå tilbage til forsiden</a>.</p>";
-                echo "Velkommen til $page.";
-                error_log("Ruter side: $page");
-                break;
-        }
+
+                   case '404':
+                    $errorController = new ErrorController();
+                    $errorController->show404("Page not found: $page");
+                    break;
+
+                    default:
+                    // Smid en undtagelse, hvis siden ikke findes
+                    throw new Exception("Page not found: $page");
+            }
+            }
+        
     }
-}

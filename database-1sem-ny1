@@ -86,14 +86,7 @@ CREATE TABLE IF NOT EXISTS `spots` (
     `status` ENUM('available', 'booked') DEFAULT 'available'
 );
 
--- Opret tabel for visningstider
-CREATE TABLE IF NOT EXISTS `showtimes` (
-    `showtime_id` INT AUTO_INCREMENT PRIMARY KEY,
-    `movie_id` CHAR(36) NOT NULL,
-    `show_date` DATE NOT NULL,
-    `show_time` TIME NOT NULL,
-    FOREIGN KEY (`movie_id`) REFERENCES `movies`(`id`) ON DELETE CASCADE
-);
+
 CREATE TABLE showings (
     id INT AUTO_INCREMENT PRIMARY KEY,
     movie_id INT NOT NULL,
@@ -105,6 +98,15 @@ CREATE TABLE showings (
     repeat_pattern ENUM('none', 'daily', 'weekly') DEFAULT 'none',
     repeat_until DATE DEFAULT NULL,
     FOREIGN KEY (movie_id) REFERENCES movies(id)
+);
+
+-- Opret tabel for visningstider
+CREATE TABLE IF NOT EXISTS `showtimes` (
+    `showtime_id` INT AUTO_INCREMENT PRIMARY KEY,
+    `movie_id` CHAR(36) NOT NULL,
+    `show_date` DATE NOT NULL,
+    `show_time` TIME NOT NULL,
+    FOREIGN KEY (`movie_id`) REFERENCES `movies`(`id`) ON DELETE CASCADE
 );
 
 CREATE TABLE parking_prices (
@@ -140,19 +142,33 @@ CREATE TABLE site_settings (
     setting_value TEXT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS upcoming_movies (
-    id CHAR(36) PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
-    poster VARCHAR(255) DEFAULT 'placeholder.jpg',
-    release_date DATE NOT NULL
-);
+CREATE OR REPLACE VIEW upcoming_movies AS
+SELECT 
+    id,
+    title,
+    poster,
+    premiere_date AS release_date
+FROM 
+    movies
+WHERE 
+    premiere_date > CURDATE()
+ORDER BY 
+    premiere_date ASC;
 
-CREATE TABLE IF NOT EXISTS news_movies (
-    id CHAR(36) PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
-    poster VARCHAR(255) DEFAULT 'placeholder.jpg',
-    release_date DATE NOT NULL
-);
+CREATE OR REPLACE VIEW news_movies AS
+SELECT 
+    id,
+    title,
+    poster,
+    premiere_date AS release_date
+FROM 
+    movies
+WHERE 
+    premiere_date <= CURDATE()
+ORDER BY 
+    premiere_date DESC
+LIMIT 5;
+
 
 DELIMITER //
 

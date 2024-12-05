@@ -33,3 +33,8 @@ try {
 } catch (Exception $e) {
     error_log("Fejl under singleton-test: " . $e->getMessage());
 }
+set_exception_handler(function ($exception) {
+    $errorController = new ErrorController();
+    $errorController->show500($exception->getMessage());
+    error_log($exception->getMessage()); // Log fejlen
+});

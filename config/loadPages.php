@@ -4,8 +4,8 @@
 return [
     'default_css' => '/Exam-1sem-bio/assets/css/common.css',
     'pages' => [
-        'home' => ['view' => '/app/view/user/homePage.php', 
-        'css' => 'assets/css/program.css'],
+        'homePage' => ['view' => '/app/view/user/homePage.php', 
+        'css' => 'app/assets/css/homePage.css'],
 
         'program' => ['view' => '/app/view/user/program.php', 
         'css' => '/assets/css/program.css'],
@@ -44,10 +44,12 @@ return [
        //login og logout
 
        'login' => ['view' => 'app/view/auth/login.php', 'css' => 'assets/css/login.css'],
-       'admin-login' => ['view' => '/auth/admin_login.php', 'css' => 'assets/css//admin_login.css'],
-       'logout' => ['view' => '/auth/logout.php']
+       'admin-login' => ['view' => '/auth/admin_login.php', 'css' => 'assets/css/admin_login.css'],
+       'logout' => ['view' => '/auth/logout.php'],
 
-    
+       '404' => [ 'view' => 'views/Errors/404.php','css' => 'assets/css/errors.css',],
+       '500' => ['view' => 'views/Errors/500.php','css' => 'assets/css/errors.css',],
+
 
     ],
 ];
