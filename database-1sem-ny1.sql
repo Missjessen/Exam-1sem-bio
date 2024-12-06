@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS `spots` (
 
 CREATE TABLE showings (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    movie_id INT NOT NULL,
+    movie_id CHAR(36),
     screen ENUM('small', 'large') NOT NULL,
     show_date DATE NOT NULL,
     show_time TIME NOT NULL,
@@ -169,71 +169,30 @@ ORDER BY
 LIMIT 5;
 
 
-DELIMITER //
 
-CREATE TRIGGER after_movie_insert_update_news
-AFTER INSERT ON movies
-FOR EACH ROW
-BEGIN
-    DELETE FROM news_movies WHERE id NOT IN (
-        SELECT id FROM (
-            SELECT id FROM movies 
-            WHERE premiere_date <= CURDATE()
-            ORDER BY premiere_date DESC
-            LIMIT 5
-        ) AS temp
-    );
-
-    INSERT INTO news_movies (id, title, poster, release_date)
-    VALUES (NEW.id, NEW.title, NEW.poster, NEW.premiere_date)
-    ON DUPLICATE KEY UPDATE 
-        title = VALUES(title),
-        poster = VALUES(poster),
-        release_date = VALUES(release_date);
-END //
-
-DELIMITER ;
-
-DELIMITER //
-
-CREATE TRIGGER after_movie_insert_update_news
-AFTER INSERT ON movies
-FOR EACH ROW
-BEGIN
-    DELETE FROM news_movies WHERE id NOT IN (
-        SELECT id FROM (
-            SELECT id FROM movies 
-            WHERE premiere_date <= CURDATE()
-            ORDER BY premiere_date DESC
-            LIMIT 5
-        ) AS temp
-    );
-
-    INSERT INTO news_movies (id, title, poster, release_date)
-    VALUES (NEW.id, NEW.title, NEW.poster, NEW.premiere_date)
-    ON DUPLICATE KEY UPDATE 
-        title = VALUES(title),
-        poster = VALUES(poster),
-        release_date = VALUES(release_date);
-END //
-
-DELIMITER ;
-
-
-CREATE VIEW daily_showings AS
+CREATE OR REPLACE VIEW daily_showings AS
 SELECT 
     m.id AS movie_id,
     m.title,
-    m.genre,
-    m.image,
-    s.show_date,
-    s.show_time
+    GROUP_CONCAT(g.name SEPARATOR ', ') AS genres, 
+    m.poster AS image,
+    CONCAT(s.show_date, ' ', s.show_time) AS showing_time
 FROM 
     movies m
 JOIN 
     showings s ON m.id = s.movie_id
+LEFT JOIN 
+    movie_genre mg ON m.id = mg.movie_id
+LEFT JOIN 
+    genres g ON mg.genre_id = g.id
 WHERE 
-    s.show_date = CURDATE();
+    s.show_date = CURDATE() 
+GROUP BY 
+    m.id, m.title, m.poster, s.show_date, s.show_time;
+
+
+
+
 
 CREATE OR REPLACE VIEW genre_movies AS
 SELECT 
@@ -255,7 +214,12 @@ INSERT INTO `movies` (`id`, `slug`, `title`, `director`, `release_year`, `runtim
 VALUES
 (UUID(), 'the-dark-knight-2008', 'The Dark Knight', 'Christopher Nolan', 2008, 152, 'PG-13', 'When the menace known as the Joker wreaks havoc on Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.', '02:32:00', 'Released', '2008-07-18', 'English', '/path/to/poster/the-dark-knight.jpg'),
 (UUID(), 'inception-2010', 'Inception', 'Christopher Nolan', 2010, 148, 'PG-13', 'A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO.', '02:28:00', 'Released', '2010-07-16', 'English', '/path/to/poster/inception.jpg'),
-(UUID(), 'interstellar-2014', 'Interstellar', 'Christopher Nolan', 2014, 169, 'PG-13', 'A team of explorers travel through a wormhole in space in an attempt to ensure humanity’s survival.', '02:49:00', 'Released', '2014-11-07', 'English', '/path/to/poster/interstellar.jpg');
+(UUID(), 'interstellar-2014', 'Interstellar', 'Christopher Nolan', 2014, 169, 'PG-13', 'A team of explorers travel through a wormhole in space in an attempt to ensure humanity’s survival.', '02:49:00', 'Released', '2014-11-07', 'English', '/path/to/poster/interstellar.jpg'),
+(UUID(), 'avatar-3-2025', 'Avatar 3', 'James Cameron', 2025, 162, 'PG-13', 'The next installment in the Avatar saga.', '02:42:00', 'Upcoming', '2025-12-20', 'English', '/path/to/poster/avatar-3.jpg'),
+(UUID(), 'dune-part-2-2024', 'Dune: Part Two', 'Denis Villeneuve', 2024, 155, 'PG-13', 'The epic continuation of Paul Atreides’ journey.', '02:35:00', 'Upcoming', '2024-11-15', 'English', '/path/to/poster/dune-part-2.jpg'),
+(UUID(), 'the-marvels-2024', 'The Marvels', 'Nia DaCosta', 2024, 130, 'PG-13', 'Captain Marvel teams up with Ms. Marvel.', '02:10:00', 'Upcoming', '2024-07-14', 'English', '/path/to/poster/the-marvels.jpg'),
+(UUID(), 'mission-impossible-8-2024', 'Mission: Impossible – Dead Reckoning Part Two', 'Christopher McQuarrie', 2024, 165, 'PG-13', 'Ethan Hunt faces his most challenging mission yet.', '02:45:00', 'Upcoming', '2024-06-28', 'English', '/path/to/poster/mi-8.jpg'),
+('37544480-9eb6-11ef-8235-8e1b80f870b1', 'test-movie', 'Test Movie', 'John Doe', 2023, 120, 'PG', 'A test movie description.', '02:00:00', 'Released', '2023-01-01', 'English', '/path/to/poster/test-movie.jpg');
 
 INSERT INTO `actors` (`id`, `name`)
 VALUES
@@ -277,6 +241,12 @@ INSERT INTO genres (name) VALUES
 ('Drama'),
 ('Horror'),
 ('Sci-Fi');
+
+INSERT INTO `showings` (`movie_id`, `screen`, `show_date`, `show_time`, `total_spots`, `available_spots`, `repeat_pattern`, `repeat_until`)
+VALUES
+((SELECT id FROM movies WHERE slug = 'the-dark-knight-2008'), 'large', '2023-12-01', '18:00:00', 50, 50, 'none', NULL),
+((SELECT id FROM movies WHERE slug = 'inception-2010'), 'small', '2023-12-15', '20:30:00', 30, 30, 'none', NULL);
+
 
 INSERT INTO employees (name, email, phone, role, address) VALUES
 ('Michael Scott', 'michael@dundermifflin.com', '5551234', 'Manager', '1725 Slough Avenue'),

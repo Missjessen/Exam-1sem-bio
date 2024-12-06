@@ -24,23 +24,42 @@ class MovieFrontendModel {
     }
     
     
-
+    public function getRandomGenreMovies($limit = 5) {
+        $sql = "SELECT 
+                    m.id AS movie_id, 
+                    m.title, 
+                    m.poster, 
+                    GROUP_CONCAT(g.name SEPARATOR ', ') AS genres
+                FROM movies m
+                JOIN movie_genre mg ON m.id = mg.movie_id
+                JOIN genres g ON mg.genre_id = g.id
+                GROUP BY m.id
+                ORDER BY RAND()
+                LIMIT :limit";
+    
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
     
 
     public function getDailyShowings() {
-        $query = "SELECT * FROM daily_showings ORDER BY show_time ASC";
-        return $this->db->query($query)->fetchAll(PDO::FETCH_ASSOC);
-    }
-    public function getRandomGenreMovies() {
-        $query = "SELECT m.id, m.title, m.poster 
-                  FROM movies m
-                  JOIN movie_genre mg ON m.id = mg.movie_id
-                  JOIN genres g ON mg.genre_id = g.id
-                  ORDER BY RAND() 
-                  LIMIT 5";
-        $stmt = $this->db->prepare($query);
+        $sql = "SELECT 
+                    m.id AS movie_id, 
+                    m.title, 
+                    m.poster AS image, 
+                    s.show_date, 
+                    s.show_time
+                FROM movies m
+                JOIN showings s ON m.id = s.movie_id
+                WHERE s.show_date = CURDATE()
+                ORDER BY s.show_time ASC";
+    
+        $stmt = $this->db->prepare($sql);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?? []; // Returnér tomt array, hvis ingen data
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
 
@@ -73,9 +92,19 @@ class MovieFrontendModel {
 
 
     public function getUpcomingMovies() {
-        $query = "SELECT * FROM upcoming_movies ORDER BY release_date ASC";
-        return $this->db->query($query)->fetchAll(PDO::FETCH_ASSOC);
+        $query = "SELECT title, poster, premiere_date 
+                  FROM movies 
+                  WHERE premiere_date >= CURDATE() 
+                  ORDER BY premiere_date ASC";
+        try {
+            $stmt = $this->db->query($query);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("SQL Fejl i getUpcomingMovies(): " . $e->getMessage());
+            return []; // Returner en tom array som fallback
+        }
     }
+    
 
     public function getNewsMovies() {
         $query = "SELECT * FROM news_movies ORDER BY release_date DESC";

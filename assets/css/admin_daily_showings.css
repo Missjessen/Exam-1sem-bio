@@ -1,0 +1,29 @@
+.admin-daily-showings h1, h2 {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.admin-daily-showings table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.admin-daily-showings table th, 
+.admin-daily-showings table td {
+    border: 1px solid #444;
+    padding: 10px;
+    text-align: center;
+}
+
+.admin-daily-showings table th {
+    background-color: #333;
+    color: #fff;
+}
+
+form label, form select, form input, form button {
+    display: block;
+    margin: 10px auto;
+    padding: 5px;
+    width: 90%;
+}

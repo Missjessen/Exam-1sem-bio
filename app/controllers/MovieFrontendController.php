@@ -18,4 +18,3 @@ class MovieFrontendController {
         require_once __DIR__ . '/../view/user/movieDetails.php';
     }
 }
-

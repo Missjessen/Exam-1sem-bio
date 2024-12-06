@@ -12,14 +12,47 @@ class PageLoader {
         }
     }
 
+    public function loadUserPage($page, $data = []) {
+        // Inkludér layout og view
+        $this->includeCSS($page);
+        $this->includeLayout('header_user.php'); // Ingen data nødvendig her
+        $this->includeView($page, $data); // Send data direkte til view
+        $this->includeLayout('footer.php'); // Ingen data nødvendig her
+    }
     
 
-    public function loadUserPage($page) {
-        $this->includeCSS($page);
-        $this->includeLayout('header_user.php');
-        $this->includeView($page);
-        $this->includeLayout('footer.php');
+    public function showHomePage(MovieFrontendModel $model) {
+        try {
+            // Hent data fra modellen
+            $data = [
+                'upcomingMovies' => $model->getUpcomingMovies() ?? [],
+                'newsMovies' => $model->getNewsMovies() ?? [],
+                'dailyMovies' => $model->getDailyShowings() ?? [],
+                'genreMovies' => $model->getGenreMovies() ?? [],
+                'settings' => $model->getSiteSettings() ?? [],
+                'randomGenreMovies' => $model->getRandomGenreMovies(),
+                'allGenres' => $model->getAllGenres(),
+                'selectedGenre' => $_GET['genre'] ?? null,
+            ];
+    
+            // Hvis der er valgt en genre, hent film for den genre
+            if (!empty($data['selectedGenre'])) {
+                $data['moviesByGenre'] = $model->getMoviesByGenre($data['selectedGenre']);
+            }
+    
+            // Indlæs layout og view
+            $this->includeCSS('homePage');
+            $this->includeLayout('header_user.php', $data);
+            $this->includeView('homePage', $data);
+            $this->includeLayout('footer.php', $data);
+    
+        } catch (Exception $e) {
+            // Log fejlen og vis en fejlbesked
+            error_log("Fejl i showHomePage: " . $e->getMessage());
+            $this->renderErrorPage(500, "Noget gik galt under indlæsningen af startsiden.");
+        }
     }
+    
 
     public function loadAdminPage($viewName, $data = []) {
         $current_page = $viewName; // Markér den aktuelle side
@@ -63,14 +96,16 @@ class PageLoader {
             echo "Fejl: Layout kunne ikke indlæses.";
         }
     }
-
-    private function includeView($page) {
+    private function includeView($page, $data = []) {
         $viewPath = $this->config['pages'][$page]['view'] ?? null;
     
         if ($viewPath) {
             $fullPath = __DIR__ . '/../..' . $viewPath;
     
             if (file_exists($fullPath)) {
+                if (!empty($data)) {
+                    extract($data); // Gør data tilgængelige som variabler i view
+                }
                 include $fullPath;
             } else {
                 // Hvis view-filen ikke findes, vis 404

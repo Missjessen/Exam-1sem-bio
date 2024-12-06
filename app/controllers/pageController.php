@@ -1,4 +1,5 @@
 <?php
+
 require_once 'init.php';
 
 class PageController {
@@ -6,7 +7,6 @@ class PageController {
     private $pageLoader;
     private $MovieAdminController;
     private $adminController;
-   
 
     public function __construct() {
         // Initialiser databaseforbindelsen og komponenter
@@ -14,12 +14,25 @@ class PageController {
         $this->pageLoader = new PageLoader($this->db);
         $this->MovieAdminController = new MovieAdminController($this->db);
         $this->adminController = new AdminController(new AdminModel($this->db));
-
     }
 
-    // Indlæser brugersider
+    // Indlæser en brugerside
     public function showPage($page) {
-        $this->pageLoader->loadUserPage($page);
+        try {
+            $this->pageLoader->loadUserPage($page);
+        } catch (Exception $e) {
+            $this->handleError("Fejl under indlæsning af siden: " . $e->getMessage());
+        }
+    }
+
+    // Indlæser forsiden
+    public function showHomePage() {
+        try {
+            $movieFrontendModel = new MovieFrontendModel($this->db);
+            $this->pageLoader->showHomePage($movieFrontendModel);
+        } catch (Exception $e) {
+            $this->handleError("Fejl under indlæsning af forsiden: " . $e->getMessage());
+        }
     }
 
     public function showAdminMoviePage() {

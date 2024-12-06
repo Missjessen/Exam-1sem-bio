@@ -20,7 +20,7 @@ try {
     if ($movies) {
         echo "Data hentet fra tabellen 'movies':<br>";
         echo "<pre>";
-        print_r($movies); // Vis de hentede data
+        print_r($showings); // Vis de hentede data
         echo "</pre>";
     } else {
         echo "Ingen data fundet i tabellen 'movies'.<br>";

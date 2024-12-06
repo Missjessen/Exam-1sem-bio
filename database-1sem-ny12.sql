@@ -87,19 +87,6 @@ CREATE TABLE IF NOT EXISTS `spots` (
 );
 
 
-CREATE TABLE showings (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    movie_id CHAR(36) NOT NULL,
-    screen ENUM('small', 'large') NOT NULL,
-    show_date DATE NOT NULL,
-    show_time TIME NOT NULL,
-    total_spots INT NOT NULL,
-    available_spots INT NOT NULL,
-    repeat_pattern ENUM('none', 'daily', 'weekly') DEFAULT 'none',
-    repeat_until DATE DEFAULT NULL,
-    FOREIGN KEY (movie_id) REFERENCES movies(id)
-);
-
 CREATE TABLE IF NOT EXISTS parking_prices (
     id INT AUTO_INCREMENT PRIMARY KEY,
     screen ENUM('small', 'large') NOT NULL,
@@ -133,12 +120,25 @@ CREATE TABLE IF NOT EXISTS site_settings (
     setting_value TEXT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS `showtimes` (
-    `showtime_id` INT AUTO_INCREMENT PRIMARY KEY,
-    `movie_id` CHAR(36) NOT NULL, -- Matchet med CHAR(36)
-    `show_date` DATE NOT NULL,
-    `show_time` TIME NOT NULL,
-    FOREIGN KEY (`movie_id`) REFERENCES `movies`(`id`) ON DELETE CASCADE
+CREATE TABLE IF NOT EXISTS `showings` (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    movie_id CHAR(36) NOT NULL,
+    showing_time DATETIME NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (movie_id) REFERENCES movies(id) ON DELETE CASCADE
+);
+CREATE TABLE showings (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    movie_id INT NOT NULL,
+    screen ENUM('small', 'large') NOT NULL,
+    show_date DATE NOT NULL,
+    show_time TIME NOT NULL,
+    total_spots INT NOT NULL,
+    available_spots INT NOT NULL,
+    repeat_pattern ENUM('none', 'daily', 'weekly') DEFAULT 'none',
+    repeat_until DATE DEFAULT NULL,
+    FOREIGN KEY (movie_id) REFERENCES movies(id)
 );
 
 CREATE OR REPLACE VIEW upcoming_movies AS
@@ -170,20 +170,6 @@ ORDER BY
 LIMIT 5;
 
 
-CREATE VIEW daily_showings AS
-SELECT 
-    m.id AS movie_id,
-    m.title,
-    m.poster AS image,
-    s.show_date,
-    s.show_time
-FROM 
-    movies m
-JOIN 
-    showings s ON m.id = s.movie_id
-WHERE 
-    s.show_date = CURDATE();
-
 CREATE OR REPLACE VIEW genre_movies AS
 SELECT 
     m.id AS movie_id,
@@ -198,6 +184,10 @@ JOIN
     genres g ON mg.genre_id = g.id
 GROUP BY 
     m.id, m.title, m.poster;
+
+
+
+
 
 
 
@@ -261,20 +251,20 @@ INSERT INTO `spots` (`spot_number`, `status`) VALUES
 (41, 'available'), (42, 'available'), (43, 'available'), (44, 'available'), (45, 'available'),
 (46, 'available'), (47, 'available'), (48, 'available'), (49, 'available'), (50, 'available');
 
--- Tilføj eksempeldata i `showtimes`-tabellen
-INSERT INTO `showtimes` (`movie_id`, `show_date`, `show_time`)
-VALUES
-((SELECT id FROM movies WHERE slug = 'the-dark-knight-2008'), '2023-12-01', '18:00:00'),
-((SELECT id FROM movies WHERE slug = 'the-dark-knight-2008'), '2023-12-01', '20:30:00'),
-((SELECT id FROM movies WHERE slug = 'inception-2010'), '2023-12-15', '18:00:00'),
-((SELECT id FROM movies WHERE slug = 'inception-2010'), '2023-12-15', '20:30:00');
-
 
 INSERT INTO site_settings (setting_key, setting_value) VALUES
 ('site_title', 'Drive-In Bio'),
 ('contact_email', 'kontakt@driveinbio.dk'),
 ('opening_hours', 'Mandag-Søndag: 18:00 - 23:00'),
 ('about_content', 'Drive-In Bio tilbyder en unik filmoplevelse i det fri. Kom og nyd en aften med de nyeste film fra komforten af din egen bil.');
+
+-- Hent movie_id én gang pr. film
+INSERT INTO `showings` (`movie_id`, `showing_time`)
+VALUES
+    ((SELECT id FROM movies WHERE slug = 'the-dark-knight-2008'), '2023-12-01 18:00:00'),
+    ((SELECT id FROM movies WHERE slug = 'the-dark-knight-2008'), '2023-12-01 20:30:00'),
+    ((SELECT id FROM movies WHERE slug = 'inception-2010'), '2023-12-15 18:00:00'),
+    ((SELECT id FROM movies WHERE slug = 'inception-2010'), '2023-12-15 20:30:00');
 
 
 INSERT INTO `pages` (pages, title, content, css_file, template_file) VALUES

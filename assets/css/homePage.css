@@ -1,17 +1,21 @@
-/* Global Styles */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #2e2e2e;
-    color: #fff;
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap');
+
+
+/* Generelle styles */
+html, body {
+    background-color: #4d4747#2e2e2e !important;
+    color: #fff; /* Tekstfarve */
+    height: 100%; /* Sikrer, at baggrund dækker hele vinduet */
     margin: 0;
     padding: 0;
+    
 }
 
 /* Container */
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 20px;
 }
 
 /* Navbar */
@@ -20,7 +24,7 @@ nav {
     justify-content: space-between;
     align-items: center;
     padding: 20px;
-    background-color: #1c1c1c;
+    background-color: #000000;
 }
 
 nav a {
@@ -35,45 +39,75 @@ nav a:hover {
     color: #ff4c30;
 }
 
-/* Hero Section */
-.upcoming {
-    background-image: url('path/to/your/upcoming-image.jpg'); /* Replace with your image */
+/* Hero Image Section */
+.hero-image {
+    background-image: url('/Exam-1sem-bio/assets/img/hero.webp'); /* Udskift med dit hero-billede */
     background-size: cover;
     background-position: center;
+    height: 400px;
     color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     text-align: center;
-    padding: 100px 20px;
     position: relative;
+    margin-bottom: 50px;
 }
 
-.upcoming h2 {
-    font-size: 36px;
+.hero-image::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Halvgennemsigtig overlay */
+    z-index: 1;
+}
+
+.hero-text {
+    position: relative;
+    z-index: 2;
+}
+
+.hero-text h1 {
+    font-size: 48px;
+    margin-bottom: 10px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+.hero-text p {
+    font-size: 20px;
     margin-bottom: 20px;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
 }
 
-.upcoming button {
+.hero-button {
+    display: inline-block;
     padding: 15px 30px;
     background-color: #ff4c30;
-    border: none;
     color: #fff;
-    cursor: pointer;
+    text-decoration: none;
     font-weight: bold;
-    margin: 10px;
     border-radius: 5px;
     transition: background-color 0.3s, transform 0.3s;
 }
 
-.upcoming button:hover {
+.hero-button:hover {
     background-color: #e8432c;
     transform: scale(1.05);
 }
 
-/* News Section */
-.news {
+/* Sektion styling */
+section {
     margin: 50px 0;
+    padding: 20px;
+    background-color: #1c1c1c;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+/* News Section */
 .news h2 {
     font-size: 28px;
     text-align: center;
@@ -82,9 +116,8 @@ nav a:hover {
 
 .news-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px;
-    padding: 20px 0;
 }
 
 .news-item {
@@ -105,7 +138,6 @@ nav a:hover {
     width: 100%;
     height: 200px;
     object-fit: cover;
-    border-bottom: 1px solid #333;
 }
 
 .news-item h3 {
@@ -116,14 +148,9 @@ nav a:hover {
 .news-item p {
     font-size: 14px;
     color: #bbb;
-    padding: 10px;
 }
 
-/* Daily Showings Section */
-.daily-showings {
-    margin: 50px 0;
-}
-
+/* Daily Showings */
 .daily-showings h2 {
     font-size: 28px;
     text-align: center;
@@ -148,7 +175,6 @@ nav a:hover {
     width: 100%;
     height: 300px;
     object-fit: cover;
-    border-bottom: 1px solid #333;
 }
 
 .movie-card h3 {
@@ -162,10 +188,6 @@ nav a:hover {
 }
 
 /* Genre Slider */
-.genre-movies {
-    margin: 50px 0;
-}
-
 .genre-slider {
     display: flex;
     overflow-x: auto;
@@ -207,25 +229,20 @@ nav a:hover {
     width: 100%;
     height: 200px;
     object-fit: cover;
-    border-bottom: 1px solid #333;
-}
-
-.slide h3 {
-    margin: 10px 0;
-    font-size: 16px;
-}
-
-.slide p {
-    font-size: 14px;
-    color: #bbb;
-    margin-bottom: 10px;
 }
 
 /* Footer */
+footer .footer-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    padding: 20px;
+}
+
 footer {
-    padding: 40px 20px;
     background-color: #1c1c1c;
     color: #bbb;
+    padding: 40px 20px;
     text-align: center;
     font-size: 14px;
 }
@@ -237,13 +254,14 @@ footer form textarea {
     margin-bottom: 15px;
     border: none;
     border-radius: 5px;
-    background-color: #333;
+    background-color: #ffffff;
     color: #fff;
+    
 }
 
 footer form button {
     padding: 10px 20px;
-    background-color: #ff4c30;
+    background-color: #7c6646;
     border: none;
     color: #fff;
     cursor: pointer;
@@ -253,34 +271,111 @@ footer form button {
 }
 
 footer form button:hover {
-    background-color: #e8432c;
+    background-color: #b67b73;
     transform: scale(1.05);
 }
 
-/* Cookies Banner */
-.cookies-banner {
-    background-color: #333;
-    color: #fff;
-    padding: 15px;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
+
+/* Sikrer grid layout */
+.hero-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Minimum 250px pr. kolonne */
+    gap: 20px; /* Afstand mellem elementer */
+    padding: 20px; /* Indrykning fra siderne */
+}
+
+
+
+/* Style til hver film */
+.hero-slide {
+    background-color: #252525;
+    border-radius: 10px;
+    overflow: hidden;
     text-align: center;
-    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s;
 }
 
-.cookies-banner button {
-    background-color: #ff4c30;
-    border: none;
+.hero-slide:hover {
+    transform: scale(1.05);
+}
+
+.hero-slide img {
+    width: 100%; /* Fyld hele bredden af containeren */
+    height: 300px; /* Fast højde for ensartethed */
+    object-fit: cover; /* Sørger for at billedet beskæres korrekt */
+}
+
+.hero-slide h3 {
+    margin: 10px 0;
+    font-size: 18px;
     color: #fff;
-    padding: 10px 20px;
-    margin-left: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
 }
 
-.cookies-banner button:hover {
-    background-color: #e8432c;
+.hero-slide p {
+    font-size: 14px;
+    color: #bbb;
+}
+.hero-grid {
+    display: grid !important; /* Tving layoutet til at være grid */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important; /* Dynamiske kolonner */
+    gap: 20px !important; /* Afstand mellem elementerne */
+    padding: 20px !important; /* Indrykning */
+    background-color: #1c1c1c !important; /* Debugging (valgfrit) */
+}
+.hero-grid {
+    display: flex; /* Gør det til en flex container */
+    flex-wrap: wrap; /* Tillader indpakning til næste linje, hvis der ikke er plads */
+    gap: 20px; /* Giver afstand mellem elementerne */
+    justify-content: center; /* Centrerer elementerne */
+}
+
+.hero-slide {
+    flex: 0 0 calc(25% - 20px); /* Gør hver hero-slide 25% bred minus gap */
+    max-width: 250px; /* Begræns bredden */
+    background-color: #252525;
+    border-radius: 10px;
+    overflow: hidden;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s;
+}
+
+.hero-slide img {
+    width: 100%; /* Fyld hele bredden af containeren */
+    height: 300px; /* Fast højde */
+    object-fit: cover; /* Sørger for korrekt billedbeskæring */
+}
+.hero-slide img {
+    width: 100%; /* Fylder containerens bredde */
+    max-width: 200px; /* Begrænser billedets bredde */
+    height: auto; /* Bevarer billedets proportioner */
+    object-fit: contain; /* Sørger for, at hele billedet er synligt */
+    margin: 0 auto; /* Centrerer billedet */
+    display: block; /* Sikrer korrekt centrering */
+}
+.hero-slide img {
+    width: 150px; /* Fast bredde */
+    height: 225px; /* Fast højde */
+    object-fit: cover; /* Fylder containeren med billedet */
+    border-radius: 10px; /* Gør billedets hjørner rundede */
+    display: block;
+    margin: 0 auto;
+}
+
+.hero-text {
+    position: absolute; /* Sørger for fleksibel placering */
+    bottom: 10px; /* Placerer teksten 10px fra bunden */
+    left: 50%; /* Centrerer teksten horisontalt */
+    transform: translateX(-50%); /* Sørger for korrekt centrering */
+    text-align: center; /* Centrerer teksten */
+    font-family: 'Libre Baskerville', serif !important; /* Giver teksten en vintage skrifttype */
+    font-size: 18px; /* Justerer tekststørrelsen */
+    color: #fff; /* Hvid tekstfarve */
+    background-color: rgba(0, 0, 0, 0.5); /* Halvgennemsigtig baggrund for kontrast */
+    padding: 5px 15px; /* Tilføjer lidt indvendig afstand */
+    border-radius: 5px; /* Afrunder hjørnerne */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Tilføjer en subtil skygge */
 }
 

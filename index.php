@@ -35,9 +35,13 @@ try {
     $router = new Router();
     $router->route($current_page);
     
-}   catch (Exception $e) {
-    echo "Fejl: " . $e->getMessage();
+}  catch (Exception $e) {
+    // Global fejlhåndtering
+    $errorController = new ErrorController();
+    $errorController->show500("An error occurred.");
+
 }
+
 
 
 

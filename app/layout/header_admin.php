@@ -26,11 +26,12 @@ $current_page = $GLOBALS['current_page']; // Ingen redefinering
         <ul>
             <li class="<?= $GLOBALS['current_page'] === 'admin_dashboard' ? 'active' : '' ?>"><a href="?page=admin_dashboard">Dashboard</a></li>
             <li class="<?= $GLOBALS['current_page'] === 'admin_booking' ? 'active' : '' ?>"><a href="?page=admin_booking">Admin Booking</a></li>
+            
             <li class="<?= $GLOBALS['current_page'] === 'admin_movie' ? 'active' : '' ?>"><a href="?page=admin_movie">Admin Movie</a></li>
             <li class="<?= $GLOBALS['current_page'] === 'admin_ManageUsers' ? 'active' : '' ?>"><a href="?page=admin_ManageUsers">Manage User</a></li>
             <li class="<?= $GLOBALS['current_page'] === 'admin_settings' ? 'active' : '' ?>"><a href="?page=admin_settings">Indstillinger</a></li>
         </ul>
-    </nav>
+    </nav>admin_daily_showings
 </header>
     </body>
 
@@ -44,7 +45,7 @@ $current_page = $GLOBALS['current_page']; // Ingen redefinering
 
         /* Styling navbar */
         body {
-            font-family: Arial, sans-serif;
+            
             background-color: #f4f4f4;
             color: #333;
         }

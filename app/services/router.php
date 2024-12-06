@@ -37,8 +37,9 @@ class Router {
         $adminController = new AdminController(new AdminModel($db));
         $pageController = new PageController($pageLoader, $adminController);
        
-        $pageUserController = new PageUserController(new MovieFrontendModel($db));
+        //$pageUserController = new PageUserController(new MovieFrontendModel($db));
             $movieFrontendController = new MovieFrontendController(new MovieFrontendModel($db));
+            
 
         
 
@@ -46,7 +47,7 @@ class Router {
         switch ($page) {
             // Public Pages
             case 'homePage':
-                $pageUserController->showHomePage();
+                $pageController->showHomePage();
                 break;
 
             case 'movieDetails':

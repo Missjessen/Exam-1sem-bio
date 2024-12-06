@@ -39,22 +39,31 @@ $current_page = $GLOBALS['current_page'] ?? 'homePage'; // Standard til 'homePag
 </html>
 
 <style>
+
+html, body {
+    background-color: #000 !important;
+    color: #f6f6f6; /* Tekstfarve */
+    height: 100%; /* Sikrer, at baggrund dækker hele vinduet */
+    margin: 0;
+    padding: 0;
+}
     /* Basic reset */
     * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
+        background-color: #000;
     }
 
     /* Styling navbar */
     body {
         font-family: Arial, sans-serif;
-        background-color: #2e2e2e;
-        color: #fff;
+       
+        color: #f6f6f6;
     }
 
     header {
-        background-color: #333;
+        background-color: #000;
         padding: 10px 20px;
     }
 
@@ -70,7 +79,7 @@ $current_page = $GLOBALS['current_page'] ?? 'homePage'; // Standard til 'homePag
     }
 
     nav ul li a {
-        color: white;
+        color: #f6f6f6;
         text-decoration: none;
         font-size: 16px;
         padding: 8px 12px;
@@ -84,7 +93,7 @@ $current_page = $GLOBALS['current_page'] ?? 'homePage'; // Standard til 'homePag
     }
 
     nav ul li a:hover {
-        background-color: #5cb85c;
+        background-color: brown;
         color: white;
     }
 
@@ -95,7 +104,7 @@ $current_page = $GLOBALS['current_page'] ?? 'homePage'; // Standard til 'homePag
     }
 
     .header-menu a {
-        color: white;
+        color: #f6f6f6;
         text-decoration: none;
         font-size: 16px;
         padding: 8px 12px;

@@ -32,14 +32,16 @@ return [
           'css' => '/assets/css/admin_styles.css'],
 
           'admin_movie' => ['view' => '/app/view/admin/admin_movie.php', 
-          'css' => '/assets/css/admin_movie.css'
-        ],
+          'css' => '/assets/css/admin_movie.css'],
 
           'admin_ManageUsers' => ['view' => '/app/view/admin/admin_ManageUsers.php', 
           'css' => '/assets/css/admin_ManageUsers'],
 
           'admin_settings' => ['view' => '/app/view/admin/admin_settings.php', 
           'css' => '/assets/css/admin_settings.css'],
+
+          'admin_daily_showings' => ['view' => '/app/view/admin/admin_daily_showings.php', 
+          'css' => '/assets/css/admin_daily_showings.css'],
 
        //login og logout
 
