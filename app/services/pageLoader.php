@@ -1,5 +1,5 @@
 <?php
-require_once 'init.php'; // require_once 'init.php'; // 
+require_once dirname(__DIR__, 2) . '/init.php';
 class PageLoader {
     private $config;
     private $db;
@@ -53,31 +53,44 @@ class PageLoader {
         }
     }
     
-
     public function loadAdminPage($viewName, $data = []) {
         $current_page = $viewName; // Markér den aktuelle side
+    
         // Sikrer at $data altid er et array
-    if (!is_array($data)) {
-        $data = [];
-    }
-
-     // Tilføj $page til data
-     $data['page'] = $viewName;
-
-    extract($data); 
+        if (!is_array($data)) {
+            $data = [];
+        }
+    
+        // Tilføj $page til data
+        $data['page'] = $viewName;
+    
+        // Gør data tilgængelig som variabler
+        extract($data);
     
         // Inkludér CSS
         $this->includeCSS($viewName);
     
-        // Inkludér header, view og footer
+        // Inkludér header
         $this->includeLayout('header_admin.php', compact('current_page'));
+    
+        // Dynamisk håndtering af visninger
         $viewPath = __DIR__ . "/../../app/view/admin/$viewName.php";
+    
         if (file_exists($viewPath)) {
+            // Hvis viewet er admin_daily_showings, tilpas yderligere
+            if ($viewName === 'admin_daily_showings') {
+                // Debugging: Udskriv data direkte i browseren
+                echo "<pre>Data passed to admin_daily_showings: " . htmlspecialchars(print_r($data, true)) . "</pre>";
+            }
+    
+            // Inkludér view
             require $viewPath;
         } else {
-            error_log("View-fil $viewPath ikke fundet.");
-            echo "Fejl: View kunne ikke indlæses.";
+            // Fejl: View-fil findes ikke
+            echo "Fejl: View kunne ikke indlæses for $viewName.";
         }
+    
+        // Inkludér footer
         $this->includeLayout('footer.php', compact('current_page'));
     }
     

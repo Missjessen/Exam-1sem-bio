@@ -1,6 +1,6 @@
 <?php
 // Inkluder databaseforbindelse og autoloader
-require_once 'init.php';
+require_once dirname(__DIR__, 2) . '/init.php';
 
 class FileUploadService {
     private $upload_dir;

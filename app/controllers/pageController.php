@@ -1,6 +1,5 @@
 <?php
-
-require_once 'init.php';
+require_once dirname(__DIR__, 2) . '/init.php';
 
 class PageController {
     private $db;
@@ -14,16 +13,36 @@ class PageController {
         $this->pageLoader = new PageLoader($this->db);
         $this->MovieAdminController = new MovieAdminController($this->db);
         $this->adminController = new AdminController(new AdminModel($this->db));
+        
     }
 
-    // Indlæser en brugerside
-    public function showPage($page) {
-        try {
+   // Indlæser en side
+public function showPage($page) {
+    try {
+        if ($page === 'admin_daily_showings') {
+            // Håndter admin_daily_showings separat
+            $this->handleAdminDailyShowings();
+        } else {
+            // Standard håndtering for brugersider
             $this->pageLoader->loadUserPage($page);
-        } catch (Exception $e) {
-            $this->handleError("Fejl under indlæsning af siden: " . $e->getMessage());
         }
+    } catch (Exception $e) {
+        $this->handleError("Fejl under indlæsning af siden: " . $e->getMessage());
     }
+}
+
+// Håndterer admin_daily_showings logik
+private function handleAdminDailyShowings() {
+    $showingsController = new AdminShowingsController($this->db);
+    $action = $_GET['action'] ?? 'list';
+
+    // Hent data fra controlleren
+    $data = $showingsController->handleRequest($action);
+
+    // Indlæs admin_daily_showings-siden med data
+    $this->pageLoader->loadAdminPage('admin_daily_showings', $data);
+}
+
 
     // Indlæser forsiden
     public function showHomePage() {

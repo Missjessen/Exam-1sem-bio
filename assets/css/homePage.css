@@ -1,4 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Raleway+Dots&display=swap');
+
 
 
 /* Generelle styles */
@@ -371,11 +373,12 @@ footer form button:hover {
     transform: translateX(-50%); /* Sørger for korrekt centrering */
     text-align: center; /* Centrerer teksten */
     font-family: 'Libre Baskerville', serif !important; /* Giver teksten en vintage skrifttype */
-    font-size: 18px; /* Justerer tekststørrelsen */
-    color: #fff; /* Hvid tekstfarve */
+    font-size: 24px !important; /* Justerer tekststørrelsen */
+    color: #f6f6f6; /* Hvid tekstfarve */
     background-color: rgba(0, 0, 0, 0.5); /* Halvgennemsigtig baggrund for kontrast */
     padding: 5px 15px; /* Tilføjer lidt indvendig afstand */
     border-radius: 5px; /* Afrunder hjørnerne */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Tilføjer en subtil skygge */
+   
+    
 }
 

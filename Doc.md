@@ -6,8 +6,8 @@ git:
 
 git add .
 
-git commit -m "Din besked her"
 
+git commit -m "Din besked her"
 git push 
 
 

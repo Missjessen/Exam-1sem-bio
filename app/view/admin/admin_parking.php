@@ -1,38 +1,56 @@
 <?php
-// Aktivér fejlrapportering for debugging
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+// Inkluder init.php for at få adgang til databaseforbindelse og autoload
+require_once dirname(__DIR__, 3) . '/init.php';
+echo "<pre>dirname(__DIR__, 3): " . dirname(__DIR__, 3) . "</pre>";
 
-// Inkludér init.php for at håndtere alle nødvendige initialiseringer
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php';
+
+
+
+
+// Simulate the database connection
+$db = Database::getInstance()->getConnection();
+
+// Instantiate the PageLoader
+$pageLoader = new PageLoader($db);
+
+// Test the `loadAdminPage` function
+echo "<h1>Testing loadAdminPage</h1>";
+
+$testViewName = 'admin_daily_showings'; // Replace with the view you want to test
+$testData = [
+    'movies' => [
+        ['id' => '1', 'title' => 'Test Movie 1'],
+        ['id' => '2', 'title' => 'Test Movie 2'],
+    ],
+    'showings' => [
+        ['id' => '1', 'movie_title' => 'Test Movie 1', 'showing_time' => '2023-12-01 18:00:00'],
+        ['id' => '2', 'movie_title' => 'Test Movie 2', 'showing_time' => '2023-12-02 20:00:00'],
+    ],
+];
 
 try {
-    // Test databaseforbindelsen via singleton
-    $db = Database::getInstance()->getConnection();
-    echo "Databaseforbindelse er oprettet!<br>";
+    // Debug the view path
+    echo "<pre>View Name: $testViewName</pre>";
+    $viewPath = __DIR__ . "/app/view/admin/$testViewName.php";
+    echo "<pre>Calculated View Path: $viewPath</pre>";
 
-    // Test en simpel forespørgsel
-    $sql = "SELECT * FROM movies LIMIT 5";
-    $stmt = $db->query($sql);
-    $movies = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    if ($movies) {
-        echo "Data hentet fra tabellen 'movies':<br>";
-        echo "<pre>";
-        print_r($showings); // Vis de hentede data
-        echo "</pre>";
+    if (file_exists($viewPath)) {
+        echo "<pre>View path exists: $viewPath</pre>";
     } else {
-        echo "Ingen data fundet i tabellen 'movies'.<br>";
+        echo "<pre>View path does NOT exist: $viewPath</pre>";
     }
-} catch (PDOException $e) {
-    error_log("Databaseforbindelse eller forespørgsel fejlede: " . $e->getMessage());
-    echo "Databaseforbindelse eller forespørgsel fejlede. Tjek logfilerne for detaljer.";
-} catch (Exception $e) {
-    error_log("Generel fejl: " . $e->getMessage());
-    echo "Generel fejl opstod. Tjek logfilerne for detaljer.";
-}
-echo "Rewrite fungerer!";
-error_log("Ruter side: $page");
 
-error_log("Aktuel rute: $page");
+    // Test loading the page
+    echo "<h2>Attempting to Load Admin Page</h2>";
+    $pageLoader->loadAdminPage($testViewName, $testData);
+
+} catch (Exception $e) {
+    echo "<pre>Error: " . $e->getMessage() . "</pre>";
+}
+$initPath = dirname(__DIR__, 3) . '/init.php';
+echo "<pre>Init Path: $initPath</pre>";
+if (!file_exists($initPath)) {
+    echo "<pre>Init.php findes ikke på den angivne sti.</pre>";
+    exit;
+}
+require_once $initPath;

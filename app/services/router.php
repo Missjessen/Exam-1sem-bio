@@ -1,16 +1,22 @@
 <?php
-// Aktivér fejlrapportering
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+set_error_handler(function ($errno, $errstr, $errfile, $errline) {
+    echo "<pre><strong>Fejl:</strong> [$errno] $errstr - $errfile:$errline</pre>";
+    return false; // Sørg for, at standard PHP-fejl også håndteres
+});
 
-// Inkludér init.php for at centralisere afhængigheder
-require_once 'init.php';
+set_exception_handler(function ($exception) {
+    echo "<pre><strong>Exception:</strong> " . $exception->getMessage() . "</pre>";
+    echo "<pre>" . $exception->getTraceAsString() . "</pre>";
+});
+
+// Resten af din routerkode
+
+require_once dirname(__DIR__, 2) . '/init.php';
 
 class Router {
     
     public static function route($page) {
-
+    
             // Opret databaseforbindelse
        $db = Database::getInstance()->getConnection();
         // Start session via Security-klasse
@@ -36,9 +42,12 @@ class Router {
         $pageLoader = new PageLoader($db);
         $adminController = new AdminController(new AdminModel($db));
         $pageController = new PageController($pageLoader, $adminController);
+        $pageController = new PageController($pageLoader);
        
         //$pageUserController = new PageUserController(new MovieFrontendModel($db));
             $movieFrontendController = new MovieFrontendController(new MovieFrontendModel($db));
+            $showingsController = new AdminShowingsController($db);
+
             
 
         
@@ -66,6 +75,17 @@ class Router {
             case 'admin_dashboard':
                 $pageLoader->loadAdminPage('admin_dashboard');
                 break;
+
+                case 'admin_daily_showings':
+                    echo "<pre>Router: admin_daily_showings kaldt</pre>";
+                    $showingsController = new AdminShowingsController($db);
+                    $action = $_GET['action'] ?? 'list';
+                    echo "<pre>Action: $action</pre>";
+                    $data = $showingsController->handleRequest($action);
+                    echo "<pre>Data returneret:</pre>";
+                    print_r($data);
+                    $pageLoader->loadAdminPage('admin_daily_showings', $data);
+                    break;
 
                 case 'admin_movie':
                     
@@ -129,10 +149,11 @@ class Router {
                     $errorController->show404("Page not found: $page");
                     break;
 
-                    default:
-                    // Smid en undtagelse, hvis siden ikke findes
-                    throw new Exception("Page not found: $page");
-            }
+                  default:
+    echo "<pre>Ukendt side: $page</pre>";
+    throw new Exception("Page not found: $page");
+    break;
             }
         
     }
+}

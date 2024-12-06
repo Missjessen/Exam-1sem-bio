@@ -1,8 +1,9 @@
 
 <?php 
-require_once 'init.php';
+require_once dirname(__DIR__, 2) . '/init.php';
 
-$current_page = $GLOBALS['current_page']; // Ingen redefinering
+
+$current_page = $GLOBALS['current_page'] ?? 'admin_dashboard'; // Ingen redefinering
 
 ?>
 
@@ -26,12 +27,13 @@ $current_page = $GLOBALS['current_page']; // Ingen redefinering
         <ul>
             <li class="<?= $GLOBALS['current_page'] === 'admin_dashboard' ? 'active' : '' ?>"><a href="?page=admin_dashboard">Dashboard</a></li>
             <li class="<?= $GLOBALS['current_page'] === 'admin_booking' ? 'active' : '' ?>"><a href="?page=admin_booking">Admin Booking</a></li>
-            
+            <li class="<?= $GLOBALS['current_page'] === 'admin_daily_showings' ? 'active' : '' ?>"><a href="?page=admin_daily_showings">Showings</a></li>
             <li class="<?= $GLOBALS['current_page'] === 'admin_movie' ? 'active' : '' ?>"><a href="?page=admin_movie">Admin Movie</a></li>
             <li class="<?= $GLOBALS['current_page'] === 'admin_ManageUsers' ? 'active' : '' ?>"><a href="?page=admin_ManageUsers">Manage User</a></li>
             <li class="<?= $GLOBALS['current_page'] === 'admin_settings' ? 'active' : '' ?>"><a href="?page=admin_settings">Indstillinger</a></li>
+            <li class="<?= $GLOBALS['current_page'] === 'admin_parking' ? 'active' : '' ?>"><a href="?page=admin_parking">Admin Parking</a></li>
         </ul>
-    </nav>admin_daily_showings
+    </nav>
 </header>
     </body>
 
