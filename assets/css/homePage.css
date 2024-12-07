@@ -382,3 +382,67 @@ footer form button:hover {
     
 }
 
+.daily-showing-card {
+    display: inline-block;
+    width: 200px;
+    margin: 10px;
+    text-align: center;
+    background-color: #333;
+    color: #fff;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  
+  .daily-showing-card img {
+    width: 100%;
+    height: auto;
+    border-bottom: 1px solid #444;
+  }
+  
+  .daily-showing-card .showing-info {
+    padding: 10px;
+  }
+  /* For containeren af de important kort */
+.important-cards {
+    display: flex;
+    flex-wrap: wrap; /* Sikrer at kortene kan wrappes til næste linje, hvis der ikke er nok plads */
+    gap: 20px; /* Afstand mellem kortene */
+    justify-content: center; /* Centrerer kortene */
+}
+
+/* For hvert important kort */
+.important-card {
+    background-color: #252525;
+    border-radius: 10px;
+    overflow: hidden;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s;
+    width: calc(25% - 20px); /* Gør hvert kort 25% bredt minus gap */
+    max-width: 250px; /* Begræns bredden */
+    margin: 10px; /* Giver lidt afstand mellem kortene */
+}
+
+/* Effekter ved hover */
+.important-card:hover {
+    transform: scale(1.05);
+}
+
+.important-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.important-card h3 {
+    margin: 10px 0;
+    font-size: 18px;
+}
+
+.important-card p {
+    font-size: 14px;
+    color: #bbb;
+}
+
+

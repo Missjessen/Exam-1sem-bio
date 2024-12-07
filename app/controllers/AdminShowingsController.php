@@ -18,15 +18,21 @@ class AdminShowingsController {
                 $this->deleteShowing();
                 break;
             default:
-                return $this->listShowtimes(); // Updated to fetch showtimes
+                return $this->listShowings();
         }
     }
     
-    private function listShowtimes() {
-        $movies = $this->model->getAllMovies(); // Fetch all movies
-        $showings = $this->model->getAllShowings(); // Fetch all showtimes from the updated method
-        return compact('movies', 'showings'); // Return data for the view
+    private function listShowings() {
+        $movies = $this->model->getAllMovies() ?? [];
+        $showings = $this->model->getAllShowings() ?? [];
+    
+        // Returnér et komplet array med alle forventede nøgler
+        return [
+            'movies' => $movies,
+            'showings' => $showings,
+        ];
     }
+    
 
     private function addShowing() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {

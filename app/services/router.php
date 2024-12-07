@@ -20,28 +20,13 @@ class Router {
             // Opret databaseforbindelse
        $db = Database::getInstance()->getConnection();
         // Start session via Security-klasse
-        Security::startSession();
-      
-
-
-        $protectedUserRoutes = ['book', 'review'];
-        $protectedAdminRoutes = ['admin_dashboard', 'admin_movie', 'admin_settings', 'admin_ManageUsers'];
-
-        // Check adgangsbeskyttelse
-        if (in_array($page, $protectedAdminRoutes)) {
-            Security::checkLogin(true); // Admin beskyttelse
-        }
-
-        if (in_array($page, $protectedUserRoutes)) {
-            Security::checkLogin(); // Brugerbeskyttelse
-        }
+       
 
         // Opret nødvendige instanser
         $pageController = new PageController($db);
         $MovieAdminController = new MovieAdminController($db);
         $pageLoader = new PageLoader($db);
         $adminController = new AdminController(new AdminModel($db));
-        $pageController = new PageController($pageLoader, $adminController);
         $pageController = new PageController($pageLoader);
        
         //$pageUserController = new PageUserController(new MovieFrontendModel($db));

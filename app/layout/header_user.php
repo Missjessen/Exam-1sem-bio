@@ -30,8 +30,15 @@ $current_page = $GLOBALS['current_page'] ?? 'homePage'; // Standard til 'homePag
             
         </ul>
         <div class="header-menu">
-            <a href="/login.php" class="<?= $current_page === 'login' ? 'active' : '' ?>">Login</a> | 
-            <a href="/register.php" class="<?= $current_page === 'register' ? 'active' : '' ?>">Registrer</a>
+            <?php if (isset($_SESSION['user_logged_in']) || isset($_SESSION['admin_logged_in'])): ?>
+                <a href="/logout.php" class="<?= $current_page === 'logout' ? 'active' : '' ?>">Logout</a>
+                <?php if (isset($_SESSION['admin_logged_in'])): ?>
+                    | <a href="/admin.php" class="<?= $current_page === 'admin' ? 'active' : '' ?>">Admin</a>
+                <?php endif; ?>
+            <?php else: ?>
+                <a href="/login.php" class="<?= $current_page === 'login' ? 'active' : '' ?>">Login</a> | 
+                <a href="/register.php" class="<?= $current_page === 'register' ? 'active' : '' ?>">Registrer</a>
+            <?php endif; ?>
         </div>
     </nav>
 </header>

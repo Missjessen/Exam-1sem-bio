@@ -39,9 +39,18 @@ private function handleAdminDailyShowings() {
     // Hent data fra controlleren
     $data = $showingsController->handleRequest($action);
 
+    // Sørg for, at alle forventede nøgler findes i $data
+    if (!isset($data['movies'])) {
+        $data['movies'] = []; // Standardværdi
+    }
+    if (!isset($data['showings'])) {
+        $data['showings'] = []; // Standardværdi
+    }
+
     // Indlæs admin_daily_showings-siden med data
     $this->pageLoader->loadAdminPage('admin_daily_showings', $data);
 }
+
 
 
     // Indlæser forsiden

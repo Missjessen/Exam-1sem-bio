@@ -45,7 +45,7 @@ class MovieFrontendModel {
     
     
 
-    public function getDailyShowings() {
+    /* public function getDailyShowings() {
         $sql = "SELECT 
                     m.id AS movie_id, 
                     m.title, 
@@ -58,6 +58,17 @@ class MovieFrontendModel {
                 ORDER BY s.show_time ASC";
     
         $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+ */
+    public function getDailyShowings() {
+        $query = "SELECT s.id, m.title AS movie_title, m.poster, 
+                         CONCAT(s.show_date, ' ', s.show_time) AS showing_time
+                  FROM showings s
+                  JOIN movies m ON s.movie_id = m.id
+                  WHERE s.show_date = CURDATE()";
+        $stmt = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }

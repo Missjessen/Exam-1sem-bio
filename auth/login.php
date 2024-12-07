@@ -1,53 +1,40 @@
 <?php
-require_once 'Security.php';
-Security::startSession();
+session_start();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = Security::sanitizeString($_POST['username']);
-    $password = Security::sanitizeString($_POST['password']);
-    $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
+// Inkluder sikkerhedsklassen
+require_once '../models/Security.php';
 
-    // Valider reCAPTCHA
-    if (!Security::validateRecaptcha($recaptchaResponse)) {
-        die("reCAPTCHA validering mislykkedes. Prøv igen.");
-    }
+// Simuleret brugerdata (skift til en database i produktion)
+$validUser = [
+    'username' => 'testuser',
+    'password' => '$2y$10$9GV2CZQbe7GRp2mjGJ9p7OiGszfA9peYdP7wAx2zkTcfHOs64LSSm' // Hashet version af "testpassword"
+];
 
-    // Forbind til databasen
-    $db = Database::getInstance()->getConnection();
-    $stmt = $db->prepare("SELECT * FROM users WHERE username = ?");
-    $stmt->execute([$username]);
-    $user = $stmt->fetch();
+// Tjek om brugeren har sendt en login-formular
+if (isset($_POST['username']) && isset($_POST['password'])) {
+    if ($_POST['username'] === $validUser['username'] && Security::validatePassword($_POST['password'], $validUser['password'])) {
 
-    if ($user && password_verify($password, $user['password'])) {
-        if ($user['role'] === 'admin') {
-            $_SESSION['admin_logged_in'] = true;
-        } else {
-            $_SESSION['user_logged_in'] = true;
-        }
+        // Generér JWT-token
+        $jwt = Security::generateJWT($validUser['username']);
 
-        $_SESSION['last_activity'] = time(); // Start session timeout timer
-        header("Location: /Exam-1sem-bio/homePage");
+        // Sæt JWT-token i en sikker cookie
+        setcookie('auth_token', $jwt, time() + 3600, '/', '', true, true); // Cookie varer i 1 time
+        setcookie('token_user', $validUser['username'], time() + 3600, '/', '', true, true);
+
+        // Omvej til dashboard
+        header("Location: /views/dashboard.php");
         exit();
     } else {
-        echo "Forkert brugernavn eller adgangskode.";
+        echo "Ugyldigt brugernavn eller adgangskode!";
     }
+} else {
+    echo "Indtast venligst brugernavn og adgangskode.";
 }
 ?>
 
-<!DOCTYPE html>
-<html lang="da">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-</head>
-<body>
-    <form method="POST" action="">
-        <input type="text" name="username" placeholder="Brugernavn" required>
-        <input type="password" name="password" placeholder="Adgangskode" required>
-        <div class="g-recaptcha" data-sitekey="DIN_SITE_KEY"></div>
-        <button type="submit">Login</button>
-    </form>
-</body>
-</html>
+<!-- HTML-formular til login -->
+<form method="POST">
+    <input type="text" name="username" placeholder="Brugernavn" required>
+    <input type="password" name="password" placeholder="Adgangskode" required>
+    <button type="submit">Log ind</button>
+</form>

@@ -35,18 +35,20 @@
         <?php endforeach; ?>
     </div>
 </section>
-
-        <!-- Daily Showings -->
-        <section class="daily-showings">
+<section class="daily-showings">
     <h2>Daily Showings</h2>
-    <?php foreach ($dailyMovies as $movie): ?>
-        <div class="movie-card">
-            <img src="<?= htmlspecialchars($movie['poster'] ?? '') ?>" alt="<?= htmlspecialchars($movie['title'] ?? '') ?>"> <!-- Rettet -->
-            <h3><?= htmlspecialchars($movie['title'] ?? '') ?></h3> <!-- Rettet -->
-            <p>Visningstid: <?= htmlspecialchars($movie['show_time'] ?? '') ?></p> <!-- Rettet -->
-        </div>
-    <?php endforeach; ?>
+    <div class="movie-grid">
+        <?php foreach ($dailyMovies as $movie): ?>
+            <div class="movie-card">
+                <img src="<?= htmlspecialchars($movie['poster'] ?? '/default_poster.jpg') ?>" alt="<?= htmlspecialchars($movie['title'] ?? 'Ukendt film') ?>">
+                <h3><?= htmlspecialchars($movie['title'] ?? 'Ukendt film') ?></h3>
+                <p>Visningstid: <?= htmlspecialchars($movie['show_time'] ?? 'Ukendt tidspunkt') ?></p>
+            </div>
+        <?php endforeach; ?>
+    </div>
 </section>
+
+
 
 
 <section class="genre-selector">
