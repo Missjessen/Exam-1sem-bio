@@ -11,7 +11,7 @@ require_once 'core/autoLoader.php';
 // Start session, hvis ikke allerede startet
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
-}
+/* }
 // .env-loader.php
 function loadEnv() {
     $env = parse_ini_file('.env', true);
@@ -23,7 +23,7 @@ function loadEnv() {
 
 // Kald denne funktion i din init.php-fil for at sikre, at miljøvariablerne bliver indlæst
 loadEnv();
-
+ */
 
 
 
