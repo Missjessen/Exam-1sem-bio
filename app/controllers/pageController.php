@@ -84,7 +84,7 @@ private function handleAdminDailyShowings() {
         }
     }
 
-    
+
     public function showProgramPage() {
         try {
             $movieAdminModel = new MovieAdminModel($this->db); // Brug eksisterende model
@@ -183,6 +183,30 @@ private function handleAdminDailyShowings() {
             require_once __DIR__ . '/../auth/register_form.php';
         }
     }
+
+
+    public function handleSettings() {
+        try {
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                // Videregiv POST-data til AdminController
+                $this->adminController->handleSettings($_POST);
+    
+                // Rediriger for at undgå gentagne POST-forespørgsler
+                header("Location: ?page=admin_settings");
+                exit;
+            }
+    
+            // Hent eksisterende indstillinger
+            $settings = $this->adminController->handleSettings();
+    
+            // Indlæs settings-siden
+            $this->pageLoader->loadAdminPage('admin_settings', compact('settings'));
+        } catch (Exception $e) {
+            error_log("Fejl i handleSettings: " . $e->getMessage());
+            $this->pageLoader->loadErrorPage("Noget gik galt under håndtering af indstillinger.");
+        }
+    }
+    
 
     public function showLoginPage($postData = null) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {

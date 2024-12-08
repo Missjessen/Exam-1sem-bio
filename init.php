@@ -38,7 +38,6 @@ try {
     $query = $db->prepare("SELECT * FROM movies");
     $query->execute();
     $results = $query->fetchAll();
-    print_r($results);
 } catch (PDOException $e) {
     error_log("SQL-fejl: " . $e->getMessage());
     die("SQL-fejl.");

@@ -6,7 +6,7 @@ $contact_email = $settings['contact_email'] ?? '';
 $opening_hours = $settings['opening_hours'] ?? '';
 $about_content = $settings['about_content'] ?? ''; 
 ?>
-<form action="admin_settings" method="post">
+<form action="?page=admin_settings" method="post">
     <label for="site_title">Website Titel:</label>
     <input type="text" id="site_title" name="site_title" value="<?php echo htmlspecialchars($site_title ?? '', ENT_QUOTES, 'UTF-8'); ?>" required>
 

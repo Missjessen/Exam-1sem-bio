@@ -13,24 +13,19 @@ class AdminController {
     public function getSettings(array $keys): array {
         return $this->model->getSettings($keys);
     } */
-    public function handleSettings() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Hent data fra POST og send til model for opdatering
+    public function handleSettings($postData = null) {
+        if ($postData) {
             $updatedSettings = [
-                'site_title' => $_POST['site_title'] ?? '',
-                'contact_email' => $_POST['contact_email'] ?? '',
-                'opening_hours' => $_POST['opening_hours'] ?? '',
-                'about_content' => $_POST['about_content'] ?? '',
+                'site_title' => $postData['site_title'] ?? '',
+                'contact_email' => $postData['contact_email'] ?? '',
+                'opening_hours' => $postData['opening_hours'] ?? '',
+                'about_content' => $postData['about_content'] ?? '',
             ];
     
+            error_log("Opdaterer indstillinger: " . print_r($updatedSettings, true));
             $this->model->updateSettings($updatedSettings);
-    
-            // Rediriger for at undgå gentagne POST-forespørgsler (PRG Pattern)
-            header("Location: ?page=admin_settings");
-            exit;
         }
     
-        // Hent eksisterende indstillinger fra databasen
         $keys = ['site_title', 'contact_email', 'opening_hours', 'about_content'];
         return $this->model->getSettings($keys);
     }
@@ -49,6 +44,12 @@ class AdminController {
         }
         return $settings;
     } 
+
+    public function updateSettings(array $settings): void {
+        $this->model->updateSettings($settings);
+    }
+    
+    
 
 
                       /* manege user  */

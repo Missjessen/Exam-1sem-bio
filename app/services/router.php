@@ -103,13 +103,23 @@ class Router {
                     break;
 
                     case 'admin_settings':
-                        $settings = $adminController->handleSettings();
+                        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                            // Håndter opdatering af indstillinger via POST
+                            $adminController->handleSettings($_POST);
                     
-                        // Send både settings og page til PageLoader
-                        $pageLoader->loadAdminPage('admin_settings', [
-                            'settings' => $settings,
-                            'page' => 'admin_settings' // Marker, hvilken side der er aktiv
-                        ]);
+                            // Rediriger for at undgå gentagne POST-forespørgsler
+                            header("Location: ?page=admin_settings");
+                            exit;
+                        } else {
+                            // Håndter GET for at hente eksisterende indstillinger
+                            $settings = $adminController->handleSettings();
+                    
+                            // Send settings og page til PageLoader
+                            $pageLoader->loadAdminPage('admin_settings', [
+                                'settings' => $settings,
+                                'page' => 'admin_settings', // Marker, hvilken side der er aktiv
+                            ]);
+                        }
                         break;
 
             // User-specific pages
