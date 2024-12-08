@@ -1,106 +1,113 @@
-<?php 
-class AdminShowingsModel {
+<?php class AdminShowingsModel {
     private $db;
 
     public function __construct($db) {
         $this->db = $db;
     }
 
-    // Hent alle film
-    public function getAllMovies() {
-        $query = "SELECT id, title FROM movies";
-        $stmt = $this->db->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    // Hent alle visninger, sorteret med de nyeste først
+    // Hent alle visninger
     public function getAllShowings() {
-        $query = "SELECT st.id AS id, 
-                         m.title AS movie_title, 
-                         CONCAT(st.show_date, ' ', st.show_time) AS showing_time
-                  FROM showings st
-                  JOIN movies m ON st.movie_id = m.id
-                  ORDER BY st.show_date, st.show_time ASC";
-        $stmt = $this->db->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $query = "SELECT s.id, m.title AS movie_title, s.showing_time, s.screen 
+                  FROM showings s
+                  JOIN movies m ON s.movie_id = m.id
+                  ORDER BY s.showing_time DESC";
+
+        try {
+            $stmt = $this->db->prepare($query);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            // Log fejlen og returner tom array
+            error_log('Database fejl: ' . $e->getMessage());
+            return [];
+        }
     }
-    
 
     // Tilføj en visning
-    public function addShowing($movieId, $showingTime) {
-        $date = substr($showingTime, 0, 10);  // Datoen fra datetime-local
-        $time = substr($showingTime, 11);     // Tiden fra datetime-local
-    
-        // Valider at movie_id eksisterer
-        $query = "SELECT COUNT(*) FROM movies WHERE id = :movie_id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':movie_id', $movieId);
-        $stmt->execute();
-        if ($stmt->fetchColumn() == 0) {
-            echo "<pre>Error: Invalid movie_id</pre>";
+    public function addShowing($movieId, $showingTime, $screen) {
+        $query = "INSERT INTO showings (movie_id, showing_time, screen) 
+                  VALUES (:movie_id, :showing_time, :screen)";
+
+        try {
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':movie_id', $movieId);
+            $stmt->bindParam(':showing_time', $showingTime);
+            $stmt->bindParam(':screen', $screen);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            // Log fejlen og returner false
+            error_log('Database fejl ved tilføjelse af visning: ' . $e->getMessage());
             return false;
         }
-    
-        // Indsæt visning
-        $query = "INSERT INTO showtimes (movie_id, show_date, show_time, total_spots, available_spots) 
-                  VALUES (:movie_id, :show_date, :show_time, 50, 50)";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':movie_id', $movieId);
-        $stmt->bindParam(':show_date', $date);
-        $stmt->bindParam(':show_time', $time);
-    
-        return $stmt->execute();
+    }
+
+    // Hent en visning ved id
+    public function getShowingById($showingId) {
+        $query = "SELECT s.id, m.title AS movie_title, s.showing_time, s.screen, s.movie_id
+                  FROM showings s
+                  JOIN movies m ON s.movie_id = m.id
+                  WHERE s.id = :showing_id";
+
+        try {
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':showing_id', $showingId);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log('Database fejl ved hentning af visning: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    // Opdater en visning
+    public function updateShowing($showingId, $movieId, $showingTime, $screen) {
+        $query = "UPDATE showings SET movie_id = :movie_id, showing_time = :showing_time, screen = :screen
+                  WHERE id = :showing_id";
+
+        try {
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':movie_id', $movieId);
+            $stmt->bindParam(':showing_time', $showingTime);
+            $stmt->bindParam(':screen', $screen);
+            $stmt->bindParam(':showing_id', $showingId);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            error_log('Database fejl ved opdatering af visning: ' . $e->getMessage());
+            return false;
+        }
     }
 
     // Slet en visning
     public function deleteShowing($showingId) {
-        // Tjek om visning eksisterer
-        $query = "SELECT COUNT(*) FROM showtimes WHERE showtime_id = :id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':id', $showingId);
-        $stmt->execute();
-        if ($stmt->fetchColumn() == 0) {
-            echo "<pre>Error: Showing not found</pre>";
+        $query = "DELETE FROM showings WHERE id = :showing_id";
+
+        try {
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':showing_id', $showingId);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            error_log('Database fejl ved sletning af visning: ' . $e->getMessage());
             return false;
         }
-    
-        // Slet visningen
-        $query = "DELETE FROM showtimes WHERE showtime_id = :id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':id', $showingId);
-        return $stmt->execute();
     }
 
-    // Hent en specifik visning for at redigere
-    public function getShowingById($showingId) {
-        $query = "SELECT st.showtime_id AS id, 
-                         m.title AS movie_title, 
-                         CONCAT(st.show_date, ' ', st.show_time) AS showing_time
-                  FROM showtimes st
-                  JOIN movies m ON st.movie_id = m.id
-                  WHERE st.showtime_id = :id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':id', $showingId);
+    // Hent alle film (til visningstilføjelse)
+    public function getAllMovies() {
+        $query = "SELECT id, title FROM movies";
+        try {
+            $stmt = $this->db->prepare($query);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log('Database fejl ved hentning af film: ' . $e->getMessage());
+            return [];
+        }
+    }
+    public function getShowings() {
+        $sql = "SELECT * FROM showings ORDER BY showing_time DESC";
+        $stmt = $this->db->prepare($sql);
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
-    // Opdater en visning
-    public function updateShowing($showingId, $movieId, $showingTime) {
-        $date = substr($showingTime, 0, 10);
-        $time = substr($showingTime, 11);
     
-        // Opdater visningen
-        $query = "UPDATE showtimes 
-                  SET movie_id = :movie_id, show_date = :show_date, show_time = :show_time
-                  WHERE showtime_id = :showtime_id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':movie_id', $movieId);
-        $stmt->bindParam(':show_date', $date);
-        $stmt->bindParam(':show_time', $time);
-        $stmt->bindParam(':showtime_id', $showingId);
-        return $stmt->execute();
-    }
 }

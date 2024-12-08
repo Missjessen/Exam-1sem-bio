@@ -32,6 +32,7 @@ class Router {
         //$pageUserController = new PageUserController(new MovieFrontendModel($db));
             $movieFrontendController = new MovieFrontendController(new MovieFrontendModel($db));
             $showingsController = new AdminShowingsController($db);
+            $movieDetailsController = new MovieDetailsController($db);
 
             
 
@@ -44,13 +45,19 @@ class Router {
                 $pageController->showHomePage();
                 break;
 
-            case 'movieDetails':
-                if (isset($_GET['uuid'])) {
-                    $movieFrontendController->showMovieDetails($_GET['uuid']);
-                } else {
-                    throw new Exception("Movie UUID missing.");
-                }
-                break;
+              /*   case 'sendMail':
+                    $emailController = new \App\Controllers\EmailController();
+                    $emailController->sendContactForm();
+                    break; */
+
+                    case 'movie_details':
+                        if (!empty($_GET['slug'])) {
+                            $movieDetailsController = new MovieDetailsController($db);
+                            $movieDetailsController->showMovieDetailsBySlug($_GET['slug']);
+                        } else {
+                            throw new Exception("Slug mangler i URL'en.");
+                        }
+                        break;
 
             case 'program':
                 $pageController->showPage($page);
@@ -62,13 +69,12 @@ class Router {
                 break;
 
                 case 'admin_daily_showings':
-                    echo "<pre>Router: admin_daily_showings kaldt</pre>";
+                   
                     $showingsController = new AdminShowingsController($db);
                     $action = $_GET['action'] ?? 'list';
-                    echo "<pre>Action: $action</pre>";
+                   
                     $data = $showingsController->handleRequest($action);
-                    echo "<pre>Data returneret:</pre>";
-                    print_r($data);
+                 
                     $pageLoader->loadAdminPage('admin_daily_showings', $data);
                     break;
 

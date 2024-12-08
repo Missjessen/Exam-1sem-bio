@@ -79,8 +79,7 @@ class PageLoader {
         if (file_exists($viewPath)) {
             // Hvis viewet er admin_daily_showings, tilpas yderligere
             if ($viewName === 'admin_daily_showings') {
-                // Debugging: Udskriv data direkte i browseren
-                echo "<pre>Data passed to admin_daily_showings: " . htmlspecialchars(print_r($data, true)) . "</pre>";
+               
             }
     
             // Inkludér view

@@ -2,6 +2,7 @@
 require_once 'init.php';
 
 $current_page = $GLOBALS['current_page'] ?? 'homePage'; // Standard til 'homePage' hvis ikke defineret
+$current_slug = $_GET['slug'] ?? null; // Tjek om slug er sat (til dynamiske sider)
 ?>
 
 <!DOCTYPE html>
@@ -9,7 +10,15 @@ $current_page = $GLOBALS['current_page'] ?? 'homePage'; // Standard til 'homePag
 <head>
 <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $current_page === 'homePage' ? 'Hjem - Drive-In Biograf' : ucfirst($current_page) . ' - Drive-In Biograf' ?></title>
+    <title>   <title>
+        <?php 
+        if ($current_page === 'movie_details' && $current_slug) {
+            echo ucfirst(str_replace('-', ' ', $current_slug)) . ' - Drive-In Biograf';
+        } else {
+            echo ucfirst($current_page) . ' - Drive-In Biograf';
+        }
+        ?>
+    </title></title>
     <link rel="stylesheet" href="/Exam-1sem-bio/assets/css/variables.css">
     <?php
     // Dynamisk CSS for hver side

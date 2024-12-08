@@ -1,3 +1,5 @@
+
+
 <body>
      <!-- Hero Image Section -->
      <header class="hero-image">
@@ -11,42 +13,51 @@
 
     <section class="hero">
     <h2>Upcoming Movies</h2>
-    <div class="hero-grid">
-        <?php foreach ($upcomingMovies as $movie): ?>
-            <div class="hero-slide">
-                <img src="<?= htmlspecialchars($movie['poster'] ?? '') ?>" alt="<?= htmlspecialchars($movie['title'] ?? '') ?>">
-                <h3><?= htmlspecialchars($movie['title'] ?? '') ?></h3>
-                <p>Premiere: <?= htmlspecialchars($movie['release_date'] ?? '') ?></p>
-            </div>
-        <?php endforeach; ?>
-    </div>
-</section>
+        <div class="hero-grid">
+            <?php foreach ($upcomingMovies as $movie): ?>
+                <div class="hero-slide">
+                <a href="?page=movie_details&slug=<?= htmlspecialchars($movie['slug'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+                    <img src="<?= htmlspecialchars($movie['poster'] ?? '', ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($movie['title'] ?? 'Unknown Movie', ENT_QUOTES, 'UTF-8') ?>">
+                    <h3><?= htmlspecialchars($movie['title'] ?? 'Unknown Title', ENT_QUOTES, 'UTF-8') ?></h3>
+                    <p>Premiere: <?= htmlspecialchars($movie['release_date'] ?? 'N/A', ENT_QUOTES, 'UTF-8') ?></p>
+                </a>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </section>
 
         <!-- News Section -->
         <section class="news">
-    <h2>Latest Releases</h2>
-    <div class="news-grid"> <!-- Grid-container -->
-        <?php foreach ($newsMovies as $movie): ?>
-            <div class="news-item">
-                <img src="<?= htmlspecialchars($movie['poster'] ?? '') ?>" alt="<?= htmlspecialchars($movie['title'] ?? '') ?>"> <!-- Rettet -->
-                <h3><?= htmlspecialchars($movie['title'] ?? '') ?></h3> <!-- Rettet -->
-                <p>Premiere Date: <?= htmlspecialchars($movie['release_date'] ?? '') ?></p> <!-- Rettet -->
-            </div>
-        <?php endforeach; ?>
-    </div>
-</section>
-<section class="daily-showings">
-    <h2>Daily Showings</h2>
-    <div class="movie-grid">
-        <?php foreach ($dailyMovies as $movie): ?>
-            <div class="movie-card">
-                <img src="<?= htmlspecialchars($movie['poster'] ?? '/default_poster.jpg') ?>" alt="<?= htmlspecialchars($movie['title'] ?? 'Ukendt film') ?>">
-                <h3><?= htmlspecialchars($movie['title'] ?? 'Ukendt film') ?></h3>
-                <p>Visningstid: <?= htmlspecialchars($movie['show_time'] ?? 'Ukendt tidspunkt') ?></p>
-            </div>
-        <?php endforeach; ?>
-    </div>
-</section>
+        <h2>Latest Releases</h2>
+        <div class="news-grid">
+            <?php foreach ($newsMovies as $movie): ?>
+                <div class="news-item">
+                <a href="?page=movie_details&slug=<?= htmlspecialchars($movie['slug'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+
+
+                        <img src="<?= htmlspecialchars($movie['poster'] ?? '', ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($movie['title'] ?? 'Unknown Movie', ENT_QUOTES, 'UTF-8') ?>">
+                        <h3><?= htmlspecialchars($movie['title'] ?? 'Unknown Title', ENT_QUOTES, 'UTF-8') ?></h3>
+                        <p>Premiere Date: <?= htmlspecialchars($movie['release_date'] ?? 'N/A', ENT_QUOTES, 'UTF-8') ?></p>
+                    </a>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </section>
+
+   <section class="daily-showings">
+        <h2>Daily Showings</h2>
+        <div class="movie-grid">
+            <?php foreach ($dailyMovies as $movie): ?>
+                <div class="movie-card">
+                <a href="?page=movie_details&slug=<?= htmlspecialchars($movie['slug'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+                    <img src="<?= htmlspecialchars($movie['poster'] ?? '/default_poster.jpg', ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($movie['title'] ?? 'Unknown Movie', ENT_QUOTES, 'UTF-8') ?>">
+                    <h3><?= htmlspecialchars($movie['title'] ?? 'Unknown Movie', ENT_QUOTES, 'UTF-8') ?></h3>
+                    <p>Show Time: <?= htmlspecialchars($movie['show_time'] ?? 'TBD', ENT_QUOTES, 'UTF-8') ?></p>
+                </a>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </section>
 
 
 
@@ -117,23 +128,72 @@
         </div>
     
 
-        <!-- Kontaktformular -->
-        <div class="contact-form">
-            <h3>Kontakt Os</h3>
-            <form action="/sendMail.php" method="POST">
-                <label for="name">Navn:</label>
-                <input type="text" id="name" name="name" required>
-
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
-
-                <label for="message">Besked:</label>
-                <textarea id="message" name="message" rows="4" required></textarea>
-
-                <button type="submit">Send</button>
-            </form>
-        </div>
+        <?php if (isset($feedback)) : ?>
+    <div class="feedback">
+        <p><?php echo htmlspecialchars($feedback, ENT_QUOTES, 'UTF-8'); ?></p>
     </div>
+<?php endif; ?>
+
+<div class="contact-form">
+    <h3>Kontakt Os</h3>
+    <form action="/sendMail" method="POST">
+        <!-- Navn -->
+        <div class="form-group">
+            <label for="name">Navn:</label>
+            <input 
+                type="text" 
+                id="name" 
+                name="name" 
+                required 
+                placeholder="Indtast dit navn" 
+                aria-label="Navn"
+            >
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input 
+                type="email" 
+                id="email" 
+                name="email" 
+                required 
+                placeholder="Indtast din email fx: navn@domæne.dk" 
+                aria-label="Email"
+            >
+        </div>
+
+        <!-- Emne -->
+        <div class="form-group">
+            <label for="subject">Emne:</label>
+            <input 
+                type="text" 
+                id="subject" 
+                name="subject" 
+                required 
+                placeholder="Indtast emnet for din besked"
+                aria-label="Emne"
+            >
+        </div>
+
+        <!-- Besked -->
+        <div class="form-group">
+            <label for="message">Besked:</label>
+            <textarea 
+                id="message" 
+                name="message" 
+                rows="4" 
+                required 
+                placeholder="Skriv din besked her..." 
+                aria-label="Besked"
+            ></textarea>
+        </div>
+
+        <!-- Submit button -->
+        <button type="submit">Send</button>
+    </form>
+</div>
+
 
     
 </footer>

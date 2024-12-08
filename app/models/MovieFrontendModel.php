@@ -62,16 +62,42 @@ class MovieFrontendModel {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
  */
-    public function getDailyShowings() {
-        $query = "SELECT s.id, m.title AS movie_title, m.poster, 
-                         CONCAT(s.show_date, ' ', s.show_time) AS showing_time
-                  FROM showings s
-                  JOIN movies m ON s.movie_id = m.id
-                  WHERE s.show_date = CURDATE()";
-        $stmt = $this->db->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+public function getDailyShowings($filterDate = null) {
+    $query = "SELECT 
+                s.id AS showing_id,
+                m.id AS movie_id,
+                m.slug,
+                m.title AS movie_title,
+                m.poster,
+                s.show_date,
+                s.show_time,
+                s.screen,
+                GROUP_CONCAT(DISTINCT g.name SEPARATOR ', ') AS genres
+              FROM 
+                showings s
+              JOIN 
+                movies m ON s.movie_id = m.id
+              LEFT JOIN 
+                movie_genre mg ON m.id = mg.movie_id
+              LEFT JOIN 
+                genres g ON mg.genre_id = g.id
+              WHERE 
+                s.show_date = :date
+              GROUP BY 
+                s.id, m.id, m.slug, m.title, m.poster, s.show_date, s.show_time, s.screen
+              ORDER BY 
+                s.show_time ASC";
+
+    // Brug CURDATE(), hvis ingen dato er angivet
+    $date = $filterDate ?? date('Y-m-d');
+    
+    // Forbered og bind parametre
+    $stmt = $this->db->prepare($query);
+    $stmt->bindParam(':date', $date, PDO::PARAM_STR);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
     
 
     public function getGenreMovies($genre = null) {
@@ -103,7 +129,7 @@ class MovieFrontendModel {
 
 
     public function getUpcomingMovies() {
-        $query = "SELECT title, poster, premiere_date 
+        $query = "SELECT slug, title, poster, premiere_date 
                   FROM movies 
                   WHERE premiere_date >= CURDATE() 
                   ORDER BY premiere_date ASC";
@@ -118,8 +144,12 @@ class MovieFrontendModel {
     
 
     public function getNewsMovies() {
-        $query = "SELECT * FROM news_movies ORDER BY release_date DESC";
-        return $this->db->query($query)->fetchAll(PDO::FETCH_ASSOC);
+        $query = "SELECT slug, title, poster, premiere_date FROM movies WHERE premiere_date <= CURDATE() ORDER BY premiere_date DESC LIMIT 5";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        var_dump($result); // Debugging
+        return $result;
     }
 
     

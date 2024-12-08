@@ -51,8 +51,9 @@ class MovieAdminModel extends CrudBase {
 
     // Hent alle film
     public function getAllMovies() {
-        $sql = "SELECT * FROM movies";
-        return $this->executeQuery($sql);
+        $stmt = $this->db->prepare("SELECT id, title FROM movies");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); // Returner filmene som en array
     }
 
     // Hent en specifik film

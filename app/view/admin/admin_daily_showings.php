@@ -18,14 +18,16 @@
                 <tr>
                     <th>Film</th>
                     <th>Tidspunkt</th>
+                    <th>Scene</th>
                     <th>Handling</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($showings as $showing): ?>
                     <tr>
-                        <td><?= htmlspecialchars($showing['title']) ?></td>
+                        <td><?= htmlspecialchars($showing['movie_title']) ?></td>
                         <td><?= htmlspecialchars($showing['showing_time']) ?></td>
+                        <td><?= htmlspecialchars($showing['scene']) ?></td>
                         <td>
                             <!-- Link til redigering af visning -->
                             <a href="?page=admin_daily_showings&action=edit&showing_id=<?= htmlspecialchars($showing['id']) ?>">Rediger</a> |
@@ -52,6 +54,12 @@
 
         <label for="showing_time">Tidspunkt:</label>
         <input type="datetime-local" name="showing_time" id="showing_time" required>
+
+        <label for="scene">Scene:</label>
+        <select name="scene" id="scene" required>
+            <option value="Lille">Lille</option>
+            <option value="Stor">Stor</option>
+        </select>
 
         <button type="submit">Tilføj Visning</button>
     </form>

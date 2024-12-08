@@ -30,26 +30,47 @@ public function showPage($page) {
         $this->handleError("Fejl under indlæsning af siden: " . $e->getMessage());
     }
 }
-
-// Håndterer admin_daily_showings logik
 private function handleAdminDailyShowings() {
-    $showingsController = new AdminShowingsController($this->db);
     $action = $_GET['action'] ?? 'list';
 
-    // Hent data fra controlleren
+    if (!in_array($action, ['list', 'add', 'edit', 'delete'])) {
+        // Hvis en ukendt action er anmodet, log fejl eller send bruger en 404
+        echo "Ugyldig handling: " . htmlspecialchars($action);
+        exit;
+    }
+
+    $showingsController = new AdminShowingsController($this->db);
+
+    // Debugging: Tjek hvad controlleren returnerer
     $data = $showingsController->handleRequest($action);
+    var_dump($data);  // Udskriv data for at sikre, at vi får noget tilbage
+    exit;  // Stop for at se output
 
-    // Sørg for, at alle forventede nøgler findes i $data
-    if (!isset($data['movies'])) {
-        $data['movies'] = []; // Standardværdi
-    }
-    if (!isset($data['showings'])) {
-        $data['showings'] = []; // Standardværdi
-    }
-
-    // Indlæs admin_daily_showings-siden med data
     $this->pageLoader->loadAdminPage('admin_daily_showings', $data);
 }
+
+  // Ny metode til håndtering af movie_details
+  public function showMovieDetailsPage($slug) {
+    try {
+        $movieDetailsModel = new MovieDetailsModel($this->db);
+        $movie = $movieDetailsModel->getMovieDetailsBySlug($slug);
+
+        if (!$movie) {
+            throw new Exception("Filmen blev ikke fundet.");
+        }
+
+        $showtimes = $movieDetailsModel->getShowtimesForMovie($movie['id']);
+
+        // Indlæs view med data
+        $this->pageLoader->loadUserPage('movie_details', [
+            'movie' => $movie,
+            'showtimes' => $showtimes,
+        ]);
+    } catch (Exception $e) {
+        $this->handleError("Fejl under visning af filmdetaljer: " . $e->getMessage());
+    }
+}
+
 
 
 

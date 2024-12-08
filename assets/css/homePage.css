@@ -238,6 +238,7 @@ footer .footer-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 30px;
+    text-align: start !important;
     padding: 20px;
 }
 
@@ -245,7 +246,7 @@ footer {
     background-color: #1c1c1c;
     color: #bbb;
     padding: 40px 20px;
-    text-align: center;
+    text-align: start !important;
     font-size: 14px;
 }
 
@@ -257,7 +258,7 @@ footer form textarea {
     border: none;
     border-radius: 5px;
     background-color: #ffffff;
-    color: #fff;
+    color: #000000 !important;
     
 }
 
@@ -446,3 +447,6 @@ footer form button:hover {
 }
 
 
+
+
+/

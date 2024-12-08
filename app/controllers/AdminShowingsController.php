@@ -1,7 +1,4 @@
 <?php 
-require_once dirname(__DIR__, 2) . '/init.php';
-
-
 class AdminShowingsController {
     private $model;
 
@@ -11,51 +8,74 @@ class AdminShowingsController {
 
     public function handleRequest($action) {
         switch ($action) {
+            case 'list':
+                return $this->index();  // Returner visninger
             case 'add':
-                $this->addShowing();
-                break;
+                return $this->add();  // Håndter tilføjelse af visning
+            case 'edit':
+                return $this->edit();  // Håndter redigering af visning
             case 'delete':
-                $this->deleteShowing();
-                break;
+                return $this->delete();  // Håndter sletning af visning
             default:
-                return $this->listShowings();
+                // Håndter, hvis en ukendt action er anmodet
+                header("HTTP/1.0 404 Not Found");
+                echo "Action not found!";
+                exit;
         }
     }
     
-    private function listShowings() {
-        $movies = $this->model->getAllMovies() ?? [];
-        $showings = $this->model->getAllShowings() ?? [];
-    
-        // Returnér et komplet array med alle forventede nøgler
-        return [
-            'movies' => $movies,
-            'showings' => $showings,
-        ];
-    }
     
 
-    private function addShowing() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    public function index() {
+        $showings = $this->model->getAllShowings();
+        $movies = $this->model->getAllMovies();
+        return ['showings' => $showings, 'movies' => $movies];
+    }
+
+    public function add() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $movieId = $_POST['movie_id'];
             $showingTime = $_POST['showing_time'];
+            $screen = $_POST['screen'];
 
-            if ($this->model->addShowing($movieId, $showingTime)) {
+            if ($this->model->addShowing($movieId, $showingTime, $screen)) {
                 header('Location: ?page=admin_daily_showings&success=true');
                 exit;
             } else {
-                echo "Kunne ikke tilføje visning.";
+                // Fejlbehandling
+                return ['error' => 'Fejl ved tilføjelse af visning'];
             }
         }
     }
 
-    private function deleteShowing() {
+    public function edit() {
         $showingId = $_GET['showing_id'];
+        $showing = $this->model->getShowingById($showingId);
 
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $movieId = $_POST['movie_id'];
+            $showingTime = $_POST['showing_time'];
+            $screen = $_POST['screen'];
+
+            if ($this->model->updateShowing($showingId, $movieId, $showingTime, $screen)) {
+                header('Location: ?page=admin_daily_showings&success=true');
+                exit;
+            } else {
+                // Fejlbehandling
+                return ['error' => 'Fejl ved opdatering af visning'];
+            }
+        }
+
+        return ['showing' => $showing];
+    }
+
+    public function delete() {
+        $showingId = $_GET['showing_id'];
         if ($this->model->deleteShowing($showingId)) {
             header('Location: ?page=admin_daily_showings&deleted=true');
             exit;
         } else {
-            echo "Kunne ikke slette visning.";
+            return ['error' => 'Fejl ved sletning af visning'];
         }
     }
 }
