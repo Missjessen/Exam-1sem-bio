@@ -59,10 +59,9 @@ class Router {
                         }
                         break;
 
-            case 'program':
-                $pageController->showPage($page);
-                break;
-
+                        case 'program':
+                            $pageController->showProgramPage();
+                            break;
             // Admin Pages
             case 'admin_dashboard':
                 $pageLoader->loadAdminPage('admin_dashboard');

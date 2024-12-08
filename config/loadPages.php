@@ -13,14 +13,10 @@ return [
         'movie' => ['view' => '/app/view/user/movie.php', 
         'css' => '/assets/css/movie.css'],
 
-        'spots' => ['view' => '/app/view/user/spots.php', 
-        'css' => '/assets/css/spots.css'],
-
         'tickets' => ['view' => '/app/view/user/tickets.php', 
         'css' => '/assets/css/tickets.css'],
 
-        'about' => ['view' => '/app/view/user/about.php', 
-        'css' => '/assets/css/about.css'],
+    
 
         'movie_details' => ['view' => '/app/view/user/movie_details.php', 
         'css' => '/assets/css/movie_details.css'],

@@ -84,6 +84,22 @@ private function handleAdminDailyShowings() {
         }
     }
 
+    
+    public function showProgramPage() {
+        try {
+            $movieAdminModel = new MovieAdminModel($this->db); // Brug eksisterende model
+            $movies = $movieAdminModel->getAllMovies(); // Hent alle film
+    
+            $this->pageLoader->loadUserPage('program', [
+                'movies' => $movies, // Send filmdata til view
+            ]);
+        } catch (Exception $e) {
+            $this->handleError("Fejl under indlæsning af programsiden: " . $e->getMessage());
+        }
+    }
+    
+    
+
     public function showAdminMoviePage() {
         try {
             // Hent alle film, genrer og skuespillere
