@@ -5,41 +5,48 @@
         $this->db = $db;
     }
 
-    // Hent alle visninger
     public function getAllShowings() {
-        $query = "SELECT s.id, m.title AS movie_title, s.showing_time, s.screen 
-                  FROM showings s
-                  JOIN movies m ON s.movie_id = m.id
-                  ORDER BY s.showing_time DESC";
-
         try {
-            $stmt = $this->db->prepare($query);
-            $stmt->execute();
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $sql = "SELECT 
+                        s.id,
+                        s.show_date,
+                        s.show_time,
+                        s.screen,
+                        s.total_spots,
+                        s.available_spots,
+                        m.title AS movie_title
+                    FROM showings s
+                    JOIN movies m ON s.movie_id = m.id";
+            $stmt = $this->db->query($sql);
+            $showings = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+            error_log("Showings hentet fra DB: " . print_r($showings, true)); // Debugging
+            return $showings;
         } catch (PDOException $e) {
-            // Log fejlen og returner tom array
-            error_log('Database fejl: ' . $e->getMessage());
+            error_log("Fejl ved hentning af showings: " . $e->getMessage());
             return [];
         }
     }
+    
 
     // Tilføj en visning
     public function addShowing($movieId, $showingTime, $screen) {
-        $query = "INSERT INTO showings (movie_id, showing_time, screen) 
-                  VALUES (:movie_id, :showing_time, :screen)";
-
-        try {
-            $stmt = $this->db->prepare($query);
-            $stmt->bindParam(':movie_id', $movieId);
-            $stmt->bindParam(':showing_time', $showingTime);
-            $stmt->bindParam(':screen', $screen);
-            return $stmt->execute();
-        } catch (PDOException $e) {
-            // Log fejlen og returner false
-            error_log('Database fejl ved tilføjelse af visning: ' . $e->getMessage());
+        $sql = "INSERT INTO showings (movie_id, showing_time, screen) VALUES (:movie_id, :showing_time, :screen)";
+        $stmt = $this->db->prepare($sql);
+    
+        $stmt->bindValue(':movie_id', $movieId, PDO::PARAM_INT);
+        $stmt->bindValue(':showing_time', $showingTime, PDO::PARAM_STR);
+        $stmt->bindValue(':screen', $screen, PDO::PARAM_STR);
+    
+        if ($stmt->execute()) {
+            return true;
+        } else {
+            error_log("Fejl ved indsættelse i databasen: " . implode(", ", $stmt->errorInfo()));
             return false;
         }
     }
+    
+    
 
     // Hent en visning ved id
     public function getShowingById($showingId) {

@@ -68,12 +68,8 @@ class Router {
                 break;
 
                 case 'admin_daily_showings':
-                   
-                    $showingsController = new AdminShowingsController($db);
-                    $action = $_GET['action'] ?? 'list';
-                   
-                    $data = $showingsController->handleRequest($action);
-                 
+                    $controller = new AdminShowingsController($db);
+                    $data = $controller->index(); // Hent data fra controlleren
                     $pageLoader->loadAdminPage('admin_daily_showings', $data);
                     break;
 

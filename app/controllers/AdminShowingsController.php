@@ -28,21 +28,29 @@ class AdminShowingsController {
 
     public function index() {
         $showings = $this->model->getAllShowings();
-        $movies = $this->model->getAllMovies();
+        $movies = $this->model->getAllMovies(); // Bruges i dropdown
         return ['showings' => $showings, 'movies' => $movies];
     }
 
     public function add() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $movieId = $_POST['movie_id'];
-            $showingTime = $_POST['showing_time'];
-            $screen = $_POST['screen'];
-
+            error_log("POST-data modtaget: " . print_r($_POST, true)); // Debug POST-data
+    
+            $movieId = $_POST['movie_id'] ?? null;
+            $showingTime = $_POST['showing_time'] ?? null;
+            $screen = $_POST['screen'] ?? null;
+    
+            // Tjek, om nogen af værdierne mangler
+            if (!$movieId || !$showingTime || !$screen) {
+                error_log("Manglende data: movie_id=$movieId, showing_time=$showingTime, screen=$screen");
+                return ['error' => 'Alle felter skal udfyldes'];
+            }
+    
             if ($this->model->addShowing($movieId, $showingTime, $screen)) {
                 header('Location: ?page=admin_daily_showings&success=true');
                 exit;
             } else {
-                // Fejlbehandling
+                error_log("Fejl ved indsættelse af visning i databasen");
                 return ['error' => 'Fejl ved tilføjelse af visning'];
             }
         }
