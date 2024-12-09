@@ -2,9 +2,10 @@
 require_once dirname(__DIR__, 2) . '/init.php';
 
 
-/* $current_page = $_REQUEST['page'] ?? 'homePage';
+$current_page = $_REQUEST['page'] ?? 'homePage';
+$current_slug = $_REQUEST['slug'] ?? '';
 
-define('CURRENT_PAGE', $current_page); */
+define('CURRENT_PAGE', $current_page);
 
 echo CURRENT_PAGE;
 ?>
@@ -16,11 +17,13 @@ echo CURRENT_PAGE;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>   <title>
         <?php 
-        if ($current_page === 'movie_details' && $current_slug) {
-            echo ucfirst(str_replace('-', ' ', $current_slug)) . ' - Drive-In Biograf';
-        } else {
-            echo ucfirst($current_page) . ' - Drive-In Biograf';
-        }
+              
+           if ($current_page === 'movie_details' && $current_slug) {
+               echo ucfirst(str_replace('-', ' ', $current_slug)) . ' - Drive-In Biograf';
+           } else {
+               echo ucfirst($current_page) . ' - Drive-In Biograf';
+           }
+           
         ?>
     </title></title>
     <link rel="stylesheet" href="/Exam-1sem-bio/assets/css/variables.css">
