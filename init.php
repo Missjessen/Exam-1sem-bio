@@ -11,7 +11,7 @@ $current_page = $_GET['page'] ?? 'homePage';
 $slug = $_GET['slug'] ?? null;
 
 // Inkluder nødvendige filer
-require_once __DIR__ . '/init.php';
+require_once 'core/autoLoader.php';
 Security::startSession();
 
 try {
