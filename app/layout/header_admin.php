@@ -26,7 +26,7 @@ $current_page = $GLOBALS['current_page'] ?? 'admin_dashboard'; // Ingen redefine
     <nav>
         <ul>
             <li class="<?= $GLOBALS['current_page'] === 'admin_dashboard' ? 'active' : '' ?>"><a href="?page=admin_dashboard">Dashboard</a></li>
-            <li class="<?= $GLOBALS['current_page'] === 'admin_booking' ? 'active' : '' ?>"><a href="?page=admin_booking">Admin Booking</a></li>
+            <li class="<?= $GLOBALS['current_page'] === 'admin_bookings' ? 'active' : '' ?>"><a href="?page=admin_bookings">Admin Booking</a></li>
             <li class="<?= $GLOBALS['current_page'] === 'admin_daily_showings' ? 'active' : '' ?>"><a href="?page=admin_daily_showings">Showings</a></li>
             <li class="<?= $GLOBALS['current_page'] === 'admin_movie' ? 'active' : '' ?>"><a href="?page=admin_movie">Admin Movie</a></li>
             <li class="<?= $GLOBALS['current_page'] === 'admin_ManageUsers' ? 'active' : '' ?>"><a href="?page=admin_ManageUsers">Manage User</a></li>

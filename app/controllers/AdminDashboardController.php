@@ -2,11 +2,11 @@
 
 class AdminDashboardController {
     private $model;
-    private $pageLoader;
+    private $PageLoader;
 
     public function __construct($db) {
         $this->model = new AdminDashboardModel($db);
-        $this->pageLoader = new PageLoader($db);
+        $this->PageLoader = new PageLoader($db);
     }
 
     public function showDashboard() {
@@ -15,7 +15,7 @@ class AdminDashboardController {
             $newsMovies = $this->model->getNewsMovies();
     
             // Send data til PageLoader
-            $this->pageLoader->loadAdminPage('admin_dashboard', [
+            $this->PageLoader->loadAdminPage('admin_dashboard', [
                 'dailyShowings' => $dailyShowings,
                 'newsMovies' => $newsMovies
             ]);

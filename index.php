@@ -13,13 +13,13 @@ Security::startSession();
 // Definér den aktuelle side og slug
 $current_page = $_GET['page'] ?? 'homePage';
 $slug = $_GET['slug'] ?? null;
-var_dump($_GET);
+
 
 // Kendte ruter
 $knownRoutes = [
     'homePage', 'movie_details', 'program', 'admin_dashboard',
     'admin_movie', 'admin_settings', 'admin_ManageUsers',
-    'admin_booking', 'review', 'login', 'logout', 'register', 'admin_daily_showings', 'admin_parking'
+    'admin_bookings', 'review', 'login', 'logout', 'register', 'admin_daily_showings', 'admin_parking'
 ];
 
 // Beskyttede ruter (som kræver login)

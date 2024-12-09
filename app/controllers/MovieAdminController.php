@@ -2,12 +2,12 @@
 class MovieAdminController {
     private $MovieAdminModel;
     private $fileUploadService;
-    private $pageLoader;
+    private $PageLoader;
 
      public function __construct($db) {
         $this->MovieAdminModel = new MovieAdminModel($db);
         $this->fileUploadService = new FileUploadService();
-        $this->pageLoader = new PageLoader($db); 
+        $this->PageLoader = new PageLoader($db); 
     }
     public function getAllMoviesWithDetails() {
         return $this->MovieAdminModel->getAllMoviesWithDetails(); // Kalder modelens metode
@@ -29,10 +29,10 @@ class MovieAdminController {
             }
     
             // Send data til view
-            $this->pageLoader->loadAdminPage('admin_movie', compact('movies', 'actors', 'genres', 'movieToEdit'));
+            $this->PageLoader->loadAdminPage('admin_movie', compact('movies', 'actors', 'genres', 'movieToEdit'));
         } catch (Exception $e) {
             error_log("Fejl i MovieAdminController::index(): " . $e->getMessage());
-            $this->pageLoader->loadErrorPage("Noget gik galt under indlæsningen af filmsiden.");
+            $this->PageLoader->loadErrorPage("Noget gik galt under indlæsningen af filmsiden.");
         }
     }
     
@@ -53,7 +53,7 @@ class MovieAdminController {
                 if ($movieId) {
                     // Hent filmdata og forbered til redigering
                     $movieToEdit = $this->MovieAdminModel->getMovieDetails($movieId);
-                    $this->pageLoader->loadAdminPage('admin_movie', [
+                    $this->PageLoader->loadAdminPage('admin_movie', [
                         'movieToEdit' => $movieToEdit,
                         'movies' => $this->MovieAdminModel->getAllMoviesWithDetails(),
                         'actors' => $this->MovieAdminModel->getAllActors(),

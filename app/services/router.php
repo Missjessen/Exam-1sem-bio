@@ -25,9 +25,9 @@ class Router {
         // Opret nødvendige instanser
         $pageController = new PageController($db);
         $MovieAdminController = new MovieAdminController($db);
-        $pageLoader = new PageLoader($db);
+        $PageLoader = new PageLoader($db);
         $adminController = new AdminController(new AdminModel($db));
-        $pageController = new PageController($pageLoader);
+        $pageController = new PageController($PageLoader);
        
         //$pageUserController = new PageUserController(new MovieFrontendModel($db));
             $movieFrontendController = new MovieFrontendController(new MovieFrontendModel($db));
@@ -80,7 +80,7 @@ class Router {
                         $data = $controller->handleRequest($action);
                     }
                 
-                    $pageLoader->loadAdminPage('admin_daily_showings', $data);
+                    $PageLoader->loadAdminPage('admin_daily_showings', $data);
                     break;
                 
 
@@ -106,7 +106,7 @@ class Router {
                     $data = $pageController->getCustomersAndEmployeesData();
                 
                     // Indlæs siden
-                    $pageLoader->loadAdminPage('admin_ManageUsers', $data);
+                    $PageLoader->loadAdminPage('admin_ManageUsers', $data);
                     break;
 
                     case 'admin_settings':
@@ -122,7 +122,7 @@ class Router {
                             $settings = $adminController->handleSettings();
                     
                             // Send settings og page til PageLoader
-                            $pageLoader->loadAdminPage('admin_settings', [
+                            $PageLoader->loadAdminPage('admin_settings', [
                                 'settings' => $settings,
                                 'page' => 'admin_settings', // Marker, hvilken side der er aktiv
                             ]);
@@ -130,7 +130,7 @@ class Router {
                         break;
 
             // User-specific pages
-            case 'admin_booking':
+            case 'admin_bookings':
                 $pageController->showAdminBookingsPage();
                 break;
             

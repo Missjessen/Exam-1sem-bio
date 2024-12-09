@@ -1,16 +1,22 @@
-<?php
-
+<?php 
 class Database {
     private static $instance = null; // Singleton instans
     private $connection; // PDO-forbindelsen
 
     private function __construct() {
         // Databaseforbindelsesdetaljer fra miljøvariabler
-        $host = getenv('DB_HOST') ?: 'localhost';
-        $dbName = getenv('DB_NAME') ?: 'drive-in-1sem';
-        $user = getenv('DB_USER') ?: 'root';
-        $password = getenv('DB_PASS') ?: '';
-        $charset = getenv('DB_CHARSET') ?: 'utf8mb4';
+       // $host = getenv('DB_HOST') ?: 'localhost';
+       // $dbName = getenv('DB_NAME') ?: 'cjsfkt3sf_cruisenightscinema';
+       // $user = getenv('DB_USER') ?: 'root';
+        //$password = getenv('DB_PASS') ?: '';
+       // $charset = getenv('DB_CHARSET') ?: 'utf8mb4';
+        
+        $host = 'localhost';
+$dbName = 'cjsfkt3sf_cruisenightscinema';
+$user = 'cjsfkt3sf_cruisenightscinema'; 
+$password = '123456'; 
+$charset = 'utf8mb4';
+
 
         $dsn = "mysql:host=$host;dbname=$dbName;charset=$charset";
 

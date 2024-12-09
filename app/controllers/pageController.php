@@ -3,7 +3,7 @@ require_once dirname(__DIR__, 2) . '/init.php';
 
 class PageController {
     private $db;
-    private $pageLoader;
+    private $PageLoader;
     private $MovieAdminController;
     private $adminController;
     private $adminBookingModel;
@@ -14,7 +14,7 @@ class PageController {
     public function __construct() {
         // Initialiser databaseforbindelsen og komponenter
         $this->db = Database::getInstance()->getConnection();
-        $this->pageLoader = new PageLoader($this->db);
+        $this->PageLoader = new PageLoader($this->db);
         $this->MovieAdminController = new MovieAdminController($this->db);
         $this->adminController = new AdminController(new AdminModel($this->db));
         $this->adminBookingModel = new AdminBookingModel($this->db);
@@ -31,7 +31,7 @@ public function showPage($page) {
             $this->handleAdminDailyShowings();
         } else {
             // Standard håndtering for brugersider
-            $this->pageLoader->loadUserPage($page);
+            $this->PageLoader->loadUserPage($page);
         }
     } catch (Exception $e) {
         $this->handleError("Fejl under indlæsning af siden: " . $e->getMessage());
@@ -53,7 +53,7 @@ private function handleAdminDailyShowings() {
     var_dump($data);  // Udskriv data for at sikre, at vi får noget tilbage
     exit;  // Stop for at se output
 
-    $this->pageLoader->loadAdminPage('admin_daily_showings', $data);
+    $this->PageLoader->loadAdminPage('admin_daily_showings', $data);
 }
 
   // Ny metode til håndtering af movie_details
@@ -69,7 +69,7 @@ private function handleAdminDailyShowings() {
         $showtimes = $movieDetailsModel->getShowtimesForMovie($movie['id']);
 
         // Indlæs view med data
-        $this->pageLoader->loadUserPage('movie_details', [
+        $this->PageLoader->loadUserPage('movie_details', [
             'movie' => $movie,
             'showtimes' => $showtimes,
         ]);
@@ -85,7 +85,7 @@ private function handleAdminDailyShowings() {
     public function showHomePage() {
         try {
             $movieFrontendModel = new MovieFrontendModel($this->db);
-            $this->pageLoader->showHomePage($movieFrontendModel);
+            $this->PageLoader->showHomePage($movieFrontendModel);
         } catch (Exception $e) {
             $this->handleError("Fejl under indlæsning af forsiden: " . $e->getMessage());
         }
@@ -97,7 +97,7 @@ private function handleAdminDailyShowings() {
             $movieAdminModel = new MovieAdminModel($this->db); // Brug eksisterende model
             $movies = $movieAdminModel->getAllMovies(); // Hent alle film
     
-            $this->pageLoader->loadUserPage('program', [
+            $this->PageLoader->loadUserPage('program', [
                 'movies' => $movies, // Send filmdata til view
             ]);
         } catch (Exception $e) {
@@ -133,7 +133,7 @@ private function handleAdminDailyShowings() {
             }
     
             // Indlæs admin_movie view med alle data
-            $this->pageLoader->loadAdminPage('admin_movie', [
+            $this->PageLoader->loadAdminPage('admin_movie', [
                 'movies' => $movies,
                 'actors' => $actors,
                 'genres' => $genres,
@@ -141,7 +141,7 @@ private function handleAdminDailyShowings() {
             ]);
         } catch (Exception $e) {
             error_log("Fejl i showAdminMoviePage: " . $e->getMessage());
-            $this->pageLoader->loadErrorPage("Noget gik galt under indlæsningen af filmadministrationen.");
+            $this->PageLoader->loadErrorPage("Noget gik galt under indlæsningen af filmadministrationen.");
         }
     }
 
@@ -163,10 +163,10 @@ private function handleAdminDailyShowings() {
             // Hent settings
             $settings = $AdminController->handleSettings();
             // Indlæs admin-siden med settings
-            $this->pageLoader->loadAdminPage('admin_settings', compact('settings'));
+            $this->PageLoader->loadAdminPage('admin_settings', compact('settings'));
        } catch (Exception $e) {
             error_log("Fejl i showAdminSettingsPage: " . $e->getMessage());
-            $this->pageLoader->loadErrorPage("Noget gik galt under indlæsningen af indstillinger.");
+            $this->PageLoader->loadErrorPage("Noget gik galt under indlæsningen af indstillinger.");
         }
     }
 
@@ -207,45 +207,25 @@ private function handleAdminDailyShowings() {
             $settings = $this->adminController->handleSettings();
     
             // Indlæs settings-siden
-            $this->pageLoader->loadAdminPage('admin_settings', compact('settings'));
+            $this->PageLoader->loadAdminPage('admin_settings', compact('settings'));
         } catch (Exception $e) {
             error_log("Fejl i handleSettings: " . $e->getMessage());
-            $this->pageLoader->loadErrorPage("Noget gik galt under håndtering af indstillinger.");
+            $this->PageLoader->loadErrorPage("Noget gik galt under håndtering af indstillinger.");
         }
     }
 
     public function showAdminBookingsPage() {
         try {
+            require_once __DIR__ . '/../models/AdminBookingModel.php';
             $bookingModel = new AdminBookingModel($this->db);
-            $action = $_GET['action'] ?? 'list';
     
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                // Opret eller rediger booking
-                $data = [
-                    'movie_id' => $_POST['movie_id'],
-                    'spot_id' => $_POST['spot_id'],
-                    'customer_id' => $_POST['customer_id'],
-                    'price' => $_POST['price']
-                ];
-    
-                if ($action === 'edit') {
-                    $bookingModel->updateBooking($data, ['booking_id' => $_POST['booking_id']]);
-                } else {
-                    $bookingModel->createBooking($data);
-                }
-    
-                header('Location: ?page=admin_bookings');
-                exit;
-            } elseif ($action === 'delete') {
-                $bookingModel->deleteBooking(['booking_id' => $_GET['id']]);
-                header('Location: ?page=admin_bookings');
-                exit;
-            }
-    
+            // Hent alle bookinger
             $bookings = $bookingModel->getAllBookings();
-            $this->pageLoader->loadAdminPage('admin_bookings', ['bookings' => $bookings]);
+    
+            // Send data til view via PageLoader
+            $this->PageLoader->loadAdminPage('admin_bookings', ['bookings' => $bookings]);
         } catch (Exception $e) {
-            $this->handleError("Fejl under håndtering af bookinger: " . $e->getMessage());
+            $this->handleError("Fejl under indlæsning af bookinger: " . $e->getMessage());
         }
     }
     

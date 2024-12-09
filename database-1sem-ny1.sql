@@ -319,6 +319,54 @@ INSERT INTO `pages` (pages, title, content, css_file, template_file) VALUES
 ('admin_settings', 'Settings - Drive-In Bio', 'Settings for admin.', 'assets/css/admin_settings.css', 'app/view/admin/admin_settings.php');
 
 
+-- Indsæt testdata i `customers` tabellen
+INSERT INTO customers (name, email, phone) VALUES
+('John Doe', 'john@example.com', '12345678'),
+('Jane Smith', 'jane@example.com', '87654321');
 
- 
+-- Indsæt testdata i `movies` tabellen
+INSERT INTO movies (id, slug, title, director, release_year, runtime, age_limit, description, length, status, premiere_date, language, poster) VALUES
+(UUID(), 'the-dark-knight-2008', 'The Dark Knight', 'Christopher Nolan', 2008, 152, 'PG-13', 'When the menace known as the Joker wreaks havoc on Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.', '02:32:00', 'Released', '2008-07-18', 'English', '/path/to/poster/the-dark-knight.jpg'),
+(UUID(), 'inception-2010', 'Inception', 'Christopher Nolan', 2010, 148, 'PG-13', 'A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO.', '02:28:00', 'Released', '2010-07-16', 'English', '/path/to/poster/inception.jpg');
+
+-- Indsæt testdata i `spots` tabellen
+INSERT INTO spots (spot_number, status) VALUES
+(1, 'available'),
+(2, 'available'),
+(3, 'booked'),
+(4, 'available'),
+(5, 'booked');
+
+-- Indsæt testdata i `bookings` tabellen
+INSERT INTO bookings (movie_id, spot_id, customer_id, price) VALUES
+((SELECT id FROM movies WHERE slug = 'the-dark-knight-2008'), 3, 1, 100),
+((SELECT id FROM movies WHERE slug = 'inception-2010'), 5, 2, 150);
+
+ DELIMITER $$
+
+CREATE TRIGGER update_booking_price
+AFTER INSERT ON bookings
+FOR EACH ROW
+BEGIN
+    DECLARE total_price DECIMAL(10, 2);
+
+    -- Beregn totalprisen baseret på pladstype
+    SELECT SUM(pp.price_per_spot) INTO total_price
+    FROM parking_prices pp
+    JOIN spots s ON pp.row_type = s.status
+    WHERE s.spot_id = NEW.spot_id;
+
+    -- Opdater booking med den beregnede pris
+    UPDATE bookings 
+    SET price = total_price 
+    WHERE booking_id = NEW.booking_id;
+END$$
+
+DELIMITER ;
+
+-- Eksempel booking
+INSERT INTO `bookings` (`movie_id`, `spot_id`, `customer_id`)
+VALUES
+((SELECT id FROM movies WHERE slug = 'the-dark-knight-2008'), 1, 1);
+
 

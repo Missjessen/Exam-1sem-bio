@@ -3,16 +3,22 @@ require_once 'init.php';
 class AdminBookingModel extends CrudBase {
     // Booking-funktioner
     public function getAllBookings() {
-        return $this->readWithJoin(
-            'bookings',
-            'bookings.booking_id, movies.title AS movie_title, customers.name AS customer_name, spots.spot_number, bookings.booking_date, bookings.price',
-            [
-                'JOIN movies ON bookings.movie_id = movies.id',
-                'JOIN customers ON bookings.customer_id = customers.id',
-                'JOIN spots ON bookings.spot_id = spots.spot_id'
-            ]
-        );
+        $columns = "
+            b.booking_id,
+            b.booking_date,
+            b.price,
+            m.title AS movie_title,
+            c.name AS customer_name,
+            s.spot_number
+        ";
+        $joins = [
+            "INNER JOIN movies m ON b.movie_id = m.id",
+            "INNER JOIN customers c ON b.customer_id = c.id",
+            "INNER JOIN spots s ON b.spot_id = s.spot_id"
+        ];
+        return $this->readWithJoin('bookings b', $columns, $joins);
     }
+
 
     public function getAllMovies() {
         return $this->read('movies', 'id, title, price');

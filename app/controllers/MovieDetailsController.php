@@ -2,11 +2,11 @@
 
 class MovieDetailsController {
     private $movieModel;
-    private $pageLoader;
+    private $PageLoader;
 
     public function __construct($db) {
         $this->movieModel = new MovieDetailsModel($db);
-        $this->pageLoader = new PageLoader($db);
+        $this->PageLoader = new PageLoader($db);
     }
 
     public function showMovieDetailsBySlug($slug) {
@@ -20,7 +20,7 @@ class MovieDetailsController {
                 throw new Exception("Filmen med slug '{$slug}' blev ikke fundet.");
             }
     
-            $this->pageLoader->loadUserPage('movie_details', ['movie' => $movie]);
+            $this->PageLoader->loadUserPage('movie_details', ['movie' => $movie]);
         } catch (Exception $e) {
             $this->handleError("Fejl: " . $e->getMessage());
         }

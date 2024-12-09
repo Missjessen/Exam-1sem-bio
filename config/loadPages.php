@@ -42,9 +42,9 @@ return [
           'admin_parking' => ['view' => '/app/view/admin/admin_parking.php',
           'css' => '/assets/css/admin_parking.css'],
 
-          'admin_booking' => ['view' => '/app/view/admin/admin_booking.php',
+          'admin_bookings' => ['view' => '/app/view/admin/admin_bookings.php',
 
-          'css' => '/assets/css/admin_booking.css'],
+          'css' => '/assets/css/admin_bookings.css'],
          
 
        //login og logout
