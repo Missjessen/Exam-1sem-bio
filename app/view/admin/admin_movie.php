@@ -150,3 +150,200 @@
         });
     } 
 </script>
+
+<style>
+/* Generel stil for hele siden */
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+h1, h2 {
+    color: #444;
+    text-align: center;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+/* Stil til eksisterende film sektionen */
+#existing-movies {
+    flex: 1;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#existing-movies .movies-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.movie-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.movie-item img {
+    width: 80px;
+    height: auto;
+    border-radius: 4px;
+}
+
+.movie-details {
+    flex: 1;
+}
+
+.movie-details h3 {
+    margin: 0;
+    font-size: 1.2em;
+}
+
+.movie-details p {
+    margin: 5px 0;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.search-bar {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.search-bar input[type="text"] {
+    padding: 8px;
+    width: 80%;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Stil til opret film sektionen */
+#create-movie {
+    flex: 1;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#create-movie form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#create-movie label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+#create-movie input[type="text"],
+#create-movie input[type="number"],
+#create-movie textarea,
+#create-movie input[type="file"],
+#create-movie select {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 100%;
+}
+
+#create-movie select {
+    height: auto;
+    padding: 6px;
+}
+
+#create-movie button {
+    padding: 10px;
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#create-movie button:hover {
+    background-color: #0056b3;
+}
+
+/* Stil for nye skuespillere og genrer */
+/* Form til nye skuespillere og genrer */
+#additional-forms {
+    margin-top: 20px;
+}
+
+#additional-forms form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: #fff;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#additional-forms label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+#additional-forms input[type="text"] {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 100%;
+}
+
+#additional-forms button {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#additional-forms button:hover {
+    background-color: #218838;
+}
+
+/* Responsiv stil */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .movie-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .search-bar input[type="text"] {
+        width: 100%;
+    }
+}
+
+.select2-container {
+        width: 100% !important;
+    }
+    .select2-selection {
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }</style>
