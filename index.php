@@ -34,7 +34,8 @@ if (!in_array($current_page, $knownRoutes)) {
 }
 
 // Gør den aktuelle side tilgængelig globalt
-$GLOBALS['current_page'] = $current_page;
+define('CURRENT_PAGE', $current_page);
+
 
 try {
     // Tjek adgangsbeskyttelse
