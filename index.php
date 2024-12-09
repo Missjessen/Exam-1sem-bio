@@ -13,9 +13,7 @@ require_once __DIR__ . '/app/models/Security.php';
 Security::startSession();
 
 // Definér den aktuelle side
-$current_page = $_GET['page'] ?? 'homePage';
-
-// Gør den aktuelle side globalt tilgængelig
+$current_page = $_REQUEST['page'] ?? 'homePage';
 define('CURRENT_PAGE', $current_page);
 
 /* try {
