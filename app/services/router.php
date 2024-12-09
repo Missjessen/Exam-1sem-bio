@@ -12,7 +12,7 @@ class Router {
         $pageController = new PageController($db); // Variabelnavn er allerede korrekt
         $pageLoader = new PageLoader($db); // Variabelnavn er allerede korrekt
         $adminController = new AdminController(new AdminModel($db)); // Variabelnavn er allerede korrekt
-        $movieFrontendController = new MovieFrontendController(new MovieFrontendModel($db)); // Variabelnavn er allerede korrekt
+        $movieFrontendModel = new MovieFrontendModel($db); // Ingen ændringer
         $showingsController = new AdminShowingsController($db); // Variabelnavn er allerede korrekt
         $movieDetailsController = new MovieDetailsController($db); // Variabelnavn er allerede korrekt
        $dashboardController = new AdminDashboardController($db); // Variabelnavn er allerede korrekt
@@ -23,7 +23,8 @@ class Router {
         switch ($page) {
             // Public Pages
             case 'homePage':
-                $pageController->showHomePage();
+               
+                $pageLoader->showHomePage($movieFrontendModel);
                 break;
 
             case 'movie_details':
