@@ -11,7 +11,8 @@ require_once __DIR__ . '/init.php';
 Security::startSession();
 
 // Definér den aktuelle side og slug
-$current_page = $_GET['page'] ?? 'homePage';
+$current_page = $_REQUEST['page'] ?? 'homePage';
+
 $slug = $_GET['slug'] ?? null;
 
 
