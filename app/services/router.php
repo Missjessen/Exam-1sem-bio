@@ -64,14 +64,25 @@ class Router {
                             break;
             // Admin Pages
             case 'admin_dashboard':
-                $pageLoader->loadAdminPage('admin_dashboard');
+                $dashboardController = new AdminDashboardController($db);
+                $dashboardController->showDashboard();
                 break;
+            
 
                 case 'admin_daily_showings':
+                    $action = $_GET['action'] ?? 'list';
                     $controller = new AdminShowingsController($db);
-                    $data = $controller->index(); // Hent data fra controlleren
+                
+                    if ($action === 'add' || $action === 'edit') {
+                        $controller->handleRequest($action);
+                        $data = $controller->index(); // Genindlæs data
+                    } else {
+                        $data = $controller->handleRequest($action);
+                    }
+                
                     $pageLoader->loadAdminPage('admin_daily_showings', $data);
                     break;
+                
 
                 case 'admin_movie':
                     
@@ -119,9 +130,10 @@ class Router {
                         break;
 
             // User-specific pages
-            case 'book':
-                $pageController->showPage('book');
+            case 'admin_booking':
+                $pageController->showAdminBookingsPage();
                 break;
+            
 /* 
             case 'review':
                 $pageController->showPage('review');

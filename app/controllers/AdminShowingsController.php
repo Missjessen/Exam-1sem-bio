@@ -8,82 +8,87 @@ class AdminShowingsController {
 
     public function handleRequest($action) {
         switch ($action) {
-            case 'list':
-                return $this->index();  // Returner visninger
             case 'add':
-                return $this->add();  // Håndter tilføjelse af visning
+                return $this->add();
             case 'edit':
-                return $this->edit();  // Håndter redigering af visning
+                return $this->edit();
             case 'delete':
-                return $this->delete();  // Håndter sletning af visning
+                return $this->delete();
             default:
-                // Håndter, hvis en ukendt action er anmodet
-                header("HTTP/1.0 404 Not Found");
-                echo "Action not found!";
-                exit;
+                return $this->index();
         }
     }
-    
-    
 
     public function index() {
         $showings = $this->model->getAllShowings();
-        $movies = $this->model->getAllMovies(); // Bruges i dropdown
+        $movies = $this->model->getAllMovies();
         return ['showings' => $showings, 'movies' => $movies];
     }
 
     public function add() {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            error_log("POST-data modtaget: " . print_r($_POST, true)); // Debug POST-data
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = [
+                'movie_id' => $_POST['movie_id'] ?? null,
+                'screen' => $_POST['screen'] ?? null,
+                'show_date' => $_POST['show_date'] ?? null,
+                'show_time' => $_POST['show_time'] ?? null,
+                'total_spots' => $_POST['total_spots'] ?? null,
+                'available_spots' => $_POST['available_spots'] ?? null,
+                'repeat_pattern' => $_POST['repeat_pattern'] ?? 'none',
+                'repeat_until' => $_POST['repeat_until'] ?? null,
+            ];
+            $data = array_filter($data, fn($value) => !is_null($value));
     
-            $movieId = $_POST['movie_id'] ?? null;
-            $showingTime = $_POST['showing_time'] ?? null;
-            $screen = $_POST['screen'] ?? null;
-    
-            // Tjek, om nogen af værdierne mangler
-            if (!$movieId || !$showingTime || !$screen) {
-                error_log("Manglende data: movie_id=$movieId, showing_time=$showingTime, screen=$screen");
-                return ['error' => 'Alle felter skal udfyldes'];
-            }
-    
-            if ($this->model->addShowing($movieId, $showingTime, $screen)) {
+            if ($this->model->addShowing($data)) {
                 header('Location: ?page=admin_daily_showings&success=true');
                 exit;
-            } else {
-                error_log("Fejl ved indsættelse af visning i databasen");
-                return ['error' => 'Fejl ved tilføjelse af visning'];
             }
         }
+    
+        // Returner nødvendige data for at genindlæse siden
+        return $this->index();
     }
+    
+    
 
     public function edit() {
-        $showingId = $_GET['showing_id'];
-        $showing = $this->model->getShowingById($showingId);
-
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $movieId = $_POST['movie_id'];
-            $showingTime = $_POST['showing_time'];
-            $screen = $_POST['screen'];
-
-            if ($this->model->updateShowing($showingId, $movieId, $showingTime, $screen)) {
+        $id = $_GET['showing_id'] ?? null;
+    
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = [
+                'movie_id' => $_POST['movie_id'] ?? null,
+                'screen' => $_POST['screen'] ?? null,
+                'show_date' => $_POST['show_date'] ?? null,
+                'show_time' => $_POST['show_time'] ?? null,
+                'total_spots' => $_POST['total_spots'] ?? null,
+                'available_spots' => $_POST['available_spots'] ?? null,
+                'repeat_pattern' => $_POST['repeat_pattern'] ?? 'none',
+                'repeat_until' => $_POST['repeat_until'] ?? null,
+            ];
+            $data = array_filter($data, fn($value) => !is_null($value));
+    
+            if ($this->model->updateShowing($id, $data)) {
                 header('Location: ?page=admin_daily_showings&success=true');
                 exit;
-            } else {
-                // Fejlbehandling
-                return ['error' => 'Fejl ved opdatering af visning'];
             }
         }
-
-        return ['showing' => $showing];
+    
+        // Returner nødvendige data for at genindlæse siden
+        $showing = $this->model->getShowingById($id);
+        $data = $this->index();
+        $data['showing'] = $showing;
+    
+        return $data;
     }
+    
+    
 
     public function delete() {
-        $showingId = $_GET['showing_id'];
-        if ($this->model->deleteShowing($showingId)) {
+        $id = $_GET['showing_id'] ?? null;
+        if ($this->model->delete('showings', ['id' => $id])) {
             header('Location: ?page=admin_daily_showings&deleted=true');
             exit;
-        } else {
-            return ['error' => 'Fejl ved sletning af visning'];
         }
     }
 }
+

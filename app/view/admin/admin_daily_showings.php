@@ -1,3 +1,13 @@
+<?php
+if (isset($error)) {
+    echo "<p class='error'>" . htmlspecialchars($error) . "</p>";
+}
+?>
+// Debug variabler i viewet
+<pre><?php print_r($showings); ?></pre>
+<pre><?php print_r($movies); ?></pre>
+
+
 <div class="container">
     <h2>Daglige Visninger</h2>
 
@@ -9,7 +19,6 @@
                     <th>Dato</th>
                     <th>Tid</th>
                     <th>Skærm</th>
-                    <th>Pladser</th>
                     <th>Handling</th>
                 </tr>
             </thead>
@@ -20,10 +29,9 @@
                         <td><?= htmlspecialchars($showing['show_date']) ?></td>
                         <td><?= htmlspecialchars($showing['show_time']) ?></td>
                         <td><?= htmlspecialchars($showing['screen']) ?></td>
-                        <td><?= htmlspecialchars($showing['available_spots'] . '/' . $showing['total_spots']) ?></td>
                         <td>
-                            <a href="?page=admin_daily_showings&action=edit&showing_id=<?= htmlspecialchars($showing['id']) ?>">Rediger</a> |
-                            <a href="?page=admin_daily_showings&action=delete&showing_id=<?= htmlspecialchars($showing['id']) ?>" onclick="return confirm('Er du sikker på, at du vil slette denne visning?')">Slet</a>
+                            <a href="?page=admin_daily_showings&action=edit&showing_id=<?= $showing['id'] ?>">Rediger</a>
+                            <a href="?page=admin_daily_showings&action=delete&showing_id=<?= $showing['id'] ?>" onclick="return confirm('Slet denne visning?')">Slet</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -33,6 +41,7 @@
         <p>Ingen visninger fundet.</p>
     <?php endif; ?>
 </div>
+
 
 
     <!-- Form til at tilføje en ny visning -->

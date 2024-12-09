@@ -3,14 +3,14 @@ require_once 'init.php';
 class AdminBookingModel extends CrudBase {
     // Booking-funktioner
     public function getAllBookings() {
-        $joins = [
-            "INNER JOIN customers ON bookings.customer_id = customers.id",
-            "INNER JOIN parking_spots ON bookings.parking_spot_id = parking_spots.id",
-            "INNER JOIN movies ON bookings.movie_id = movies.id"
-        ];
-        return $this->readWithJoin('bookings', 
-            'bookings.*, customers.name AS customer_name, parking_spots.screen AS screen, movies.title AS movie_title, movies.price AS movie_price',
-            $joins
+        return $this->readWithJoin(
+            'bookings',
+            'bookings.booking_id, movies.title AS movie_title, customers.name AS customer_name, spots.spot_number, bookings.booking_date, bookings.price',
+            [
+                'JOIN movies ON bookings.movie_id = movies.id',
+                'JOIN customers ON bookings.customer_id = customers.id',
+                'JOIN spots ON bookings.spot_id = spots.spot_id'
+            ]
         );
     }
 
@@ -27,13 +27,14 @@ class AdminBookingModel extends CrudBase {
         return $this->create('bookings', $data);
     }
 
-    public function updateBooking($id, $data) {
-        return $this->update('bookings', $data, ['id' => $id]);
+    public function updateBooking($data, $where) {
+        return $this->update('bookings', $data, $where);
     }
 
-    public function deleteBooking($id) {
-        return $this->delete('bookings', ['id' => $id]);
+    public function deleteBooking($where) {
+        return $this->delete('bookings', $where);
     }
+
 
     public function getAllParkingSpots() {
         return $this->read('parking_spots');

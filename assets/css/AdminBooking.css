@@ -1,0 +1,30 @@
+.admin-bookings {
+    padding: 20px;
+}
+
+.admin-bookings table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.admin-bookings th, .admin-bookings td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+.admin-bookings th {
+    background-color: #333;
+    color: #fff;
+}
+
+.admin-bookings td a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.admin-bookings td a:hover {
+    text-decoration: underline;
+    color: #0056b3;
+}

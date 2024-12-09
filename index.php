@@ -19,7 +19,7 @@ var_dump($_GET);
 $knownRoutes = [
     'homePage', 'movie_details', 'program', 'admin_dashboard',
     'admin_movie', 'admin_settings', 'admin_ManageUsers',
-    'book', 'review', 'login', 'logout', 'register', 'admin_daily_showings', 'admin_parking'
+    'admin_booking', 'review', 'login', 'logout', 'register', 'admin_daily_showings', 'admin_parking'
 ];
 
 // Beskyttede ruter (som kræver login)

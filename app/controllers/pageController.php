@@ -6,6 +6,10 @@ class PageController {
     private $pageLoader;
     private $MovieAdminController;
     private $adminController;
+    private $adminBookingModel;
+   
+   
+  
 
     public function __construct() {
         // Initialiser databaseforbindelsen og komponenter
@@ -13,6 +17,9 @@ class PageController {
         $this->pageLoader = new PageLoader($this->db);
         $this->MovieAdminController = new MovieAdminController($this->db);
         $this->adminController = new AdminController(new AdminModel($this->db));
+        $this->adminBookingModel = new AdminBookingModel($this->db);
+    
+
         
     }
 
@@ -206,6 +213,42 @@ private function handleAdminDailyShowings() {
             $this->pageLoader->loadErrorPage("Noget gik galt under håndtering af indstillinger.");
         }
     }
+
+    public function showAdminBookingsPage() {
+        try {
+            $bookingModel = new AdminBookingModel($this->db);
+            $action = $_GET['action'] ?? 'list';
+    
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                // Opret eller rediger booking
+                $data = [
+                    'movie_id' => $_POST['movie_id'],
+                    'spot_id' => $_POST['spot_id'],
+                    'customer_id' => $_POST['customer_id'],
+                    'price' => $_POST['price']
+                ];
+    
+                if ($action === 'edit') {
+                    $bookingModel->updateBooking($data, ['booking_id' => $_POST['booking_id']]);
+                } else {
+                    $bookingModel->createBooking($data);
+                }
+    
+                header('Location: ?page=admin_bookings');
+                exit;
+            } elseif ($action === 'delete') {
+                $bookingModel->deleteBooking(['booking_id' => $_GET['id']]);
+                header('Location: ?page=admin_bookings');
+                exit;
+            }
+    
+            $bookings = $bookingModel->getAllBookings();
+            $this->pageLoader->loadAdminPage('admin_bookings', ['bookings' => $bookings]);
+        } catch (Exception $e) {
+            $this->handleError("Fejl under håndtering af bookinger: " . $e->getMessage());
+        }
+    }
+    
     
 
     public function showLoginPage($postData = null) {
