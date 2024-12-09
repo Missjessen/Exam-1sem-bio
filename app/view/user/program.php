@@ -12,3 +12,48 @@
         <?php endforeach; ?>
     </div>
 </div>
+
+
+<style>
+    .program {
+    padding: 20px;
+    background-color: #000;
+    color: #f6f6f6;
+}
+
+.movie-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.movie-card {
+    background-color: #1a1a1a;
+    padding: 15px;
+    border-radius: 5px;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.movie-card img {
+    max-width: 100%;
+    border-radius: 5px;
+}
+
+.movie-card h3 {
+    margin-top: 10px;
+    font-size: 18px;
+    color: #f6f6f6;
+}
+
+.movie-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+.movie-card a {
+    text-decoration: none;
+    color: inherit;
+}
+
+</style>
