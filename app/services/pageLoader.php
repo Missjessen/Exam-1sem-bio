@@ -9,8 +9,9 @@ class PageLoader {
         $this->config = require __DIR__ . '/../../config/loadPages.php'; // Opdateret sti
         if (!is_array($this->config)) {
             throw new Exception("Konfigurationsfilen returnerede ikke et array.");
+            var_dump($this->config);
         }
-        var_dump($this->config);
+       
 
     }
 
@@ -52,8 +53,8 @@ class PageLoader {
     
         } catch (Exception $e) {
             // Log fejlen og vis en fejlbesked
-            error_log("Fejl i showHomePage: " . $e->getMessage());
-            $this->renderErrorPage(500, "Noget gik galt under indlæsningen af startsiden.");
+    /*         error_log("Fejl i showHomePage: " . $e->getMessage());
+            $this->renderErrorPage(500, "Noget gik galt under indlæsningen af startsiden."); */
         }
     }
     
