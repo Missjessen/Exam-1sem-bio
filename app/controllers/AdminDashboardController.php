@@ -1,6 +1,6 @@
 <?php
 
-class AdminDashboardController extends BaseController {
+class AdminDashboardController extends CrudBase{
     private $model;
     private $pageLoader;
 
