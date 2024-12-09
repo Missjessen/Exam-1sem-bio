@@ -2,8 +2,10 @@
 <?php 
 require_once dirname(__DIR__, 2) . '/init.php';
 
+$current_page = $_REQUEST['page'] ?? 'admin_dashboard';
 
-$current_page = $GLOBALS['current_page'] ?? 'admin_dashboard'; // Ingen redefinering
+echo CURRENT_PAGE;
+
 
 ?>
 
@@ -14,12 +16,8 @@ $current_page = $GLOBALS['current_page'] ?? 'admin_dashboard'; // Ingen redefine
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $current_page === 'admin_settings' ? 'Admin Settings - Drive-In Biograf' : 'Admin Sektion - Drive-In Biograf' ?></title>
     <link rel="stylesheet" href="/Exam-1sem-bio/assets/css/variables.css">
-    <?php
-    // Dynamisk CSS for hver side
-    if (isset($GLOBALS['current_page'])) {
-        echo "<link rel='stylesheet' href='/Exam-1sem-bio/assets/css/{$GLOBALS['current_page']}.css'>";
-    }
-    ?>
+    <link rel="stylesheet" href="<?php echo '/css/' . $current_page . '.css'; ?>">
+   
 </head>
 <body>
 <header>

@@ -1,8 +1,8 @@
 <?php 
 require_once 'init.php';
+$current_page = $_REQUEST['page'] ?? 'admin_dashboard';
 
-$current_page = $GLOBALS['current_page'] ?? 'homePage'; // Standard til 'homePage' hvis ikke defineret
-$current_slug = $_GET['slug'] ?? null; // Tjek om slug er sat (til dynamiske sider)
+echo CURRENT_PAGE;
 ?>
 
 <!DOCTYPE html>

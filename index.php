@@ -8,6 +8,8 @@ error_reporting(E_ALL);
 require_once __DIR__ . '/init.php';
 Security::startSession();
 
+define('CURRENT_PAGE', $current_page);
+
 // Definér den aktuelle side og slug
 $current_page = $_GET['page'] ?? 'homePage';
 $slug = $_GET['slug'] ?? null;
