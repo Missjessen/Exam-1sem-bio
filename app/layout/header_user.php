@@ -15,7 +15,7 @@ echo CURRENT_PAGE;
 <head>
 <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>   <title>
+    <title>  
         <?php 
               
            if ($current_page === 'movie_details' && $current_slug) {
@@ -25,7 +25,7 @@ echo CURRENT_PAGE;
            }
            
         ?>
-    </title></title>
+    </title>
     <link rel="stylesheet" href="/Exam-1sem-bio/assets/css/variables.css">
     <?php
     // Dynamisk CSS for hver side

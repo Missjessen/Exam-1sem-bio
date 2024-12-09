@@ -14,30 +14,33 @@ echo CURRENT_PAGE;
 
 ?>
 
-<!DOCTYPE html>
-<html lang="da">
-<head>
-<meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $current_page === 'admin_settings' ? 'Admin Settings - Drive-In Biograf' : 'Admin Sektion - Drive-In Biograf' ?></title>
-    <link rel="stylesheet" href="/Exam-1sem-bio/assets/css/variables.css">
-    <link rel="stylesheet" href="<?php echo '/css/' . $current_page . '.css'; ?>">
-   
-</head>
-<body>
 <header>
     <nav>
+        <div>Cruise Nights Cinema</div>
         <ul>
-            <li class="<?= $GLOBALS['current_page'] === 'admin_dashboard' ? 'active' : '' ?>"><a href="?page=admin_dashboard">Dashboard</a></li>
-            <li class="<?= $GLOBALS['current_page'] === 'admin_bookings' ? 'active' : '' ?>"><a href="?page=admin_bookings">Admin Booking</a></li>
-            <li class="<?= $GLOBALS['current_page'] === 'admin_daily_showings' ? 'active' : '' ?>"><a href="?page=admin_daily_showings">Showings</a></li>
-            <li class="<?= $GLOBALS['current_page'] === 'admin_movie' ? 'active' : '' ?>"><a href="?page=admin_movie">Admin Movie</a></li>
-            <li class="<?= $GLOBALS['current_page'] === 'admin_ManageUsers' ? 'active' : '' ?>"><a href="?page=admin_ManageUsers">Manage User</a></li>
-            <li class="<?= $GLOBALS['current_page'] === 'admin_settings' ? 'active' : '' ?>"><a href="?page=admin_settings">Indstillinger</a></li>
+            <li class="<?= $current_page === 'admin_dashboard' ? 'active' : '' ?>"><a href="?page=admin_dashboard">Dashboard</a></li>
+            <li class="<?= $current_page === 'admin_bookings' ? 'active' : '' ?>"><a href="?admin_bookings">Bookings</a></li>
+            <li class="<?= $current_page === 'admin_daily_showings' ? 'active' : '' ?>"><a href="?page=admin_daily_showings">Showings</a></li>
+            <li class="<?= $current_page === 'admin_movie' ? 'active' : '' ?>"><a href="?page=admin_movie">Movie Upload</a></li>
+            <li class="<?= $current_page === 'admin_ManageUsers' ? 'active' : '' ?>"><a href="?page=admin_ManageUsers">Manage User</a></li>
+             <li class="<?= $current_page === 'admin_settings' ? 'active' : '' ?>"><a href="?page=admin_settings">Info Indstillinger</a></li>
+            
+            <?php if (isset($_SESSION['admin_logged_in'])): ?>
+                <li class="<?= $current_page === 'admin_dashboard' ? 'active' : '' ?>">
+                    <a href="?page=admin_dashboard">Admin Dashboard</a>
+                </li>
+            <?php endif; ?>
         </ul>
+        <div class="header-menu">
+            <?php if (isset($_SESSION['user_logged_in']) || isset($_SESSION['admin_logged_in'])): ?>
+                <a href="/logout.php" class="<?= $current_page === 'logout' ? 'active' : '' ?>">Logout</a>
+            <?php else: ?>
+                <a href="/login.php" class="<?= $current_page === 'login' ? 'active' : '' ?>">Login</a> | 
+                <a href="/register.php" class="<?= $current_page === 'register' ? 'active' : '' ?>">Registrer</a>
+            <?php endif; ?>
+        </div>
     </nav>
 </header>
-    </body>
 
 <style>
     /* Basic reset */
