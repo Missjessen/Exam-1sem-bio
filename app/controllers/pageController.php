@@ -3,8 +3,8 @@ require_once dirname(__DIR__, 2) . '/init.php';
 
 class PageController {
     private $db;
-    private $PageLoader;
-    private $MovieAdminController;
+    private $pageLoader;
+    private $movieAdminController;
     private $adminController;
     private $adminBookingModel;
    
@@ -14,8 +14,8 @@ class PageController {
     public function __construct() {
         // Initialiser databaseforbindelsen og komponenter
         $this->db = Database::getInstance()->getConnection();
-        $this->PageLoader = new PageLoader($this->db);
-        $this->MovieAdminController = new MovieAdminController($this->db);
+        $this->pageLoader = new PageLoader($this->db);
+        $this->movieAdminController = new MovieAdminController($this->db);
         $this->adminController = new AdminController(new AdminModel($this->db));
         $this->adminBookingModel = new AdminBookingModel($this->db);
     
@@ -31,7 +31,7 @@ public function showPage($page) {
             $this->handleAdminDailyShowings();
         } else {
             // Standard håndtering for brugersider
-            $this->PageLoader->loadUserPage($page);
+            $this->pageLoader->loadUserPage($page);
         }
     } catch (Exception $e) {
         $this->handleError("Fejl under indlæsning af siden: " . $e->getMessage());
@@ -53,7 +53,7 @@ private function handleAdminDailyShowings() {
      // Udskriv data for at sikre, at vi får noget tilbage
     exit;  // Stop for at se output
 
-    $this->PageLoader->loadAdminPage('admin_daily_showings', $data);
+    $this->pageLoader->loadAdminPage('admin_daily_showings', $data);
 }
 
   // Ny metode til håndtering af movie_details
@@ -69,7 +69,7 @@ private function handleAdminDailyShowings() {
         $showtimes = $movieDetailsModel->getShowtimesForMovie($movie['id']);
 
         // Indlæs view med data
-        $this->PageLoader->loadUserPage('movie_details', [
+        $this->pageLoader->loadUserPage('movie_details', [
             'movie' => $movie,
             'showtimes' => $showtimes,
         ]);
@@ -85,7 +85,7 @@ private function handleAdminDailyShowings() {
     public function showHomePage() {
         try {
             $movieFrontendModel = new MovieFrontendModel($this->db);
-            $this->PageLoader->showHomePage($movieFrontendModel);
+            $this->pageLoader->showHomePage($movieFrontendModel);
         } catch (Exception $e) {
             $this->handleError("Fejl under indlæsning af forsiden: " . $e->getMessage());
         }
@@ -97,7 +97,7 @@ private function handleAdminDailyShowings() {
             $movieAdminModel = new MovieAdminModel($this->db); // Brug eksisterende model
             $movies = $movieAdminModel->getAllMovies(); // Hent alle film
     
-            $this->PageLoader->loadUserPage('program', [
+            $this->pageLoader->loadUserPage('program', [
                 'movies' => $movies, // Send filmdata til view
             ]);
         } catch (Exception $e) {
@@ -110,9 +110,9 @@ private function handleAdminDailyShowings() {
     public function showAdminMoviePage() {
         try {
             // Hent alle film, genrer og skuespillere
-            $movies = $this->MovieAdminController->getAllMoviesWithDetails();
-            $actors = $this->MovieAdminController->getAllActors();
-            $genres = $this->MovieAdminController->getAllGenres();
+            $movies = $this->movieAdminController->getAllMoviesWithDetails();
+            $actors = $this->movieAdminController->getAllActors();
+            $genres = $this->movieAdminController->getAllGenres();
     
             // Forbered data til redigering af film
             $movieToEdit = null;
@@ -122,7 +122,7 @@ private function handleAdminDailyShowings() {
                 if ($action === 'edit') {
                     $movieId = $_POST['movie_id'] ?? null;
                     if ($movieId) {
-                        $movieToEdit = $this->MovieAdminController->getMovieDetails($movieId);
+                        $movieToEdit = $this->movieAdminController->getMovieDetails($movieId);
                     }
                 }
             }
@@ -133,7 +133,7 @@ private function handleAdminDailyShowings() {
             }
     
             // Indlæs admin_movie view med alle data
-            $this->PageLoader->loadAdminPage('admin_movie', [
+            $this->pageLoader->loadAdminPage('admin_movie', [
                 'movies' => $movies,
                 'actors' => $actors,
                 'genres' => $genres,
@@ -141,7 +141,7 @@ private function handleAdminDailyShowings() {
             ]);
         } catch (Exception $e) {
             error_log("Fejl i showAdminMoviePage: " . $e->getMessage());
-            $this->PageLoader->loadErrorPage("Noget gik galt under indlæsningen af filmadministrationen.");
+            $this->pageLoader->loadErrorPage("Noget gik galt under indlæsningen af filmadministrationen.");
         }
     }
 
@@ -163,10 +163,10 @@ private function handleAdminDailyShowings() {
             // Hent settings
             $settings = $AdminController->handleSettings();
             // Indlæs admin-siden med settings
-            $this->PageLoader->loadAdminPage('admin_settings', compact('settings'));
+            $this->pageLoader->loadAdminPage('admin_settings', compact('settings'));
        } catch (Exception $e) {
             error_log("Fejl i showAdminSettingsPage: " . $e->getMessage());
-            $this->PageLoader->loadErrorPage("Noget gik galt under indlæsningen af indstillinger.");
+            $this->pageLoader->loadErrorPage("Noget gik galt under indlæsningen af indstillinger.");
         }
     }
 
@@ -207,10 +207,10 @@ private function handleAdminDailyShowings() {
             $settings = $this->adminController->handleSettings();
     
             // Indlæs settings-siden
-            $this->PageLoader->loadAdminPage('admin_settings', compact('settings'));
+            $this->pageLoader->loadAdminPage('admin_settings', compact('settings'));
         } catch (Exception $e) {
             error_log("Fejl i handleSettings: " . $e->getMessage());
-            $this->PageLoader->loadErrorPage("Noget gik galt under håndtering af indstillinger.");
+            $this->pageLoader->loadErrorPage("Noget gik galt under håndtering af indstillinger.");
         }
     }
 
@@ -223,7 +223,7 @@ private function handleAdminDailyShowings() {
             $bookings = $bookingModel->getAllBookings();
     
             // Send data til view via PageLoader
-            $this->PageLoader->loadAdminPage('admin_bookings', ['bookings' => $bookings]);
+            $this->pageLoader->loadAdminPage('admin_bookings', ['bookings' => $bookings]);
         } catch (Exception $e) {
             $this->handleError("Fejl under indlæsning af bookinger: " . $e->getMessage());
         }

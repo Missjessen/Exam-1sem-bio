@@ -1,22 +1,22 @@
 <?php
 class MovieAdminController {
-    private $MovieAdminModel;
+    private $movieAdminModel;
     private $fileUploadService;
-    private $PageLoader;
+    private $pageLoader;
 
      public function __construct($db) {
-        $this->MovieAdminModel = new MovieAdminModel($db);
+        $this->movieAdminModel = new MovieAdminModel($db);
         $this->fileUploadService = new FileUploadService();
-        $this->PageLoader = new PageLoader($db); 
+        $this->pageLoader = new PageLoader($db); 
     }
     public function getAllMoviesWithDetails() {
-        return $this->MovieAdminModel->getAllMoviesWithDetails(); // Kalder modelens metode
+        return $this->movieAdminModel->getAllMoviesWithDetails(); // Kalder modelens metode
     }
     public function index() {
         try {
-            $movies = $this->MovieAdminModel->getAllMoviesWithDetails();
-            $actors = $this->MovieAdminModel->getAllActors();
-            $genres = $this->MovieAdminModel->getAllGenres();
+            $movies = $this->movieAdminModel->getAllMoviesWithDetails();
+            $actors = $this->movieAdminModel->getAllActors();
+            $genres = $this->movieAdminModel->getAllGenres();
 
             $movieToEdit = $this->prepareMovieEdit();
 
@@ -24,15 +24,15 @@ class MovieAdminController {
             if (isset($_GET['action']) && $_GET['action'] === 'edit') {
                 $movieId = $_GET['movie_id'] ?? null;
                 if ($movieId) {
-                    $movieToEdit = $this->MovieAdminModel->getMovieDetails($movieId);
+                    $movieToEdit = $this->movieAdminModel->getMovieDetails($movieId);
                 }
             }
     
             // Send data til view
-            $this->PageLoader->loadAdminPage('admin_movie', compact('movies', 'actors', 'genres', 'movieToEdit'));
+            $this->pageLoader->loadAdminPage('admin_movie', compact('movies', 'actors', 'genres', 'movieToEdit'));
         } catch (Exception $e) {
             error_log("Fejl i MovieAdminController::index(): " . $e->getMessage());
-            $this->PageLoader->loadErrorPage("Noget gik galt under indlæsningen af filmsiden.");
+            $this->pageLoader->loadErrorPage("Noget gik galt under indlæsningen af filmsiden.");
         }
     }
     
@@ -52,12 +52,12 @@ class MovieAdminController {
                 $movieId = $_POST['movie_id'] ?? null;
                 if ($movieId) {
                     // Hent filmdata og forbered til redigering
-                    $movieToEdit = $this->MovieAdminModel->getMovieDetails($movieId);
-                    $this->PageLoader->loadAdminPage('admin_movie', [
+                    $movieToEdit = $this->movieAdminModel->getMovieDetails($movieId);
+                    $this->pageLoader->loadAdminPage('admin_movie', [
                         'movieToEdit' => $movieToEdit,
-                        'movies' => $this->MovieAdminModel->getAllMoviesWithDetails(),
-                        'actors' => $this->MovieAdminModel->getAllActors(),
-                        'genres' => $this->MovieAdminModel->getAllGenres(),
+                        'movies' => $this->movieAdminModel->getAllMoviesWithDetails(),
+                        'actors' => $this->movieAdminModel->getAllActors(),
+                        'genres' => $this->movieAdminModel->getAllGenres(),
                     ]);
                     return; // Stop yderligere handling
                 } else {
@@ -68,7 +68,7 @@ class MovieAdminController {
             case 'create_actor':
                 $actorName = trim($_POST['actor_name'] ?? '');
                 if ($actorName) {
-                    $this->MovieAdminModel->createActor($actorName);
+                    $this->movieAdminModel->createActor($actorName);
                 } else {
                     error_log("Actor name mangler i 'create_actor' handling.");
                 }
@@ -77,7 +77,7 @@ class MovieAdminController {
             case 'create_genre':
                 $genreName = trim($_POST['genre_name'] ?? '');
                 if ($genreName) {
-                    $this->MovieAdminModel->createGenre($genreName);
+                    $this->movieAdminModel->createGenre($genreName);
                 } else {
                     error_log("Genre name mangler i 'create_genre' handling.");
                 }
@@ -91,7 +91,7 @@ class MovieAdminController {
             case 'delete':
                 $movieId = $_POST['movie_id'] ?? null;
                 if ($movieId) {
-                    $this->MovieAdminModel->deleteMovieWithRelations($movieId);
+                    $this->movieAdminModel->deleteMovieWithRelations($movieId);
                 } else {
                     error_log("Ingen movie_id blev sendt til 'delete' handling.");
                 }
@@ -125,7 +125,7 @@ class MovieAdminController {
                 'language' => $_POST['language'] ?? '',
                 'age_limit' => $_POST['age_limit'] ?? '',
                 'status' => $_POST['status'] ?? '',
-              
+                'genre' => $_POST['genre'] ?? '',
 
             ];
 
@@ -148,20 +148,20 @@ class MovieAdminController {
             if ($action === 'update' && $movieId) {
                 // Opdater eksisterende film
                 $movieData['id'] = $movieId; // Sørg for at inkludere ID til opdatering
-                $this->MovieAdminModel->updateMovie($movieId, $movieData);
+                $this->movieAdminModel->updateMovie($movieId, $movieData);
         
-                // Administrer relationer til skuespillere og genrer
-                $this->MovieAdminModel->manageMovieActors($movieId, $actorIds);
-                $this->MovieAdminModel->manageMovieGenres($movieId, $genreIds);
+                // Adminmistrer relationer til skuespillere og genrer
+                $this->movieAdminModel->manageMovieActors($movieId, $actorIds);
+                $this->movieAdminModel->manageMovieGenres($movieId, $genreIds);
         
             } elseif ($action === 'create') {
                 // Opret ny film
                 $movieData['id'] = $this->generateUUID(); // Generer unikt ID
-                $this->MovieAdminModel->createMovie($movieData);
+                $this->movieAdminModel->createMovie($movieData);
         
                 // Administrer relationer til skuespillere og genrer
-                $this->MovieAdminModel->manageMovieActors($movieData['id'], $actorIds);
-                $this->MovieAdminModel->manageMovieGenres($movieData['id'], $genreIds);
+                $this->movieAdminModel->manageMovieActors($movieData['id'], $actorIds);
+                $this->movieAdminModel->manageMovieGenres($movieData['id'], $genreIds);
             } else {
                 // Håndter ukendt handling eller manglende movie_id
                 error_log("Ukendt handling eller manglende movie_id for handlingen: $action");
@@ -173,7 +173,7 @@ class MovieAdminController {
         if (isset($_GET['action']) && $_GET['action'] === 'edit') {
             $movieId = $_GET['movie_id'] ?? null;
             if ($movieId) {
-                $movieDetails = $this->MovieAdminModel->getMovieDetails($movieId);
+                $movieDetails = $this->movieAdminModel->getMovieDetails($movieId);
                 error_log("Movie Details: " . print_r($movieDetails, true)); // Debug
                 return $movieDetails;
             }
@@ -188,7 +188,7 @@ class MovieAdminController {
      */
     public function deleteMovie($movieId) {
         if ($movieId) {
-            $this->MovieAdminModel->deleteMovieWithRelations($movieId);
+            $this->movieAdminModel->deleteMovieWithRelations($movieId);
         }
     }
 
@@ -215,8 +215,8 @@ class MovieAdminController {
             $names = explode(',', $newEntities);
             foreach ($names as $name) {
                 $newIds[] = $type === 'actor'
-                    ? $this->MovieAdminModel->createActor(trim($name))
-                    : $this->MovieAdminModel->createGenre(trim($name));
+                    ? $this->movieAdminModel->createActor(trim($name))
+                    : $this->movieAdminModel->createGenre(trim($name));
             }
         }
         return $newIds;
@@ -242,9 +242,9 @@ class MovieAdminController {
             }
     
             if ($isUpdate) {
-                $this->MovieAdminModel->updateMovie($data['id'], $data);
+                $this->movieAdminModel->updateMovie($data['id'], $data);
             } else {
-                $this->MovieAdminModel->createMovie($data);
+                $this->movieAdminModel->createMovie($data);
             }
     
             $newActorIds = $this->processNewEntities($newActors, 'actor');
@@ -253,21 +253,21 @@ class MovieAdminController {
             $allActorIds = array_merge($actorIds, $newActorIds);
             $allGenreIds = array_merge($genreIds, $newGenreIds);
     
-            $this->MovieAdminModel->manageMovieActors($data['id'], $allActorIds);
-            $this->MovieAdminModel->manageMovieGenres($data['id'], $allGenreIds);
+            $this->movieAdminModel->manageMovieActors($data['id'], $allActorIds);
+            $this->movieAdminModel->manageMovieGenres($data['id'], $allGenreIds);
         } catch (Exception $e) {
             error_log("Fejl ved filmhåndtering: " . $e->getMessage());
         }
     }
     
     public function getAllActors() {
-        return $this->MovieAdminModel->getAllActors(); // Kalder modelens metode
+        return $this->movieAdminModel->getAllActors(); // Kalder modelens metode
     }
     public function getAllGenres() {
-        return $this->MovieAdminModel->getAllGenres(); // Kalder modelens metode
+        return $this->movieAdminModel->getAllGenres(); // Kalder modelens metode
     }
     public function getMovieDetails($movieId) {
-        return $this->MovieAdminModel->getMovieDetails($movieId); // Kalder modelens metode
+        return $this->movieAdminModel->getMovieDetails($movieId); // Kalder modelens metode
     }
      
     
