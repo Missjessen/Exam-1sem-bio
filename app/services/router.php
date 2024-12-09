@@ -116,12 +116,8 @@ class Router {
                 break;
 
                 default:
-                // Ukendt side: Send til 404
-                (new BaseController())->handleError("Page not found: $page", 404);
-        }
-    } catch (Exception $e) {
-        // Fejl i routing: Send til 500
-        (new BaseController())->handleError("Routing error: " . $e->getMessage(), 500);
-    }
+            }
+        
+    } 
 }
 
