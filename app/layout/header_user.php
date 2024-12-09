@@ -1,5 +1,5 @@
 <?php 
-require_once 'init.php';
+require_once dirname(__DIR__, 2) . '/init.php';
 $current_page = $_REQUEST['page'] ?? 'homePage';
 
 define('CURRENT_PAGE', $current_page);
