@@ -11,6 +11,7 @@ $slug = $_GET['slug'] ?? null;
 // Inkluder nødvendige filer og start session
 require_once __DIR__ . '/init.php';
 
+Security::startSession();
 
 
 
