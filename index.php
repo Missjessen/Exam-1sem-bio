@@ -4,7 +4,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-
+define('CURRENT_PAGE', $current_page);
 // Definér den aktuelle side og slug
 $current_page = $_GET['page'] ?? 'homePage';
 $slug = $_GET['slug'] ?? null;
@@ -12,7 +12,7 @@ $slug = $_GET['slug'] ?? null;
 require_once __DIR__ . '/init.php';
 Security::startSession();
 
-define('CURRENT_PAGE', $current_page);
+
 
 
 // Kendte ruter
