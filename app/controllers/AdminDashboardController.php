@@ -1,11 +1,12 @@
 <?php
 
-class AdminDashboardController extends CrudBase{
+class AdminDashboardController{
     private $model;
     private $pageLoader;
 
+
     public function __construct($db) {
-        parent::__construct();
+       
         $this->model = new AdminDashboardModel($db);
         $this->pageLoader = new PageLoader($db);
     }
@@ -22,7 +23,7 @@ class AdminDashboardController extends CrudBase{
             ]);
         } catch (Exception $e) {
             // Simpel fejlbehandling
-            $this->handleError("Failed to load the dashboard: " . $e->getMessage(), 500);
+           
         }
     }
 }
