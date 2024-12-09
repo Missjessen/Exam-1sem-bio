@@ -7,8 +7,8 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 // Definér den aktuelle side og slug
-$current_page = $_GET['page'] ?? 'homePage';
-$slug = $_GET['slug'] ?? null;
+define('BASE_URL', '/');
+
 
 // Inkluder nødvendige filer
 require_once 'core/autoLoader.php';

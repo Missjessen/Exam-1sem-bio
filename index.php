@@ -4,56 +4,32 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-Security::startSession();
-// Definér den aktuelle side og slug
-$current_page = $_GET['page'] ?? 'homePage';
-$slug = $_GET['slug'] ?? null;
-// Inkluder nødvendige filer og start session
+// Inkluder nødvendige filer
 require_once __DIR__ . '/init.php';
+require_once __DIR__ . '/Security.php';
 
+// Start session
+Security::startSession();
 
+// Definér den aktuelle side
+$current_page = $_GET['page'] ?? 'homePage';
 
-
-
-
-// Kendte ruter
-$knownRoutes = [
-    'homePage', 'movie_details', 'program', 'admin_dashboard',
-    'admin_movie', 'admin_settings', 'admin_ManageUsers',
-    'admin_bookings', 'review', 'login', 'logout', 'register',
-    'admin_daily_showings', 'admin_parking'
-];
-
-// Beskyttede ruter (som kræver login)
-$protectedUserRoutes = [''];
-$protectedAdminRoutes = [''];
-
-// Valider den aktuelle rute
-if (!in_array($current_page, $knownRoutes)) {
-    $current_page = '404';
-}
-
-// Gør den aktuelle side tilgængelig globalt
+// Gør den aktuelle side globalt tilgængelig
 define('CURRENT_PAGE', $current_page);
 
-
 try {
-    // Tjek adgangsbeskyttelse
-    if (in_array($current_page, $protectedAdminRoutes)) {
-        Security::checkLogin(true); // Kun admin
-    } elseif (in_array($current_page, $protectedUserRoutes)) {
-        Security::checkLogin(); // Almindelige brugere
+    // Tjek adgangsbeskyttelse, hvis det er nødvendigt
+    if ($current_page === 'admin_dashboard' || $current_page === 'admin_settings') {
+        Security::checkLogin(true); // Admin-sider
+    } elseif ($current_page === 'profile' || $current_page === 'review') {
+        Security::checkLogin(); // Bruger-sider
     }
 
-    // Router til at håndtere ruten
+    // Routeren håndterer ruterne
     $router = new Router();
-    if ($current_page === 'movie_details' && !empty($slug)) {
-        $router->route($current_page, ['slug' => $slug]);
-    } else {
-        $router->route($current_page);
-    }
+    $router->route($current_page);
 } catch (Exception $e) {
     // Global fejlhåndtering
-    $errorController = new ErrorController();
-    $errorController->show500("An error occurred: " . $e->getMessage());
+    echo "Der opstod en fejl: " . $e->getMessage();
+    exit();
 }

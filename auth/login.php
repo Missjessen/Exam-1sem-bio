@@ -1,38 +1,33 @@
 <?php
-session_start();
+require_once __DIR__ . '/Security.php';
+Security::startSession();
 
-// Inkluder sikkerhedsklassen
-require_once '../models/Security.php';
-
-// Simuleret brugerdata (skift til en database i produktion)
+// Dummy-brugerdata
 $validUser = [
-    'username' => 'testuser',
-    'password' => '$2y$10$9GV2CZQbe7GRp2mjGJ9p7OiGszfA9peYdP7wAx2zkTcfHOs64LSSm' // Hashet version af "testpassword"
+    'username' => 'admin',
+    'password' => Security::hashPassword('password'), // Hashed adgangskode
+    'role' => 'admin'
 ];
 
-// Tjek om brugeren har sendt en login-formular
-if (isset($_POST['username']) && isset($_POST['password'])) {
-    if ($_POST['username'] === $validUser['username'] && Security::validatePassword($_POST['password'], $validUser['password'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $username = $_POST['username'] ?? '';
+    $password = $_POST['password'] ?? '';
 
-        // Generér JWT-token
-        $jwt = Security::generateJWT($validUser['username']);
+    if ($username === $validUser['username'] && Security::validatePassword($password, $validUser['password'])) {
+        // Indstil session
+        $_SESSION['user_id'] = 1; // Dummy ID
+        $_SESSION['user_role'] = $validUser['role'];
 
-        // Sæt JWT-token i en sikker cookie
-        setcookie('auth_token', $jwt, time() + 3600, '/', '', true, true); // Cookie varer i 1 time
-        setcookie('token_user', $validUser['username'], time() + 3600, '/', '', true, true);
-
-        // Omvej til dashboard
-        header("Location: /views/dashboard.php");
+        // Omdiriger til dashboard
+        header('Location: /index.php?page=admin_dashboard');
         exit();
     } else {
-        echo "Ugyldigt brugernavn eller adgangskode!";
+        echo "Ugyldigt brugernavn eller adgangskode.";
     }
-} else {
-    echo "Indtast venligst brugernavn og adgangskode.";
 }
 ?>
 
-<!-- HTML-formular til login -->
+<!-- Simpel login-formular -->
 <form method="POST">
     <input type="text" name="username" placeholder="Brugernavn" required>
     <input type="password" name="password" placeholder="Adgangskode" required>
