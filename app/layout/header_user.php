@@ -1,6 +1,6 @@
 <?php 
 require_once 'init.php';
-$current_page = $_REQUEST['page'] ?? 'admin_dashboard';
+$current_page = $_REQUEST['page'] ?? 'homePage';
 
 echo CURRENT_PAGE;
 ?>
