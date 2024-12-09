@@ -39,10 +39,9 @@ echo CURRENT_PAGE;
     <nav>
         <div>Cruise Nights Cinema</div>
         <ul>
+        <li class="<?= $GLOBALS['current_page'] === 'homePage' ? 'active' : '' ?>"><a href="?page=homePage">Dashboard</a></li>
             <li class="<?= $current_page === 'homePage' ? 'active' : '' ?>"><a href="?page=homePage">Hjem</a></li>
             <li class="<?= $current_page === 'program' ? 'active' : '' ?>"><a href="?page=program">Program</a></li>
-            <li class="<?= $current_page === 'movie' ? 'active' : '' ?>"><a href="?page=movie">Film</a></li>
-            <li class="<?= $current_page === 'tickets' ? 'active' : '' ?>"><a href="?page=tickets">Billetter</a></li>
             <li class="<?= $current_page === 'admin_dashboard' ? 'active' : '' ?>"><a href="?page=admin_dashboard">Admin</a></li>
             
         </ul>
