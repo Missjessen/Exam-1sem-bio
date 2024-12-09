@@ -12,6 +12,7 @@ class AdminShowingsModel extends CrudBase {
         $where = ['id' => $id];
         return $this->update('showings', $data, $where);
     }
+    
 
     public function getShowingById($id) {
         return $this->getItem('showings', ['id' => $id]);
