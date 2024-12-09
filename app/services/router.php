@@ -15,6 +15,7 @@ class Router {
         $movieFrontendController = new MovieFrontendController(new MovieFrontendModel($db)); // Variabelnavn er allerede korrekt
         $showingsController = new AdminShowingsController($db); // Variabelnavn er allerede korrekt
         $movieDetailsController = new MovieDetailsController($db); // Variabelnavn er allerede korrekt
+       $dashboardController = new AdminDashboardController($db); // Variabelnavn er allerede korrekt
 
         // Routing-logik
         switch ($page) {
