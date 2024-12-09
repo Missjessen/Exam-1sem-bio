@@ -16,6 +16,7 @@ class Router {
         $showingsController = new AdminShowingsController($db); // Variabelnavn er allerede korrekt
         $movieDetailsController = new MovieDetailsController($db); // Variabelnavn er allerede korrekt
        $dashboardController = new AdminDashboardController($db); // Variabelnavn er allerede korrekt
+      
 
         // Routing-logik
         switch ($page) {
@@ -114,9 +115,13 @@ class Router {
                 $errorController->show404("Page not found: $page");
                 break;
 
-            default:
-                echo "<pre>Ukendt side: $page</pre>";
-                throw new Exception("Page not found: $page");
+                default:
+                // Ukendt side: Send til 404
+                (new BaseController())->handleError("Page not found: $page", 404);
         }
+    } catch (Exception $e) {
+        // Fejl i routing: Send til 500
+        (new BaseController())->handleError("Routing error: " . $e->getMessage(), 500);
     }
 }
+
