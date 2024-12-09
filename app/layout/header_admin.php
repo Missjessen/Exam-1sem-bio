@@ -1,10 +1,11 @@
 
 <?php 
+require_once dirname(__DIR__, 2) . '/init.php';
 $current_page = $_REQUEST['page'] ?? 'admin_dashboard';
 
 echo CURRENT_PAGE;
 
-require_once dirname(__DIR__, 2) . '/init.php';
+
 
 
 
