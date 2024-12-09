@@ -1,29 +1,18 @@
 <?php
+ob_start(); // Start output buffering for at undgå header-fejl
+
 // Aktivér fejlrapportering
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-define('CURRENT_PAGE', $current_page);
-require_once 'core/autoLoader.php';
 
+// Definér den aktuelle side og slug
+$current_page = $_GET['page'] ?? 'homePage';
+$slug = $_GET['slug'] ?? null;
 
-
-
-// Start session, hvis ikke allerede startet
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-/* // .env-loader.php
-function loadEnv() {
-    $env = parse_ini_file('.env', true);
-
-    foreach ($env as $key => $value) {
-        putenv("$key=$value");
-    }
-}
-
-// Kald denne funktion i din init.php-fil for at sikre, at miljøvariablerne bliver indlæst
-loadEnv(); */
+// Inkluder nødvendige filer
+require_once __DIR__ . '/init.php';
+Security::startSession();
 
 try {
     $db = Database::getInstance()->getConnection();
