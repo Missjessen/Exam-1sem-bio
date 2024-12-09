@@ -148,7 +148,7 @@ public function getDailyShowings($filterDate = null) {
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        var_dump($result); // Debugging
+       
         return $result;
     }
 

@@ -1,5 +1,3 @@
-
-
 <body>
      <!-- Hero Image Section -->
      <header class="hero-image">

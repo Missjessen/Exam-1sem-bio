@@ -50,7 +50,7 @@ private function handleAdminDailyShowings() {
 
     // Debugging: Tjek hvad controlleren returnerer
     $data = $showingsController->handleRequest($action);
-    var_dump($data);  // Udskriv data for at sikre, at vi får noget tilbage
+     // Udskriv data for at sikre, at vi får noget tilbage
     exit;  // Stop for at se output
 
     $this->PageLoader->loadAdminPage('admin_daily_showings', $data);

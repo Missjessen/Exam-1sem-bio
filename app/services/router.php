@@ -1,15 +1,4 @@
 <?php
-set_error_handler(function ($errno, $errstr, $errfile, $errline) {
-    echo "<pre><strong>Fejl:</strong> [$errno] $errstr - $errfile:$errline</pre>";
-    return false; // Sørg for, at standard PHP-fejl også håndteres
-});
-
-set_exception_handler(function ($exception) {
-    echo "<pre><strong>Exception:</strong> " . $exception->getMessage() . "</pre>";
-    echo "<pre>" . $exception->getTraceAsString() . "</pre>";
-});
-
-// Resten af din routerkode
 
 require_once dirname(__DIR__, 2) . '/init.php';
 
