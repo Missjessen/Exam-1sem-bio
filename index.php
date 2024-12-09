@@ -18,19 +18,19 @@ $current_page = $_GET['page'] ?? 'homePage';
 // Gør den aktuelle side globalt tilgængelig
 define('CURRENT_PAGE', $current_page);
 
-try {
+/* try {
     // Tjek adgangsbeskyttelse, hvis det er nødvendigt
     if ($current_page === 'admin_dashboard' || $current_page === 'admin_settings') {
         Security::checkLogin(true); // Admin-sider
     } elseif ($current_page === 'profile' || $current_page === 'review') {
         Security::checkLogin(); // Bruger-sider
-    }
+    } */
 
     // Routeren håndterer ruterne
     $router = new Router();
     $router->route($current_page);
-} catch (Exception $e) {
+/* } catch (Exception $e) {
     // Global fejlhåndtering
     echo "Der opstod en fejl: " . $e->getMessage();
     exit();
-}
+} */

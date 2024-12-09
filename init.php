@@ -35,7 +35,7 @@ try {
 
 
 // Singleton-test (valgfrit)
-try {
+/* try {
     $db1 = Database::getInstance()->getConnection();
     $db2 = Database::getInstance()->getConnection();
     if ($db1 === $db2) {
@@ -50,4 +50,4 @@ set_exception_handler(function ($exception) {
     $errorController = new ErrorController();
     $errorController->show500($exception->getMessage());
     error_log($exception->getMessage()); // Log fejlen
-});
+}); */
