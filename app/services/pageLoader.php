@@ -10,6 +10,8 @@ class PageLoader {
         if (!is_array($this->config)) {
             throw new Exception("Konfigurationsfilen returnerede ikke et array.");
         }
+        var_dump($this->config);
+
     }
 
     public function loadUserPage($page, $data = []) {
@@ -45,6 +47,8 @@ class PageLoader {
             $this->includeLayout('header_user.php', $data);
             $this->includeView('homePage', $data);
             $this->includeLayout('footer.php', $data);
+
+            
     
         } catch (Exception $e) {
             // Log fejlen og vis en fejlbesked
@@ -147,7 +151,11 @@ class PageLoader {
             echo "<h1>Error $errorCode</h1>";
             echo "<p>$errorMessage</p>";
         }
-    
+        echo $viewPath; // For views
+        echo $layoutPath; // For layouts
+        echo "<!-- Forsøger at indlæse CSS: /Exam-1sem-bio/assets/css/$page.css -->";
+
+        
         exit; // Stop yderligere eksekvering
     }
     
