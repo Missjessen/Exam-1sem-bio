@@ -125,7 +125,7 @@ class PageController {
     }
 
     // Fejlhåndtering
-    private function handleError($message) {
+    public function handleError($message) {
         error_log($message);
         $this->pageLoader->renderErrorPage(500, $message);
     }
