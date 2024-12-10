@@ -5,11 +5,11 @@ class Security {
     /**
      * Starter en session, hvis den ikke allerede er startet.
      */
-    public static function startSession() {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
+    // public static function startSession() {
+    //     if (session_status() === PHP_SESSION_NONE) {
+    //         session_start();
         }
-    }
+    
 
     /**
      * Tjekker, om brugeren er logget ind, og om det er en admin, hvis påkrævet.

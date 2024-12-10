@@ -43,7 +43,6 @@ return [
           'css' => '/assets/css/admin_parking.css'],
 
           'admin_bookings' => ['view' => '/app/view/admin/admin_bookings.php',
-
           'css' => '/assets/css/admin_bookings.css'],
          
 
