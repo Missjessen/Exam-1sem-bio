@@ -16,7 +16,7 @@ class Security {
      *
      * @param bool $isAdmin Hvis true, tjekker for admin-adgang.
      */
-    public static function checkLogin($isAdmin = false) {
+   /*  public static function checkLogin($isAdmin = false) {
         if (!isset($_SESSION['user_id'])) {
             header('Location: /login.php');
             exit();
@@ -26,7 +26,7 @@ class Security {
             header('Location: /403.php');
             exit();
         }
-    }
+    } */
 
     /**
      * Hasher en adgangskode.
