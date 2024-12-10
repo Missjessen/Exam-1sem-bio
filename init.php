@@ -14,7 +14,7 @@ define('BASE_URL', '/');
 /* require_once 'core/autoLoader.php'; */
 require_once __DIR__ . '/core/autoLoader.php';
 
-Security::startSession();
+//Security::startSession();
 
 try {
     $db = Database::getInstance()->getConnection();
