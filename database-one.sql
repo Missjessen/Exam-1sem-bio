@@ -109,20 +109,12 @@ CREATE TABLE IF NOT EXISTS `bookings` (
     `spot_id` INT NOT NULL,
     `customer_id` INT,
     `booking_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
-    `price` INT,
+    `price` DECIMAL(10, 2),
     FOREIGN KEY (`movie_id`) REFERENCES `movies`(`id`) ON DELETE CASCADE,   -- Refererer til `id` i `movies`
     FOREIGN KEY (`spot_id`) REFERENCES `spots`(`spot_id`)
 );
 
 
-CREATE TABLE IF NOT EXISTS `pages` (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    `pages` VARCHAR(50) UNIQUE NOT NULL,
-    title VARCHAR(255) NOT NULL,
-    content TEXT,
-    css_file VARCHAR(255),
-    template_file VARCHAR(255)
-);
 CREATE TABLE site_settings (
     setting_key VARCHAR(255) PRIMARY KEY,
     setting_value TEXT NOT NULL
@@ -187,7 +179,7 @@ GROUP BY
 
 
 
-DELIMITER ;
+
 
 CREATE OR REPLACE VIEW genre_movies AS
 SELECT 
@@ -203,6 +195,40 @@ JOIN
     genres g ON mg.genre_id = g.id;
 
 
+
+DELIMITER $$
+
+CREATE TRIGGER update_booking_price
+AFTER INSERT ON bookings
+FOR EACH ROW
+BEGIN
+    DECLARE total_price DECIMAL(10, 2);
+
+    -- Beregn totalprisen baseret på antallet af pladser
+    SET total_price = (SELECT COUNT(*) * 50 FROM spots WHERE spot_id IN (SELECT spot_id FROM bookings WHERE booking_id = NEW.booking_id));
+
+    -- Opdater booking med den beregnede pris
+    UPDATE bookings SET price = total_price WHERE booking_id = NEW.booking_id;
+END $$
+
+DELIMITER ;
+
+
+DELIMITER $$
+
+CREATE TRIGGER update_available_spots
+AFTER INSERT ON bookings
+FOR EACH ROW
+BEGIN
+    -- Opdater antallet af tilgængelige pladser i showings-tabellen
+    UPDATE showings
+    SET available_spots = available_spots - 1
+    WHERE movie_id = NEW.movie_id
+    AND show_date = (SELECT show_date FROM showings WHERE movie_id = NEW.movie_id LIMIT 1)
+    AND show_time = (SELECT show_time FROM showings WHERE movie_id = NEW.movie_id LIMIT 1);
+END $$
+
+DELIMITER ;
 
 
 
@@ -288,45 +314,33 @@ INSERT INTO site_settings (setting_key, setting_value) VALUES
 ('about_content', 'Drive-In Bio tilbyder en unik filmoplevelse i det fri. Kom og nyd en aften med de nyeste film fra komforten af din egen bil.');
 
 
-INSERT INTO `pages` (pages, title, content, css_file, template_file) VALUES
-('home', 'Hjem - Drive-In Bio', 'Velkommen til Drive-In Bio.', 'assets/css/homePage.css', 'app/view/user/homePage.php'),
-('program', 'Program - Drive-In Bio', 'Film for alle.', 'assets/css/program.css', 'app/view/user/program.php'),
-('movie', 'Film - Drive-In Bio', 'Her er vores filmoversigt.', 'assets/css/movie.css', '/app/view/user/movie.php'),
-('spots', 'Pladser - Drive-In Bio', 'Find din parkering.', 'assets/css/spots.css', 'app/view/user/spots.php'),
-('ticket', 'Køb din spot - Drive-In Bio', 'Køb plads til den næste forestilling.', 'assets/css/ticket.css', 'app/view/user/ticket.php'),
-('about', 'Om Os - Drive-In Bio', 'Lær mere om vores Drive-In biograf.', 'assets/css/about.css', 'app/view/user/about.php'),
-('admin_movie', 'Om Os - Drive-In Bio', 'Lær mere om vores Drive-In biograf.', 'assets/css/admin_movie.css', 'app/view/admin/admin_movie.php'),
-('admin_dashboard', 'Dashboard - Drive-In Bio', 'Dashboard for admin.', 'assets/css/admin_dashboard.css', 'app/view/admin/admin_dashboard.php'),
-('admin_ManageUser', 'Manage User - Drive-In Bio', 'Manage User for admin.', 'assets/css/admin_ManageUser.css', 'app/view/admin/admin_ManageUser.php'),
-('admin_settings', 'Settings - Drive-In Bio', 'Settings for admin.', 'assets/css/admin_settings.css', 'app/view/admin/admin_settings.php');
+
+-- Indsæt testdata i `customers` tabellen
+INSERT INTO customers (name, email, phone) VALUES
+('John Doe', 'john@example.com', '12345678'),
+('Jane Smith', 'jane@example.com', '87654321');
+
+-- Indsæt testdata i `movies` tabellen
+INSERT INTO movies (id, slug, title, director, release_year, runtime, age_limit, description, length, status, premiere_date, language, poster) VALUES
+(UUID(), 'the-dark-knight-2008', 'The Dark Knight', 'Christopher Nolan', 2008, 152, 'PG-13', 'When the menace known as the Joker wreaks havoc on Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.', '02:32:00', 'Released', '2008-07-18', 'English', '/path/to/poster/the-dark-knight.jpg'),
+(UUID(), 'inception-2010', 'Inception', 'Christopher Nolan', 2010, 148, 'PG-13', 'A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO.', '02:28:00', 'Released', '2010-07-16', 'English', '/path/to/poster/inception.jpg');
+
+-- Indsæt testdata i `spots` tabellen
+INSERT INTO spots (spot_number, status) VALUES
+(1, 'available'),
+(2, 'available'),
+(3, 'booked'),
+(4, 'available'),
+(5, 'booked');
+
+-- Indsæt testdata i `bookings` tabellen
+INSERT INTO bookings (movie_id, spot_id, customer_id, price) VALUES
+((SELECT id FROM movies WHERE slug = 'the-dark-knight-2008'), 3, 1, 100),
+((SELECT id FROM movies WHERE slug = 'inception-2010'), 5, 2, 150);
 
 
-DELIMITER $$
 
-CREATE TRIGGER update_booking_price
-AFTER INSERT ON bookings
-FOR EACH ROW
-BEGIN
-    DECLARE total_price DECIMAL(10, 2);
 
-    -- Beregn totalprisen baseret på pladstype
-    SELECT SUM(pp.price_per_spot) INTO total_price
-    FROM parking_prices pp
-    JOIN spots s ON pp.row_type = s.status
-    WHERE s.spot_id = NEW.spot_id;
-
-    -- Opdater booking med den beregnede pris
-    UPDATE bookings 
-    SET price = total_price 
-    WHERE booking_id = NEW.booking_id;
-END$$
-
-DELIMITER ;
-
--- Eksempel booking
-INSERT INTO `bookings` (`movie_id`, `spot_id`, `customer_id`)
-VALUES
-((SELECT id FROM movies WHERE slug = 'the-dark-knight-2008'), 1, 1);
 
  
 

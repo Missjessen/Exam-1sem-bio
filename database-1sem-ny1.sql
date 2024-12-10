@@ -207,6 +207,8 @@ JOIN
 JOIN 
     genres g ON mg.genre_id = g.id;
 
+DELIMITER $$
+
 CREATE TRIGGER update_booking_price
 AFTER INSERT ON bookings
 FOR EACH ROW
@@ -214,10 +216,10 @@ BEGIN
     DECLARE total_price DECIMAL(10, 2);
 
     -- Beregn totalprisen baseret på antallet af pladser
-    SET total_price = (SELECT COUNT(*) * 50 FROM seats WHERE seat_id IN (SELECT seat_id FROM booking_seats WHERE booking_id = NEW.booking_id));
+    SET total_price = (SELECT COUNT(*) * 50 FROM spots WHERE spot_id IN (SELECT spot_id FROM bookings WHERE booking_id = NEW.booking_id));
 
     -- Opdater booking med den beregnede pris
-    UPDATE bookings SET total_price = total_price WHERE booking_id = NEW.booking_id;
+    UPDATE bookings SET price = total_price WHERE booking_id = NEW.booking_id;
 END $$
 
 DELIMITER ;
