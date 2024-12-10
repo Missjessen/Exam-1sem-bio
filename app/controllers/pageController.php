@@ -6,268 +6,125 @@ class PageController {
     private $pageLoader;
     private $movieAdminController;
     private $adminController;
-    private $MovieFrontendController;
-
-
-   
-   
-  
+    private $movieFrontendController;
+    private $adminBookingModel;
 
     public function __construct() {
-        // Initialiser databaseforbindelsen og komponenter
+        // Initialiser database og afhængigheder
         $this->db = Database::getInstance()->getConnection();
         $this->pageLoader = new PageLoader($this->db);
         $this->movieAdminController = new MovieAdminController($this->db);
         $this->adminController = new AdminController(new AdminModel($this->db));
+        $this->movieFrontendController = new MovieFrontendController(new MovieFrontendModel($this->db));
         $this->adminBookingModel = new AdminBookingModel($this->db);
-        $this->MovieFrontendController = new MovieFrontendController(new MovieFrontendModel($this->db));
-
-    
-
-        
     }
 
-   // Indlæser en side
-public function showPage($page) {
-    try {
-        if ($page === 'admin_daily_showings') {
-            // Håndter admin_daily_showings separat
-            $this->handleAdminDailyShowings();
-        } else {
-            // Standard håndtering for brugersider
-            $this->pageLoader->loadUserPage($page);
-        }
-    } catch (Exception $e) {
-        $this->handleError("Fejl under indlæsning af siden: " . $e->getMessage());
-    }
-}
-private function handleAdminDailyShowings() {
-    $action = $_GET['action'] ?? 'list';
-
-    if (!in_array($action, ['list', 'add', 'edit', 'delete'])) {
-        // Hvis en ukendt action er anmodet, log fejl eller send bruger en 404
-        echo "Ugyldig handling: " . htmlspecialchars($action);
-        exit;
-    }
-
-    $showingsController = new AdminShowingsController($this->db);
-
-    // Debugging: Tjek hvad controlleren returnerer
-    $data = $showingsController->handleRequest($action);
-     // Udskriv data for at sikre, at vi får noget tilbage
-    exit;  // Stop for at se output
-
-    $this->pageLoader->loadAdminPage('admin_daily_showings', $data);
-}
-
-  // Ny metode til håndtering af movie_details
-  public function showMovieDetailsPage($slug) {
-    try {
-        $movieDetailsModel = new MovieDetailsModel($this->db);
-        $movie = $movieDetailsModel->getMovieDetailsBySlug($slug);
-
-        if (!$movie) {
-            throw new Exception("Filmen blev ikke fundet.");
-        }
-
-        $showtimes = $movieDetailsModel->getShowtimesForMovie($movie['id']);
-
-        // Indlæs view med data
-        $this->pageLoader->loadUserPage('movie_details', [
-            'movie' => $movie,
-            'showtimes' => $showtimes,
-        ]);
-    } catch (Exception $e) {
-        $this->handleError("Fejl under visning af filmdetaljer: " . $e->getMessage());
-    }
-}
-
-
-
-
-public function showHomePage() {
-    try {
-        $movieFrontendModel = new MovieFrontendModel($this->db);
-        $data = [
-            'upcomingMovies' => $movieFrontendModel->getUpcomingMovies(),
-            'newsMovies' => $movieFrontendModel->getNewsMovies(),
-            'dailyMovies' => $movieFrontendModel->getDailyShowings(),
-            'settings' => $movieFrontendModel->getSiteSettings(),
-        ];
-        $this->pageLoader->renderPage('homePage', $data, 'user');
-    } catch (Exception $e) {
-        error_log("Fejl under indlæsning af forsiden: " . $e->getMessage());
-        $this->pageLoader->renderErrorPage(500, "Noget gik galt under indlæsningen af forsiden.");
-    }
-}
-
-    public function showProgramPage() {
+    // Håndter en given side baseret på page-parametret
+    public function showPage($page) {
         try {
-            $movieAdminModel = new MovieAdminModel($this->db); // Brug eksisterende model
-            $movies = $movieAdminModel->getAllMovies(); // Hent alle film
-    
-            $this->pageLoader->loadUserPage('program', [
-                'movies' => $movies, // Send filmdata til view
-            ]);
+            if (method_exists($this, $page)) {
+                $this->$page(); // Kalder metoden med samme navn som siden
+            } else {
+                $this->pageLoader->loadUserPage($page); // Standard user page
+            }
         } catch (Exception $e) {
-            $this->handleError("Fejl under indlæsning af programsiden: " . $e->getMessage());
+            $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af siden: " . $e->getMessage());
         }
     }
-    
-    public function showDashboard() {
+
+    // Håndter forsiden
+    public function homePage() {
+        try {
+            $movieFrontendModel = new MovieFrontendModel($this->db);
+            $data = [
+                'upcomingMovies' => $movieFrontendModel->getUpcomingMovies(),
+                'newsMovies' => $movieFrontendModel->getNewsMovies(),
+                'dailyMovies' => $movieFrontendModel->getDailyShowings(),
+                'settings' => $movieFrontendModel->getSiteSettings(),
+            ];
+            $this->pageLoader->renderPage('homePage', $data, 'user');
+        } catch (Exception $e) {
+            $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af forsiden: " . $e->getMessage());
+        }
+    }
+
+    // Håndter program
+    public function program() {
+        try {
+            $movies = $this->movieAdminController->getAllMoviesWithDetails();
+            $this->pageLoader->renderPage('program', ['movies' => $movies], 'user');
+        } catch (Exception $e) {
+            $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af programsiden: " . $e->getMessage());
+        }
+    }
+
+    // Håndter filmdetaljer
+    public function movie_details() {
+        if (!empty($_GET['slug'])) {
+            try {
+                $this->movieFrontendController->showMovieDetails($_GET['slug']);
+            } catch (Exception $e) {
+                $this->pageLoader->renderErrorPage(404, "Filmen blev ikke fundet.");
+            }
+        } else {
+            $this->pageLoader->renderErrorPage(400, "Slug mangler i URL'en.");
+        }
+    }
+
+    // Admin dashboard
+    public function admin_dashboard() {
         try {
             $data = [
-                'dailyShowings' => $this->model->getDailyShowings(),
+                'dailyShowings' => $this->movieAdminController->getDailyShowings(),
             ];
-    
-            $this->pageLoader->loadAdminPage('admin_dashboard', $data);
+            $this->pageLoader->renderPage('admin_dashboard', $data, 'admin');
         } catch (Exception $e) {
-            error_log("Fejl i showDashboard: " . $e->getMessage());
-            throw $e;
-        }
-    }
-    
-
-    public function showAdminMoviePage() {
-        try {
-            // Hent alle film, genrer og skuespillere
-            $movies = $this->movieAdminController->getAllMoviesWithDetails();
-            $actors = $this->movieAdminController->getAllActors();
-            $genres = $this->movieAdminController->getAllGenres();
-    
-            // Forbered data til redigering af film
-            $movieToEdit = null;
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $action = $_POST['action'] ?? null;
-    
-                if ($action === 'edit') {
-                    $movieId = $_POST['movie_id'] ?? null;
-                    if ($movieId) {
-                        $movieToEdit = $this->movieAdminController->getMovieDetails($movieId);
-                    }
-                }
-            }
-    
-            // Kontroller, om alle nødvendige data er hentet
-            if (!$movies || !$actors || !$genres) {
-                throw new Exception("Data for film, genrer eller skuespillere kunne ikke hentes.");
-            }
-    
-            // Indlæs admin_movie view med alle data
-            $this->pageLoader->loadAdminPage('admin_movie', [
-                'movies' => $movies,
-                'actors' => $actors,
-                'genres' => $genres,
-                'movieToEdit' => $movieToEdit,
-            ]);
-        } catch (Exception $e) {
-            error_log("Fejl i showAdminMoviePage: " . $e->getMessage());
-            $this->pageLoader->loadErrorPage("Noget gik galt under indlæsningen af filmadministrationen.");
+            $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af admin dashboard: " . $e->getMessage());
         }
     }
 
-    public function handleCustomersAndEmployeesPage() {
-        $this->adminController->handleCustomerAndEmployeeSubmission($_POST, $_GET);
-
-        return [
-            'customers' => $this->adminController->getAllCustomers(),
-            'employees' => $this->adminController->getAllEmployees(),
-            'editCustomer' => isset($_GET['edit_customer_id']) ? $this->adminController->getCustomerById($_GET['edit_customer_id']) : null,
-            'editEmployee' => isset($_GET['edit_employee_id']) ? $this->adminController->getEmployeeById($_GET['edit_employee_id']) : null,
-        ];
-    }
-
-    public function showAdminSettingsPage() {
-        try {
-            // Initialiser AdminController
-            $AdminController = new AdminController(new AdminModel(Database::getInstance()->getConnection()));
-            // Hent settings
-            $settings = $AdminController->handleSettings();
-            // Indlæs admin-siden med settings
-            $this->pageLoader->loadAdminPage('admin_settings', compact('settings'));
-       } catch (Exception $e) {
-            error_log("Fejl i showAdminSettingsPage: " . $e->getMessage());
-            $this->pageLoader->loadErrorPage("Noget gik galt under indlæsningen af indstillinger.");
-        }
-    }
-
-    public function handleCustomerAndEmployeeSubmission($postData, $getData) {
-        $this->adminController->handleCustomerAndEmployeeSubmission($postData, $getData);
-    }
-
-    public function getCustomersAndEmployeesData() {
-        return $this->adminController->getCustomersAndEmployeesData();
-    }
-
-    public function showRegisterPage($postData = null) {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            try {
-                $message = $this->userController->registerUser($postData);
-                echo $message; // Succesbesked
-            } catch (Exception $e) {
-                echo "Fejl: " . $e->getMessage(); // Fejlhåndtering
-            }
-        } else {
-            require_once __DIR__ . '/../auth/register_form.php';
-        }
-    }
-
-
-    public function handleSettings() {
+    // Admin movie
+    public function admin_movie() {
         try {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                // Videregiv POST-data til AdminController
+                $this->movieAdminController->handlePostRequest();
+            } else {
+                $this->movieAdminController->index();
+            }
+        } catch (Exception $e) {
+            $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af filmadministration: " . $e->getMessage());
+        }
+    }
+
+    // Bookinger
+    public function admin_bookings() {
+        try {
+            $data = $this->adminBookingModel->getAllBookings();
+            $this->pageLoader->renderPage('admin_bookings', $data, 'admin');
+        } catch (Exception $e) {
+            $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af bookingsiden: " . $e->getMessage());
+        }
+    }
+
+    // Indstillinger
+    public function admin_settings() {
+        try {
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $this->adminController->handleSettings($_POST);
-    
-                // Rediriger for at undgå gentagne POST-forespørgsler
                 header("Location: ?page=admin_settings");
                 exit;
+            } else {
+                $settings = $this->adminController->handleSettings();
+                $this->pageLoader->renderPage('admin_settings', ['settings' => $settings], 'admin');
             }
-    
-            // Hent eksisterende indstillinger
-            $settings = $this->adminController->handleSettings();
-    
-            // Indlæs settings-siden
-            $this->pageLoader->loadAdminPage('admin_settings', compact('settings'));
         } catch (Exception $e) {
-            error_log("Fejl i handleSettings: " . $e->getMessage());
-            $this->pageLoader->loadErrorPage("Noget gik galt under håndtering af indstillinger.");
+            $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af indstillinger: " . $e->getMessage());
         }
     }
 
-    public function showAdminBookingsPage() {
-        try {
-            require_once __DIR__ . '/../models/AdminBookingModel.php';
-            $bookingModel = new AdminBookingModel($this->db);
-    
-            // Hent alle bookinger
-            $bookings = $bookingModel->getAllBookings();
-    
-            // Send data til view via PageLoader
-            $this->pageLoader->loadAdminPage('admin_bookings', ['bookings' => $bookings]);
-        } catch (Exception $e) {
-            $this->handleError("Fejl under indlæsning af bookinger: " . $e->getMessage());
-        }
+    // Fejlhåndtering
+    private function handleError($message) {
+        error_log($message);
+        $this->pageLoader->renderErrorPage(500, $message);
     }
-    
-    
-
-    public function showLoginPage($postData = null) {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            try {
-                $message = $this->userController->loginUser($postData);
-                echo $message; // Velkomstbesked
-            } catch (Exception $e) {
-                echo "Fejl: " . $e->getMessage(); // Fejlhåndtering
-            }
-        } else {
-            require_once __DIR__ . '/../auth/login_form.php';
-        }
-    }
-
-    public function handleLogout() {
-        Security::logout();
-    }
-
-    
 }
