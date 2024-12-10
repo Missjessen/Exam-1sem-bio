@@ -3,7 +3,7 @@
 require_once dirname(__DIR__, 2) . '/init.php';
 $current_page = $_REQUEST['page'] ?? 'admin_dashboard';
 
-echo CURRENT_PAGE;
+
 
 
 
@@ -25,11 +25,7 @@ echo CURRENT_PAGE;
             <li class="<?= $current_page === 'admin_ManageUsers' ? 'active' : '' ?>"><a href="?page=admin_ManageUsers">Manage User</a></li>
              <li class="<?= $current_page === 'admin_settings' ? 'active' : '' ?>"><a href="?page=admin_settings">Info Indstillinger</a></li>
             
-            <?php if (isset($_SESSION['admin_logged_in'])): ?>
-                <li class="<?= $current_page === 'admin_dashboard' ? 'active' : '' ?>">
-                    <a href="?page=admin_dashboard">Admin Dashboard</a>
-                </li>
-            <?php endif; ?>
+            
         </ul>
        
     </nav>
