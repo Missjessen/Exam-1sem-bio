@@ -1,37 +1,39 @@
-<div class="admin-bookings">
-    <h1>Administrer Bookinger</h1>
+<?php
+$bookings = $adminBookingsController->getAllBookings();
+?>
 
-    <?php if (!empty($bookings)): ?>
-        <table>
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Film</th>
-                    <th>Kunde</th>
-                    <th>Spot</th>
-                    <th>Dato</th>
-                    <th>Pris</th>
-                    <th>Handlinger</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($bookings as $booking): ?>
-                    <tr>
-                        <td><?= htmlspecialchars($booking['booking_id']) ?></td>
-                        <td><?= htmlspecialchars($booking['movie_title']) ?></td>
-                        <td><?= htmlspecialchars($booking['customer_name']) ?></td>
-                        <td><?= htmlspecialchars($booking['spot_number']) ?></td>
-                        <td><?= htmlspecialchars($booking['booking_date']) ?></td>
-                        <td><?= htmlspecialchars($booking['price']) ?></td>
-                        <td>
-                            <a href="?page=admin_booking&action=edit&id=<?= htmlspecialchars($booking['booking_id']) ?>">Rediger</a>
-                            <a href="?page=admin_booking&action=delete&id=<?= htmlspecialchars($booking['booking_id']) ?>" onclick="return confirm('Er du sikker?')">Slet</a>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    <?php else: ?>
-        <p>Ingen bookinger fundet.</p>
-    <?php endif; ?>
-</div>
+<h1>Admin Bookinger</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Booking ID</th>
+            <th>Kunde</th>
+            <th>Film</th>
+            <th>Spot</th>
+            <th>Dato</th>
+            <th>Pris</th>
+            <th>Status</th>
+            <th>Handlinger</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($bookings as $booking): ?>
+            <tr>
+                <td><?= $booking['admin_booking_id'] ?></td>
+                <td><?= htmlspecialchars($booking['customer_name']) ?></td>
+                <td><?= htmlspecialchars($booking['movie_title']) ?></td>
+                <td><?= htmlspecialchars($booking['spot_number']) ?></td>
+                <td><?= htmlspecialchars($booking['booking_date']) ?></td>
+                <td><?= htmlspecialchars($booking['price']) ?></td>
+                <td><?= htmlspecialchars($booking['status']) ?></td>
+                <td>
+                    <form method="post">
+                        <input type="hidden" name="admin_booking_id" value="<?= $booking['admin_booking_id'] ?>">
+                        <button type="submit" name="action" value="edit">Rediger</button>
+                        <button type="submit" name="action" value="delete" onclick="return confirm('Er du sikker?')">Slet</button>
+                    </form>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>

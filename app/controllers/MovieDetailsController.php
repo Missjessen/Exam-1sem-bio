@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 class MovieDetailsController {
     private $movieModel;
@@ -15,19 +15,27 @@ class MovieDetailsController {
         }
     
         try {
+            // Hent filmens detaljer
             $movie = $this->movieModel->getMovieDetailsBySlug($slug);
             if (!$movie) {
                 throw new Exception("Filmen med slug '{$slug}' blev ikke fundet.");
             }
+
+            // Hent visninger for filmen
+            $showtimes = $this->movieModel->getShowtimesForMovie($movie['id']);
     
-            $this->pageLoader->loadUserPage('movie_details', ['movie' => $movie]);
+            // Indlæs siden med de nødvendige data
+            $this->pageLoader->loadUserPage('movie_details', [
+                'movie' => $movie,
+                'showtimes' => $showtimes
+            ]);
         } catch (Exception $e) {
             $this->handleError("Fejl: " . $e->getMessage());
         }
     }
 
-private function handleError($message) {
-    $errorController = new ErrorController();
-    $errorController->showErrorPage($message);
-}
+    private function handleError($message) {
+        $errorController = new ErrorController();
+        $errorController->showErrorPage($message);
+    }
 }

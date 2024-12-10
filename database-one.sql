@@ -44,6 +44,7 @@ CREATE TABLE IF NOT EXISTS `movies` (
     release_year INT,
     runtime INT,
     age_limit VARCHAR(50),
+    booking_count INT DEFAULT 0,
     description TEXT,
     length TIME,
     status VARCHAR(50),
@@ -89,9 +90,6 @@ CREATE TABLE showings (
     show_date DATE NOT NULL,
     show_time TIME NOT NULL,
     total_spots INT NOT NULL,
-    available_spots INT NOT NULL,
-    repeat_pattern ENUM('none', 'daily', 'weekly') DEFAULT 'none',
-    repeat_until DATE DEFAULT NULL,
     FOREIGN KEY (movie_id) REFERENCES movies(id)
 );
 
@@ -109,7 +107,6 @@ CREATE TABLE IF NOT EXISTS `bookings` (
     `spot_id` INT NOT NULL,
     `customer_id` INT,
     `booking_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
-    `price` DECIMAL(10, 2),
     FOREIGN KEY (`movie_id`) REFERENCES `movies`(`id`) ON DELETE CASCADE,   -- Refererer til `id` i `movies`
     FOREIGN KEY (`spot_id`) REFERENCES `spots`(`spot_id`)
 );
@@ -198,17 +195,14 @@ JOIN
 
 DELIMITER $$
 
-CREATE TRIGGER update_booking_price
-AFTER INSERT ON bookings
+CREATE TRIGGER after_booking_delete
+AFTER DELETE ON bookings
 FOR EACH ROW
 BEGIN
-    DECLARE total_price DECIMAL(10, 2);
-
-    -- Beregn totalprisen baseret på antallet af pladser
-    SET total_price = (SELECT COUNT(*) * 50 FROM spots WHERE spot_id IN (SELECT spot_id FROM bookings WHERE booking_id = NEW.booking_id));
-
-    -- Opdater booking med den beregnede pris
-    UPDATE bookings SET price = total_price WHERE booking_id = NEW.booking_id;
+    -- Reducer booking_count i movies-tabellen
+    UPDATE movies
+    SET booking_count = GREATEST(booking_count - 1, 0)  -- Sikrer, at værdien ikke bliver negativ
+    WHERE id = OLD.movie_id;
 END $$
 
 DELIMITER ;
@@ -216,16 +210,14 @@ DELIMITER ;
 
 DELIMITER $$
 
-CREATE TRIGGER update_available_spots
+CREATE TRIGGER after_booking_insert
 AFTER INSERT ON bookings
 FOR EACH ROW
 BEGIN
-    -- Opdater antallet af tilgængelige pladser i showings-tabellen
-    UPDATE showings
-    SET available_spots = available_spots - 1
-    WHERE movie_id = NEW.movie_id
-    AND show_date = (SELECT show_date FROM showings WHERE movie_id = NEW.movie_id LIMIT 1)
-    AND show_time = (SELECT show_time FROM showings WHERE movie_id = NEW.movie_id LIMIT 1);
+    -- Forøg booking_count i movies-tabellen
+    UPDATE movies
+    SET booking_count = booking_count + 1
+    WHERE id = NEW.movie_id;
 END $$
 
 DELIMITER ;
@@ -264,10 +256,10 @@ INSERT INTO genres (name) VALUES
 ('Horror'),
 ('Sci-Fi');
 
-INSERT INTO `showings` (`movie_id`, `screen`, `show_date`, `show_time`, `total_spots`, `available_spots`, `repeat_pattern`, `repeat_until`)
+INSERT INTO `showings` (`movie_id`, `screen`, `show_date`, `show_time`, `total_spots`)
 VALUES
-((SELECT id FROM movies WHERE slug = 'the-dark-knight-2008'), 'large', '2023-12-01', '18:00:00', 50, 50, 'none', NULL),
-((SELECT id FROM movies WHERE slug = 'inception-2010'), 'small', '2023-12-15', '20:30:00', 30, 30, 'none', NULL);
+((SELECT id FROM movies WHERE slug = 'the-dark-knight-2008'), 'large', '2023-12-01', '18:00:00', 50),
+((SELECT id FROM movies WHERE slug = 'inception-2010'), 'small', '2023-12-15', '20:30:00', 30 );
 
 
 INSERT INTO employees (name, email, phone, role, address) VALUES
