@@ -74,8 +74,10 @@ class PageController {
     // Admin dashboard
     public function admin_dashboard() {
         try {
+            $adminDashboardModel = new AdminDashboardModel($this->db);
             $data = [
-                'dailyShowings' => $this->movieAdminController->getDailyShowings(),
+                'dailyShowings' => $adminDashboardModel->getDailyShowings(),
+                'newsMovies' => $adminDashboardModel->getNewsMovies(),
             ];
             $this->pageLoader->renderPage('admin_dashboard', $data, 'admin');
         } catch (Exception $e) {
