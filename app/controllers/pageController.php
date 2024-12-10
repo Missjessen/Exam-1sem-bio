@@ -6,7 +6,9 @@ class PageController {
     private $pageLoader;
     private $movieAdminController;
     private $adminController;
-    private $adminBookingModel;
+    private $MovieFrontendController;
+
+
    
    
   
@@ -18,6 +20,8 @@ class PageController {
         $this->movieAdminController = new MovieAdminController($this->db);
         $this->adminController = new AdminController(new AdminModel($this->db));
         $this->adminBookingModel = new AdminBookingModel($this->db);
+        $this->MovieFrontendController = new MovieFrontendController(new MovieFrontendModel($this->db));
+
     
 
         
@@ -82,10 +86,27 @@ private function handleAdminDailyShowings() {
 
 
     // Indlæser forsiden
-    public function showHomePage() {
-        try {
-            $movieFrontendModel = new MovieFrontendModel($this->db);
-            $this->pageLoader->showHomePage($movieFrontendModel);
+        public function showHomePage(MovieFrontendModel $model) {
+            error_log("Indlæser homePage via PageLoader.");
+        
+            try {
+                $data = [
+                    'upcomingMovies' => $model->getUpcomingMovies() ?? [],
+                    'newsMovies' => $model->getNewsMovies() ?? [],
+                    'dailyMovies' => $model->getDailyShowings() ?? [],
+                    'genreMovies' => $model->getGenreMovies() ?? [],
+                    'settings' => $model->getSiteSettings() ?? [],
+                    'randomGenreMovies' => $model->getRandomGenreMovies(),
+                    'allGenres' => $model->getAllGenres(),
+                    'selectedGenre' => $_GET['genre'] ?? null,
+                ];
+        
+                error_log("Data for homePage: " . print_r($data, true));
+        
+                if (!empty($data['selectedGenre'])) {
+                    $data['moviesByGenre'] = $model->getMoviesByGenre($data['selectedGenre']);
+                }
+                $this->pageLoader->loadUserPage('homePage', compact('homePageData'));
         } catch (Exception $e) {
             $this->handleError("Fejl under indlæsning af forsiden: " . $e->getMessage());
         }
@@ -105,6 +126,18 @@ private function handleAdminDailyShowings() {
         }
     }
     
+    public function showDashboard() {
+        try {
+            $data = [
+                'dailyShowings' => $this->model->getDailyShowings(),
+            ];
+    
+            $this->pageLoader->loadAdminPage('admin_dashboard', $data);
+        } catch (Exception $e) {
+            error_log("Fejl i showDashboard: " . $e->getMessage());
+            throw $e;
+        }
+    }
     
 
     public function showAdminMoviePage() {
