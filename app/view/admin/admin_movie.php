@@ -24,7 +24,7 @@
                         <p>Genrer: <?= htmlspecialchars($movie['genres'] ?? 'Ingen') ?></p>
                         <p>Skuespillere: <?= htmlspecialchars($movie['actors'] ?? 'Ingen') ?></p>
 
-                        <form action="?page=admin_movie" method="post">
+                        <form action="admin_movie" method="post">
                             <input type="hidden" name="movie_id" value="<?= htmlspecialchars($movie['id'], ENT_QUOTES, 'UTF-8') ?>">
                             <button type="submit" name="action" value="edit">Rediger</button>
                             <button type="submit" name="action" value="delete" onclick="return confirm('Er du sikker på, at du vil slette denne film?');">Slet</button>
@@ -43,7 +43,7 @@
     <!-- Section: Create/Edit Movie -->
     <section id="create-movie">
         <h2><?= isset($movieToEdit) ? 'Rediger Film' : 'Opret Ny Film' ?></h2>
-        <form action="?page=admin_movie" method="post" enctype="multipart/form-data">
+        <form action="admin_movie" method="post" enctype="multipart/form-data">
             <input type="hidden" name="movie_id" value="<?= isset($movieToEdit) ? htmlspecialchars($movieToEdit['id']) : '' ?>">
 
             <label for="title">Titel:</label>
