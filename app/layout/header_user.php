@@ -23,11 +23,11 @@ $current_slug = $_REQUEST['slug'] ?? '';
            
         ?>
     </title>
-    <link rel="stylesheet" href="/assets/css/variables.css">
+    <link rel="stylesheet" href="/../../assets/css/variables.css">
     <?php
     // Dynamisk CSS for hver side
     if (!empty($current_page)) {
-        echo "<link rel='stylesheet' href='/assets/css/{$current_page}.css'>";
+        echo "<link rel='stylesheet' href='/../../assets/css/{$current_page}.css'>";
     }
     ?>
 </head>
