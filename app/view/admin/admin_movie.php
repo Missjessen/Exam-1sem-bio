@@ -43,7 +43,7 @@
     <!-- Section: Create/Edit Movie -->
     <section id="create-movie">
         <h2><?= isset($movieToEdit) ? 'Rediger Film' : 'Opret Ny Film' ?></h2>
-        <form action="?page=admin_movie" method="post" enctype="multipart/form-data">
+        <form action="admin_movie" method="post" enctype="multipart/form-data">
             <input type="hidden" name="movie_id" value="<?= isset($movieToEdit) ? htmlspecialchars($movieToEdit['id']) : '' ?>">
 
             <label for="title">Titel:</label>
