@@ -18,7 +18,6 @@ class PageController {
         $this->movieAdminController = new MovieAdminController($this->db);
         $this->adminController = new AdminController(new AdminModel($this->db));
         $this->adminBookingModel = new AdminBookingModel($this->db);
-        
     
 
         
@@ -82,33 +81,15 @@ private function handleAdminDailyShowings() {
 
 
 
-public function showHomePage(MovieFrontendModel $model) {
-    try {
-        $data = [
-            'upcomingMovies' => $model->getUpcomingMovies() ?? [],
-            'newsMovies' => $model->getNewsMovies() ?? [],
-            'dailyMovies' => $model->getDailyShowings() ?? [],
-            'genreMovies' => $model->getGenreMovies() ?? [],
-            'settings' => $model->getSiteSettings() ?? [],
-            'randomGenreMovies' => $model->getRandomGenreMovies(),
-            'allGenres' => $model->getAllGenres(),
-            'selectedGenre' => $_GET['genre'] ?? null,
-        ];
-
-        if (!empty($data['selectedGenre'])) {
-            $data['moviesByGenre'] = $model->getMoviesByGenre($data['selectedGenre']);
+    // Indlæser forsiden
+    public function showHomePage() {
+        try {
+            $movieFrontendModel = new MovieFrontendModel($this->db);
+            $this->pageLoader->showHomePage($movieFrontendModel);
+        } catch (Exception $e) {
+            $this->handleError("Fejl under indlæsning af forsiden: " . $e->getMessage());
         }
-
-        $this->includeCSS('homePage');
-        $this->includeLayout('header_user.php', $data);
-        $this->includeView('homePage', $data);
-        $this->includeLayout('footer.php', $data);
-    } catch (Exception $e) {
-        error_log("Fejl i showHomePage: " . $e->getMessage());
-        $this->renderErrorPage(500, "Noget gik galt under indlæsningen af startsiden.");
     }
-}
-
 
 
     public function showProgramPage() {
