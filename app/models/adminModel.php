@@ -1,7 +1,6 @@
 <?php
 require_once dirname(__DIR__, 2) . '/init.php';
 
-//require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php'; // Inkluder init.php med $db og autoloader
 
 class AdminModel extends CrudBase {
 
