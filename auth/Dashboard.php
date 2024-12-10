@@ -1,5 +1,5 @@
-<?php
-session_start();
+<!-- <?php
+//session_start();
 
 // Inkluder sikkerhedsklassen
 require_once __DIR__ . '/Security.php'; 
@@ -23,3 +23,4 @@ if (isset($_COOKIE['auth_token'])) {
     exit();
 }
 ?>
+ -->
