@@ -8,7 +8,8 @@ class FileUploadService {
     private $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif'];
 
     public function __construct() {
-        $this->upload_dir = __DIR__ . '/../uploads/';
+        // Brug __DIR__ til at finde upload-mappen i forhold til filens placering
+        $this->upload_dir = dirname(__DIR__, 2) . '/uploads';
         error_log("Upload-sti: " . $this->upload_dir); // Debug for at kontrollere den genererede sti
     }
 
@@ -41,8 +42,8 @@ class FileUploadService {
             throw new Exception("Fejl: Kunne ikke flytte den uploadede fil til $poster_path. Kontroller mappeindstillingerne.");
         }
     
-        // Returnerer URL-stien til brug i HTML
-        return '/Exam-1sem-bio/uploads/' . $poster_name;
+       // Returnér en relativ sti til brug i HTML
+    return '/uploads' . $poster_name;
     }
     
 }
