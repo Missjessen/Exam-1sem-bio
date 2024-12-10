@@ -13,31 +13,32 @@ class MovieAdminModel extends CrudBase {
     // Opdater en eksisterende film
     public function updateMovie($movieId, $data) {
         try {
-            // Forbindelse til database fra singleton
             $db = Database::getInstance()->getConnection();
     
-            // Bygger dynamisk SQL-sætning baseret på data
+            // Dynamisk SQL-sætning
             $columns = [];
             foreach ($data as $key => $value) {
                 $columns[] = "$key = :$key";
             }
     
             $sql = "UPDATE movies SET " . implode(', ', $columns) . " WHERE id = :id";
+            error_log("SQL: $sql");
+            
+            $stmt = $db->prepare($sql);
     
-            $stmt = $db->prepare($sql); // Bruger singleton-forbindelsen
-    
-            // Binder værdier til SQL-parametrene
+            // Binder værdier til parametre
             foreach ($data as $key => $value) {
+                error_log("Binding parameter :$key -> $value");
                 $stmt->bindValue(":$key", $value);
             }
     
-            $stmt->bindValue(":id", $movieId, PDO::PARAM_STR); // Binder movie ID
+            $stmt->bindValue(":id", $movieId, PDO::PARAM_STR);
     
-            $stmt->execute(); // Udfører opdateringen
-    
-            return $stmt->rowCount(); // Returnerer antallet af opdaterede rækker
+            $stmt->execute();
+            
+            error_log("Row count: " . $stmt->rowCount());
+            return $stmt->rowCount();
         } catch (PDOException $e) {
-            // Log fejl og kast en exception for fejlhåndtering
             error_log("Fejl ved opdatering af film med ID $movieId: " . $e->getMessage());
             throw new Exception("Kunne ikke opdatere filmen med ID $movieId.");
         }
