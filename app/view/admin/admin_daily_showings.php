@@ -3,9 +3,7 @@ if (isset($error)) {
     echo "<p class='error'>" . htmlspecialchars($error) . "</p>";
 }
 ?>
-// Debug variabler i viewet
-<pre><?php print_r($showings); ?></pre>
-<pre><?php print_r($movies); ?></pre>
+
 
 
 <div class="container">
