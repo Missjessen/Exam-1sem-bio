@@ -26,16 +26,11 @@ class ErrorController {
             echo "<p>$errorMessage</p>";
         }
 
-        <?php
-
-class ErrorController {
-    public function showErrorPage($message) {
-        // Indlæs en generisk fejlside med besked
-        include 'views/error.php';
+        exit; // Afslut scriptkørsel
     }
-}
 
-
-        exit;
+    public function showErrorPage($message) {
+        http_response_code(500); // Som standard, en serverfejl
+        $this->renderErrorPage(500, $message);
     }
 }
