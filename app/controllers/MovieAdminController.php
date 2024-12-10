@@ -101,7 +101,7 @@ class MovieAdminController {
                 error_log("Ukendt handling: $action");
         }
     
-        // Redirect tilbage til admin_movie siden
+        $baseDir = dirname(__DIR__, 2); 
         header("Location: /index.php?page=admin_movie");
         exit;
     }
