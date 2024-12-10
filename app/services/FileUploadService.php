@@ -8,7 +8,8 @@ class FileUploadService {
     private $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif'];
 
     public function __construct() {
-        $this->upload_dir = $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/uploads/';
+        $this->upload_dir = __DIR__ . '/../uploads/';
+        error_log("Upload-sti: " . $this->upload_dir); // Debug for at kontrollere den genererede sti
     }
 
     public function uploadFile($file) {

@@ -24,7 +24,7 @@
                         <p>Genrer: <?= htmlspecialchars($movie['genres'] ?? 'Ingen') ?></p>
                         <p>Skuespillere: <?= htmlspecialchars($movie['actors'] ?? 'Ingen') ?></p>
 
-                        <form action="/?page=admin_movie" method="post">
+                        <form action="?page=admin_movie" method="post">
                             <input type="hidden" name="movie_id" value="<?= htmlspecialchars($movie['id'], ENT_QUOTES, 'UTF-8') ?>">
                             <button type="submit" name="action" value="edit">Rediger</button>
                             <button type="submit" name="action" value="delete" onclick="return confirm('Er du sikker på, at du vil slette denne film?');">Slet</button>
