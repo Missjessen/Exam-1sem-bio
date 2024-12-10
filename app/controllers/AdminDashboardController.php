@@ -1,11 +1,10 @@
 <?php
 
-class AdminDashboardController extends BaseController {
+class AdminDashboardController {
     private $model;
     private $pageLoader;
 
     public function __construct($db) {
-        parent::__construct();
         $this->model = new AdminDashboardModel($db);
         $this->pageLoader = new PageLoader($db);
     }
