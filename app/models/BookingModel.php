@@ -1,4 +1,4 @@
-<?php
+<?php 
 class BookingModel {
     private $db;
 
@@ -6,17 +6,28 @@ class BookingModel {
         $this->db = $db;
     }
 
-    public function createBooking($data) {
-        $stmt = $this->db->prepare("
-            INSERT INTO bookings (movie_id, showtime_id, customer_id, price)
-            VALUES (:movie_id, :showtime_id, :customer_id, :price)
-        ");
+    public function createBooking($showtimeId, $spots) {
+        $this->db->beginTransaction();
+        try {
+            // Indsæt booking
+            $stmt = $this->db->prepare("
+                INSERT INTO bookings (showtime_id, spots)
+                VALUES (:showtime_id, :spots)
+            ");
+            $stmt->execute(['showtime_id' => $showtimeId, 'spots' => $spots]);
 
-        $stmt->execute([
-            ':movie_id' => $data['movie_id'],
-            ':showtime_id' => $data['showtime_id'],
-            ':customer_id' => $data['customer_id'],
-            ':price' => $data['price']
-        ]);
+            // Reducer ledige pladser
+            $stmt = $this->db->prepare("
+                UPDATE showings
+                SET total_spots = total_spots - :spots
+                WHERE id = :showtime_id AND total_spots >= :spots
+            ");
+            $stmt->execute(['showtime_id' => $showtimeId, 'spots' => $spots]);
+
+            $this->db->commit();
+        } catch (Exception $e) {
+            $this->db->rollBack();
+            throw $e;
+        }
     }
 }

@@ -1,4 +1,5 @@
-<?php
+<?php 
+
 class BookingController {
     private $bookingModel;
 
@@ -6,16 +7,23 @@ class BookingController {
         $this->bookingModel = new BookingModel($db);
     }
 
-    public function createBooking($data) {
+    public function createBooking() {
         try {
-            $this->bookingModel->createBooking($data);
+            $showtimeId = $_POST['showtime_id'] ?? null;
+            $spots = $_POST['spots'] ?? 1;
+
+            if (!$showtimeId || !$spots) {
+                throw new Exception("Manglende data til booking.");
+            }
+
+            $this->bookingModel->createBooking($showtimeId, $spots);
+
             header("Location: receipt.php?booking_success=true");
             exit;
         } catch (Exception $e) {
-            error_log("Fejl ved booking: " . $e->getMessage());
+            error_log("Fejl under booking: " . $e->getMessage());
             header("Location: receipt.php?booking_success=false");
             exit;
         }
     }
 }
-v
