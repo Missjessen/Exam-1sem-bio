@@ -1,11 +1,3 @@
-<?php
-if (isset($error)) {
-    echo "<p class='error'>" . htmlspecialchars($error) . "</p>";
-}
-?>
-
-
-
 <div class="container">
     <h2>Daglige Visninger</h2>
 
