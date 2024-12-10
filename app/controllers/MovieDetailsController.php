@@ -36,6 +36,6 @@ class MovieDetailsController {
 
     private function handleError($message) {
         $errorController = new ErrorController();
-        //$errorController->showErrorPage($message);
+        $errorController->showErrorPage($message);
     }
 }
