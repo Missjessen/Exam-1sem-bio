@@ -14,82 +14,49 @@ class PageLoader {
 
     }
 
-    
-    public function showHomePage(MovieFrontendModel $model) {
-        try {
-            // Hent data fra modellen
-            $data = [
-                'upcomingMovies' => $model->getUpcomingMovies() ?? [],
-                'newsMovies' => $model->getNewsMovies() ?? [],
-                'dailyMovies' => $model->getDailyShowings() ?? [],
-                'genreMovies' => $model->getGenreMovies() ?? [],
-                'settings' => $model->getSiteSettings() ?? [],
-                'randomGenreMovies' => $model->getRandomGenreMovies(),
-                'allGenres' => $model->getAllGenres(),
-                'selectedGenre' => $_GET['genre'] ?? null,
-            ];
-    
-            // Hvis der er valgt en genre, hent film for den genre
-            if (!empty($data['selectedGenre'])) {
-                $data['moviesByGenre'] = $model->getMoviesByGenre($data['selectedGenre']);
-            }
-    
-            // Indlæs layout og view
-            $this->includeCSS('homePage');
-            $this->includeLayout('header_user.php', $data);
-            $this->includeView('homePage', $data);
-            $this->includeLayout('footer.php', $data);
 
-            
-    
-        } catch (Exception $e) {
-            // Log fejlen og vis en fejlbesked
-            error_log("Fejl i showHomePage: " . $e->getMessage());
-            $this->renderErrorPage(500, "Noget gik galt under indlæsningen af startsiden.");
-        }
-    }
     
     public function loadAdminPage($viewName, $data = []) {
-        $this->loadPage($viewName, $data, 'admin', 'header_admin.php', 'footer.php');
+    $this->loadPage($viewName, $data, 'admin', 'header_admin.php', 'footer.php');
+}
+
+public function loadUserPage($viewName, $data = []) {
+    $this->loadPage($viewName, $data, 'user', 'header_user.php', 'footer.php');
+}
+
+private function loadPage($viewName, $data, $type, $headerFile, $footerFile) {
+    $current_page = $viewName; // Marker den aktuelle side
+
+    // Sikrer, at $data altid er et array
+    if (!is_array($data)) {
+        $data = [];
     }
-    
-    public function loadUserPage($viewName, $data = []) {
-        $this->loadPage($viewName, $data, 'user', 'header_user.php', 'footer.php');
+
+    // Tilføj $page til data
+    $data['page'] = $viewName;
+
+    // Gør data tilgængelige som variabler
+    extract($data);
+
+    // Dynamisk CSS
+    $this->includeCSS($viewName);
+
+    // Inkluder header
+    $this->includeLayout($headerFile, compact('current_page'));
+
+    // Dynamisk visning baseret på $type
+    $viewPath = __DIR__ . "/../../app/view/$type/$viewName.php";
+
+    if (file_exists($viewPath)) {
+        require $viewPath;
+    } else {
+        throw new Exception("View-filen $viewName for $type kunne ikke indlæses.");
     }
-    
-    private function loadPage($viewName, $data, $type, $headerFile, $footerFile) {
-        $current_page = $viewName; // Marker den aktuelle side
-    
-        // Sikrer, at $data altid er et array
-        if (!is_array($data)) {
-            $data = [];
-        }
-    
-        // Tilføj $page til data
-        $data['page'] = $viewName;
-    
-        // Gør data tilgængelige som variabler
-        extract($data);
-    
-        // Dynamisk CSS
-        $this->includeCSS($viewName);
-    
-        // Inkluder header
-        $this->includeLayout($headerFile, compact('current_page'));
-    
-        // Dynamisk visning baseret på $type
-        $viewPath = __DIR__ . "/../../app/view/$type/$viewName.php";
-    
-        if (file_exists($viewPath)) {
-            require $viewPath;
-        } else {
-            throw new Exception("View-filen $viewName for $type kunne ikke indlæses.");
-        }
-    
-        // Inkluder footer
-        $this->includeLayout($footerFile, compact('current_page'));
-    }
-    
+
+    // Inkluder footer
+    $this->includeLayout($footerFile, compact('current_page'));
+}
+
     
     private function includeCSS($page) {
         // Håndter CSS-indlæsning

@@ -23,8 +23,18 @@ class Router {
         switch ($page) {
             // Public Pages
             case 'homePage':
-              
-                $pageLoader->showHomePage($movieFrontendModel);
+                try {
+                    $data = [
+                        'upcomingMovies' => $movieFrontendModel->getUpcomingMovies(),
+                        'newsMovies' => $movieFrontendModel->getNewsMovies(),
+                        'dailyMovies' => $movieFrontendModel->getDailyShowings(),
+                        'settings' => $movieFrontendModel->getSiteSettings(),
+                    ];
+                    $pageLoader->renderPage('homePage', $data, 'user');
+                } catch (Exception $e) {
+                    error_log("Fejl under indlæsning af homePage: " . $e->getMessage());
+                    $pageLoader->renderErrorPage(500, "Noget gik galt under indlæsningen af forsiden.");
+                }
                 break;
 
             case 'movie_details':

@@ -85,33 +85,21 @@ private function handleAdminDailyShowings() {
 
 
 
-    // Indlæser forsiden
-        public function showHomePage(MovieFrontendModel $model) {
-            error_log("Indlæser homePage via PageLoader.");
-        
-            try {
-                $data = [
-                    'upcomingMovies' => $model->getUpcomingMovies() ?? [],
-                    'newsMovies' => $model->getNewsMovies() ?? [],
-                    'dailyMovies' => $model->getDailyShowings() ?? [],
-                    'genreMovies' => $model->getGenreMovies() ?? [],
-                    'settings' => $model->getSiteSettings() ?? [],
-                    'randomGenreMovies' => $model->getRandomGenreMovies(),
-                    'allGenres' => $model->getAllGenres(),
-                    'selectedGenre' => $_GET['genre'] ?? null,
-                ];
-        
-                error_log("Data for homePage: " . print_r($data, true));
-        
-                if (!empty($data['selectedGenre'])) {
-                    $data['moviesByGenre'] = $model->getMoviesByGenre($data['selectedGenre']);
-                }
-                $this->pageLoader->loadUserPage('homePage', compact('homePageData'));
-        } catch (Exception $e) {
-            $this->handleError("Fejl under indlæsning af forsiden: " . $e->getMessage());
-        }
+public function showHomePage() {
+    try {
+        $movieFrontendModel = new MovieFrontendModel($this->db);
+        $data = [
+            'upcomingMovies' => $movieFrontendModel->getUpcomingMovies(),
+            'newsMovies' => $movieFrontendModel->getNewsMovies(),
+            'dailyMovies' => $movieFrontendModel->getDailyShowings(),
+            'settings' => $movieFrontendModel->getSiteSettings(),
+        ];
+        $this->pageLoader->renderPage('homePage', $data, 'user');
+    } catch (Exception $e) {
+        error_log("Fejl under indlæsning af forsiden: " . $e->getMessage());
+        $this->pageLoader->renderErrorPage(500, "Noget gik galt under indlæsningen af forsiden.");
     }
-
+}
 
     public function showProgramPage() {
         try {
