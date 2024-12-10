@@ -19,7 +19,7 @@ $current_page = $_REQUEST['page'] ?? 'admin_dashboard';
         <div>Cruise Nights Cinema</div>
         <ul>
             <li class="<?= $current_page === 'admin_dashboard' ? 'active' : '' ?>"><a href="?page=admin_dashboard">Dashboard</a></li>
-            <li class="<?= $current_page === 'admin_bookings' ? 'active' : '' ?>"><a href="?admin_bookings">Bookings</a></li>
+            <li class="<?= $current_page === 'admin_bookings' ? 'active' : '' ?>"><a href="?page=admin_bookings">Bookings</a></li>
             <li class="<?= $current_page === 'admin_daily_showings' ? 'active' : '' ?>"><a href="?page=admin_daily_showings">Showings</a></li>
             <li class="<?= $current_page === 'admin_movie' ? 'active' : '' ?>"><a href="?page=admin_movie">Movie Upload</a></li>
             <li class="<?= $current_page === 'admin_ManageUsers' ? 'active' : '' ?>"><a href="?page=admin_ManageUsers">Manage User</a></li>
