@@ -2,7 +2,7 @@
 
 // config/loadPages.php - Konfigurationsfil for sider
 return [
-    'default_css' => '/Exam-1sem-bio/assets/css/common.css',
+    'default_css' => '/assets/css/common.css',
     'pages' => [
         'homePage' => ['view' => '/app/view/user/homePage.php', 
         'css' => '/assets/css/homePage.css'],
