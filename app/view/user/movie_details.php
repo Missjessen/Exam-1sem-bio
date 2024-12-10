@@ -11,14 +11,17 @@
     <h2>Visningstider</h2>
     <?php if (!empty($showtimes)): ?>
         <form action="booking.php" method="POST" id="bookingForm">
-            <label for="showtime">Vælg visning:</label>
-            <select name="showtime_id" id="showtime" required>
+            <div class="showtime-cards">
                 <?php foreach ($showtimes as $showtime): ?>
-                    <option value="<?= htmlspecialchars($showtime['id']) ?>">
-                        <?= htmlspecialchars($showtime['show_date']) ?> kl. <?= htmlspecialchars($showtime['show_time']) ?> (<?= htmlspecialchars($showtime['screen']) ?> skærm)
-                    </option>
+                    <div class="showtime-card">
+                        <input type="radio" name="showtime_id" id="showtime_<?= htmlspecialchars($showtime['id']) ?>" value="<?= htmlspecialchars($showtime['id']) ?>" required>
+                        <label for="showtime_<?= htmlspecialchars($showtime['id']) ?>">
+                            <p><?= htmlspecialchars($showtime['show_date']) ?> kl. <?= htmlspecialchars($showtime['show_time']) ?></p>
+                            <p><?= htmlspecialchars($showtime['screen']) ?> skærm</p>
+                        </label>
+                    </div>
                 <?php endforeach; ?>
-            </select>
+            </div>
 
             <label for="spots">Antal pladser:</label>
             <input type="number" name="spots" id="spots" min="1" max="10" value="1" required>
@@ -45,3 +48,42 @@
     spotsInput.addEventListener('input', updatePrice);
     updatePrice(); // Initial opdatering
 </script>
+
+<style>.showtime-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.showtime-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    width: 150px;
+    cursor: pointer;
+    background-color: #f9f9f9;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.showtime-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.showtime-card input {
+    display: none;
+}
+
+.showtime-card label {
+    display: block;
+    cursor: pointer;
+}
+
+.showtime-card input:checked + label {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+</style>

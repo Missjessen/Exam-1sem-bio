@@ -39,20 +39,20 @@ class MovieDetailsModel {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-public function getShowtimesForMovie($movieId) {
-    $stmt = $this->db->prepare("
-        SELECT 
-            show_date, show_time, screen, total_spots
-        FROM 
-            showings
-        WHERE 
-            movie_id = :movie_id
-        ORDER BY 
-            show_date ASC, show_time ASC
-    ");
-    $stmt->execute(['movie_id' => $movieId]);
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
+    public function getShowtimesForMovie($movieId) {
+        $stmt = $this->db->prepare("
+            SELECT 
+                id, show_date, show_time, screen 
+            FROM 
+                showings 
+            WHERE 
+                movie_id = :movie_id
+        ");
+        $stmt->execute(['movie_id' => $movieId]);
+    
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
 
 
 }
