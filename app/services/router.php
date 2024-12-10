@@ -23,7 +23,7 @@ class Router {
         switch ($page) {
             // Public Pages
             case 'homePage':
-               
+              
                 $pageLoader->showHomePage($movieFrontendModel);
                 break;
 

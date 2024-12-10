@@ -5,9 +5,6 @@ require_once dirname(__DIR__, 2) . '/init.php';
 $current_page = $_REQUEST['page'] ?? 'homePage';
 $current_slug = $_REQUEST['slug'] ?? '';
 
-
-
-echo CURRENT_PAGE;
 ?>
 
 <!DOCTYPE html>
