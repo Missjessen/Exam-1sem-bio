@@ -1,8 +1,8 @@
 <?php
-$to = "recipient@example.com";
+$to = "missejssen87@gmail.com";
 $subject = "Test Email";
 $message = "Dette er en testmail.";
-$headers = "From: your_email@yourdomain.com";
+$headers = "From: missjessen87@cruise-nights-cinema.dk/.com";
 
 if (mail($to, $subject, $message, $headers)) {
     echo "Mail blev sendt!";
