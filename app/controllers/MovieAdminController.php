@@ -32,7 +32,7 @@ class MovieAdminController {
             $this->pageLoader->loadAdminPage('admin_movie', compact('movies', 'actors', 'genres', 'movieToEdit'));
         } catch (Exception $e) {
             error_log("Fejl i MovieAdminController::index(): " . $e->getMessage());
-            $this->pageLoader->loadErrorPage("Noget gik galt under indlæsningen af filmsiden.");
+            $this->pageLoader->renderErrorPage("Noget gik galt under indlæsningen af filmsiden.", "Error Message");
         }
     }
     
