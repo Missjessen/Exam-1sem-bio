@@ -33,4 +33,10 @@ class MovieDetailsController {
             $this->handleError("Fejl: " . $e->getMessage());
         }
     }
+
+    private function handleError($message) {
+        $errorController = new ErrorController();
+        $errorController->showErrorPage($message); // Kald korrekt metode
+    }
+    
 }
