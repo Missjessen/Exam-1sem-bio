@@ -38,9 +38,9 @@ class PageController {
     public function homePage() {
         try {
             $movieFrontendModel = new MovieFrontendModel($this->db);
-            $message = null;
+            $message = null; // Feedback til brugeren
     
-            // Håndter kontaktformularen, hvis der er en POST-forespørgsel
+            // Håndter kontaktformular, hvis der er en POST-forespørgsel
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $name = htmlspecialchars(trim($_POST['name']));
                 $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
@@ -72,7 +72,7 @@ class PageController {
                 'newsMovies' => $movieFrontendModel->getNewsMovies(),
                 'dailyMovies' => $movieFrontendModel->getDailyShowings(),
                 'settings' => $movieFrontendModel->getSiteSettings(),
-                'contactMessage' => $message, // Feedback fra kontaktformularen
+                'contactMessage' => $message, // Feedback til formularen
             ];
     
             // Render forsiden

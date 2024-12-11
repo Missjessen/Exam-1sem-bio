@@ -188,7 +188,7 @@
         </div>
 
         <!-- Submit-knap -->
-        <button type="submit" name="submit">Send</button>
+        <button type="submit">Send</button>
     </form>
 </div>
 
