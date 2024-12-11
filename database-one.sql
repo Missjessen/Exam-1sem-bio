@@ -86,12 +86,12 @@ CREATE TABLE IF NOT EXISTS `spots` (
 CREATE TABLE showings (
     id INT AUTO_INCREMENT PRIMARY KEY,
     movie_id CHAR(36),
-    screen ENUM('small', 'large') NOT NULL,
+    screen ENUM('Lille', 'Stor') NOT NULL,
     show_date DATE NOT NULL,
     show_time TIME NOT NULL,
     total_spots INT NOT NULL,
     available_spots INT NOT NULL DEFAULT 50,
-    FOREIGN KEY (movie_id) REFERENCES movies(id)
+    FOREIGN KEY (`movie_id`) REFERENCES `movies`(`id`) ON DELETE CASCADE
 );
 
 CREATE TABLE parking_prices (

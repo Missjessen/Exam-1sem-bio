@@ -34,31 +34,43 @@ class MovieDetailsModel {
     
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':slug', $slug, PDO::PARAM_STR);
-        $stmt->execute();
-    
+
+        try {
+            $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception("Fejl ved hentning af film: " . $e->getMessage());
+        }
+
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-
-    public function getShowtimesForMovie($movieId) {
-        $stmt = $this->db->prepare("
+    public function getShowingsForMovie($movieId) {
+        $query = "
             SELECT 
-                id AS showtime_id, 
-                show_date, 
-                show_time, 
-                screen, 
-                total_spots, 
+                id AS showing_id,
+                screen,
+                show_date,
+                show_time,
+                total_spots,
                 available_spots
             FROM 
                 showings
             WHERE 
                 movie_id = :movie_id
             ORDER BY 
-                show_date ASC, show_time ASC
-        ");
-        $stmt->execute(['movie_id' => $movieId]);
-    
-        return $stmt->fetchAll(PDO::FETCH_ASSOC); // Henter alle rækker
+                show_date, show_time
+        ";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':movie_id', $movieId, PDO::PARAM_STR);
+
+        try {
+            $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception("Fejl ved hentning af visninger: " . $e->getMessage());
+        }
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    
     
     
     
@@ -77,5 +89,22 @@ class MovieDetailsModel {
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    
+ 
+    public function bookSpot($showingId) {
+        $query = "
+            UPDATE showings
+            SET available_spots = available_spots - 1
+            WHERE id = :showing_id AND available_spots > 0
+        ";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':showing_id', $showingId, PDO::PARAM_INT);
+
+        try {
+            $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception("Fejl ved booking: " . $e->getMessage());
+        }
+
+        return $stmt->rowCount() > 0; // Returner true, hvis en række blev opdateret
+    }
 }
