@@ -85,35 +85,35 @@ class PageController {
         }
     }
 
-    public function bookingAndReceipt() {
-        try {
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                // Håndter booking POST-anmodning
-                $this->bookingController->handleBooking($_POST);
-            } elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
-                // Håndter kvittering GET-anmodning
-                $bookingId = $_GET['booking_id'] ?? null;
-    
-                if (!$bookingId) {
-                    throw new Exception("Booking ID mangler i URL'en.");
-                }
-    
-                $receiptData = $this->bookingController->getBookingDetails($bookingId);
-                
-                if (!$receiptData) {
-                    throw new Exception("Booking med ID '$bookingId' blev ikke fundet.");
-                }
-    
-                // Render kvitteringssiden
-                $this->pageLoader->renderPage('receipt', ['receiptData' => $receiptData], 'user');
-            } else {
-                // Hvis anmodningen hverken er POST eller GET
-                throw new Exception("Ugyldig anmodningstype.");
+   public function bookingAndReceipt() {
+    try {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Håndter booking POST-anmodning
+            $this->bookingController->handleBooking($_POST);
+        } elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
+            // Håndter kvittering GET-anmodning
+            $bookingId = $_GET['booking_id'] ?? null;
+
+            if (!$bookingId) {
+                throw new Exception("Booking ID mangler i URL'en.");
             }
-        } catch (Exception $e) {
-            $this->pageLoader->renderErrorPage(500, "Fejl: " . $e->getMessage());
+
+            $receiptData = $this->bookingController->getBookingDetails($bookingId);
+            
+            if (!$receiptData) {
+                throw new Exception("Booking med ID '$bookingId' blev ikke fundet.");
+            }
+
+            // Render kvitteringssiden
+            $this->pageLoader->renderPage('receipt', ['receiptData' => $receiptData], 'user');
+        } else {
+            // Hvis anmodningen hverken er POST eller GET
+            throw new Exception("Ugyldig anmodningstype.");
         }
+    } catch (Exception $e) {
+        $this->pageLoader->renderErrorPage(500, "Fejl: " . $e->getMessage());
     }
+}
     
 
     // Admin dashboard
