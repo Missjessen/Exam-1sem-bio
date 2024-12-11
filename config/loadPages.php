@@ -13,7 +13,7 @@ return [
         'movie' => ['view' => '/app/view/user/movie.php', 
         'css' => '/assets/css/movie.css'],
 
-        'booking' => ['view' => '/app/view/user/receipt.php', 
+        'booking' => ['view' => '/app/view/user/booking.php', 
         'css' => '/assets/css/tickets.css'],
 
     
