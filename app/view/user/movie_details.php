@@ -11,9 +11,7 @@
     <ul>
         <?php foreach ($showtimes as $showtime): ?>
             <li>
-                <?= htmlspecialchars($showtime['show_date']) ?> kl. <?= htmlspecialchars($showtime['show_time']) ?><br>
-                Skærm: <?= htmlspecialchars($showtime['screen']) ?><br>
-                Ledige pladser: <?= htmlspecialchars($showtime['available_spots']) ?>
+                <?= htmlspecialchars($showtime['show_date']) ?> kl. <?= htmlspecialchars($showtime['show_time']) ?> (Skærm: <?= htmlspecialchars($showtime['screen']) ?>)
             </li>
         <?php endforeach; ?>
     </ul>

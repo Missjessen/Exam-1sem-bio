@@ -52,9 +52,12 @@ class MovieDetailsModel {
                 showings
             WHERE 
                 movie_id = :movie_id
+            ORDER BY 
+                show_date ASC, show_time ASC
         ");
         $stmt->execute(['movie_id' => $movieId]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); // Henter alle rækker
     }
     
     

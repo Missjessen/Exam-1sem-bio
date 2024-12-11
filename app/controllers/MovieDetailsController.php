@@ -16,6 +16,7 @@ class MovieDetailsController {
                 throw new Exception("Ingen data fundet for slug: $slug");
             }
     
+            // Hent alle visninger for filmen
             $showtimes = $this->movieModel->getShowtimesForMovie($movie['id']);
     
             $this->pageLoader->loadUserPage('movie_details', [
