@@ -33,3 +33,4 @@ class MovieDetailsController {
             $this->handleError("Fejl: " . $e->getMessage());
         }
     }
+}
