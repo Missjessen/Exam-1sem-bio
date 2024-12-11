@@ -38,12 +38,44 @@ class PageController {
     public function homePage() {
         try {
             $movieFrontendModel = new MovieFrontendModel($this->db);
+            $message = null;
+    
+            // Håndter kontaktformularen, hvis der er en POST-forespørgsel
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $name = htmlspecialchars(trim($_POST['name']));
+                $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
+                $subject = htmlspecialchars(trim($_POST['subject']));
+                $messageContent = htmlspecialchars(trim($_POST['message']));
+    
+                // Valider input
+                if (empty($name) || empty($email) || empty($subject) || empty($messageContent)) {
+                    $message = "Alle felter skal udfyldes.";
+                } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    $message = "Ugyldig email-adresse.";
+                } else {
+                    // Opsætning af email-indhold
+                    $recipientEmail = "yourname@yourpage.com";
+                    $body = "Navn: $name\nEmail: $email\n\nBesked:\n$messageContent";
+    
+                    // Send email
+                    if (mail($recipientEmail, $subject, $body, "From: $email\n")) {
+                        $message = "Tak for din besked! Vi vender tilbage hurtigst muligt.";
+                    } else {
+                        $message = "Der opstod en fejl ved afsendelse af email. Prøv igen senere.";
+                    }
+                }
+            }
+    
+            // Hent data til forsiden
             $data = [
                 'upcomingMovies' => $movieFrontendModel->getUpcomingMovies(),
                 'newsMovies' => $movieFrontendModel->getNewsMovies(),
                 'dailyMovies' => $movieFrontendModel->getDailyShowings(),
                 'settings' => $movieFrontendModel->getSiteSettings(),
+                'contactMessage' => $message, // Feedback fra kontaktformularen
             ];
+    
+            // Render forsiden
             $this->pageLoader->renderPage('homePage', $data, 'user');
         } catch (Exception $e) {
             $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af forsiden: " . $e->getMessage());

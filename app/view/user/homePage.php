@@ -132,9 +132,13 @@
     </div>
 <?php endif; ?>
 
+<?php if (!empty($contactMessage)): ?>
+    <p class="contact-message"><?= htmlspecialchars($contactMessage) ?></p>
+<?php endif; ?>
+
 <div class="contact-form">
     <h3>Kontakt Os</h3>
-    <form action="/sendMail" method="POST">
+    <form method="POST">
         <!-- Navn -->
         <div class="form-group">
             <label for="name">Navn:</label>
@@ -143,8 +147,7 @@
                 id="name" 
                 name="name" 
                 required 
-                placeholder="Indtast dit navn" 
-                aria-label="Navn"
+                placeholder="Indtast dit navn"
             >
         </div>
 
@@ -156,8 +159,7 @@
                 id="email" 
                 name="email" 
                 required 
-                placeholder="Indtast din email fx: navn@domæne.dk" 
-                aria-label="Email"
+                placeholder="Indtast din email fx: navn@domæne.dk"
             >
         </div>
 
@@ -170,7 +172,6 @@
                 name="subject" 
                 required 
                 placeholder="Indtast emnet for din besked"
-                aria-label="Emne"
             >
         </div>
 
@@ -182,13 +183,12 @@
                 name="message" 
                 rows="4" 
                 required 
-                placeholder="Skriv din besked her..." 
-                aria-label="Besked"
+                placeholder="Skriv din besked her..."
             ></textarea>
         </div>
 
-        <!-- Submit button -->
-        <button type="submit">Send</button>
+        <!-- Submit-knap -->
+        <button type="submit" name="submit">Send</button>
     </form>
 </div>
 
@@ -198,4 +198,3 @@
 
     </div>
 </body>
-</html>
