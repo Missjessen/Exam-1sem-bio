@@ -102,7 +102,7 @@ class MovieAdminController {
         }
     
         // Redirect tilbage til admin_movie siden
-        header("Location: /Exam-1sem-bio/index.php?page=admin_movie");
+        header("Location: " . currentPageURL('admin_movie'));
         exit;
     }
 
