@@ -36,20 +36,13 @@ try {
 }
 
 
-// Singleton-test (valgfrit)
-/* try {
-    $db1 = Database::getInstance()->getConnection();
-    $db2 = Database::getInstance()->getConnection();
-    if ($db1 === $db2) {
-        error_log("Singleton virker: begge forbindelser er identiske.");
-    } else {
-        error_log("Fejl: forbindelserne er ikke ens.");
-    }
-} catch (Exception $e) {
-    error_log("Fejl under singleton-test: " . $e->getMessage());
+function currentPageURL($page) {
+    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? "https" : "http");
+    $host = $_SERVER['HTTP_HOST'];
+    $uri = $_SERVER['REQUEST_URI'];
+
+    // Fjern eksisterende page-parametre og tilføj den nye
+    $uri = preg_replace('/[?&]page=[^&]*/', '', $uri);
+    $querySeparator = strpos($uri, '?') === false ? '?' : '&';
+    return $protocol . '://' . $host . $uri . $querySeparator . 'page=' . $page;
 }
-set_exception_handler(function ($exception) {
-    $errorController = new ErrorController();
-    $errorController->show500($exception->getMessage());
-    error_log($exception->getMessage()); // Log fejlen
-}); */
