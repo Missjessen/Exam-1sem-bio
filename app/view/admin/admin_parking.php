@@ -9,4 +9,6 @@ if (mail($to, $subject, $message, $headers)) {
 } else {
     echo "Mail blev ikke sendt.";
 }
+
+
 ?>
