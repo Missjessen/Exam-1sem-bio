@@ -54,5 +54,19 @@ class MovieDetailsModel {
     }
     
 
-
+    public function getAvailableShowtimes($movieId) {
+        $query = "
+            SELECT 
+                showtime_id, show_date, show_time 
+            FROM 
+                showings 
+            WHERE 
+                movie_id = :movie_id
+        ";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':movie_id', $movieId, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
 }

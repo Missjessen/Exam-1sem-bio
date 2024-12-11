@@ -20,22 +20,16 @@ class MovieDetailsController {
             if (!$movie) {
                 throw new Exception("Filmen med slug '{$slug}' blev ikke fundet.");
             }
-
-            // Hent visninger for filmen
-            $showtimes = $this->movieModel->getShowtimesForMovie($movie['id']);
     
-            // Indlæs siden med de nødvendige data
+            // Hent spilletider for filmen
+            $showtimes = $this->movieModel->getAvailableShowtimes($movie['id']);
+    
+            // Indlæs siden med data
             $this->pageLoader->loadUserPage('movie_details', [
                 'movie' => $movie,
-                'showtimes' => $showtimes
+                'showtimes' => $showtimes,
             ]);
         } catch (Exception $e) {
             $this->handleError("Fejl: " . $e->getMessage());
         }
     }
-
-    private function handleError($message) {
-        $errorController = new ErrorController();
-        $errorController->showErrorPage($message);
-    }
-}

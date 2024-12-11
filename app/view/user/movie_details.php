@@ -7,60 +7,83 @@
         <p><strong>Skuespillere:</strong> <?= htmlspecialchars($movie['actors']) ?></p>
     </div>
 
-    <h1>Bookingformular</h1>
-    <form action="booking.php" method="POST">
-        <label for="screen">Vælg skærm:</label>
-        <select name="screen" id="screen" required>
-            <option value="small">Lille skærm</option>
-            <option value="large">Stor skærm</option>
-        </select>
+    <h2>Bookingformular</h2>
+<form action="booking.php" method="POST">
+    <label for="showtime">Vælg spilletid:</label>
+    <div class="showtimes">
+        <?php if (!empty($showtimes)): ?>
+            <?php foreach ($showtimes as $showtime): ?>
+                <button type="button" 
+                        class="showtime-option" 
+                        data-showtime-id="<?= htmlspecialchars($showtime['showtime_id']) ?>" 
+                        data-showtime="<?= htmlspecialchars($showtime['show_date'] . ' kl. ' . $showtime['show_time']) ?>">
+                    <?= htmlspecialchars($showtime['show_date'] . ' kl. ' . $showtime['show_time']) ?>
+                </button>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <p>Ingen spilletider tilgængelige.</p>
+        <?php endif; ?>
+    </div>
 
-        <label for="rowType">Vælg række:</label>
-        <select name="rowType" id="rowType" required>
-            <option value="front">Forreste række</option>
-            <option value="middle">Midterste række</option>
-            <option value="back">Bagerste række</option>
-        </select>
+    <input type="hidden" name="showtime_id" id="selectedShowtimeId" required>
 
-        <label for="spots">Antal pladser:</label>
-        <input type="number" name="spots" id="spots" min="1" max="10" required>
+    <label for="screen">Vælg skærm:</label>
+    <select name="screen" id="screen" required>
+        <option value="small">Lille skærm</option>
+        <option value="large">Stor skærm</option>
+    </select>
 
-        <p>Total pris: <span id="totalPrice">0 DKK</span></p>
+    <label for="rowType">Vælg række:</label>
+    <select name="rowType" id="rowType" required>
+        <option value="front">Forreste række</option>
+        <option value="middle">Midterste række</option>
+        <option value="back">Bagerste række</option>
+    </select>
 
-        <button type="submit">Book nu</button>
-    </form>
+    <label for="spots">Antal pladser:</label>
+    <input type="number" name="spots" id="spots" min="1" max="10" required>
 
-    <script>
-        // Hent HTML-elementer
-        const screenInput = document.getElementById('screen');
-        const rowTypeInput = document.getElementById('rowType');
-        const spotsInput = document.getElementById('spots');
-        const totalPriceElement = document.getElementById('totalPrice');
+    <p>Total pris: <span id="totalPrice">0 DKK</span></p>
 
-        // Definer priser
-        const prices = {
-            small: { front: 75, middle: 50, back: 40 },
-            large: { front: 100, middle: 75, back: 50 }
-        };
+    <button type="submit">Book nu</button>
+</form>
 
-        // Funktion til at opdatere prisen
-        function updatePrice() {
-            const screen = screenInput.value;
-            const rowType = rowTypeInput.value;
-            const spots = parseInt(spotsInput.value, 10) || 0;
+<script>
+    const showtimeButtons = document.querySelectorAll('.showtime-option');
+    const selectedShowtimeInput = document.getElementById('selectedShowtimeId');
 
-            const pricePerSpot = prices[screen]?.[rowType] || 0;
-            totalPriceElement.textContent = (spots * pricePerSpot) + " DKK";
-        }
+    showtimeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            showtimeButtons.forEach(btn => btn.classList.remove('selected'));
+            this.classList.add('selected');
+            selectedShowtimeInput.value = this.dataset.showtimeId;
+        });
+    });
 
-        // Event listeners
-        screenInput.addEventListener('change', updatePrice);
-        rowTypeInput.addEventListener('change', updatePrice);
-        spotsInput.addEventListener('input', updatePrice);
+    const screenInput = document.getElementById('screen');
+    const rowTypeInput = document.getElementById('rowType');
+    const spotsInput = document.getElementById('spots');
+    const totalPriceElement = document.getElementById('totalPrice');
 
-        // Initial opdatering
-        updatePrice();
-    </script>
+    const prices = {
+        small: { front: 75, middle: 50, back: 40 },
+        large: { front: 100, middle: 75, back: 50 }
+    };
+
+    function updatePrice() {
+        const screen = screenInput.value;
+        const rowType = rowTypeInput.value;
+        const spots = parseInt(spotsInput.value, 10) || 0;
+
+        const pricePerSpot = prices[screen]?.[rowType] || 0;
+        totalPriceElement.textContent = (spots * pricePerSpot) + " DKK";
+    }
+
+    screenInput.addEventListener('change', updatePrice);
+    rowTypeInput.addEventListener('change', updatePrice);
+    spotsInput.addEventListener('input', updatePrice);
+    updatePrice();
+</script>
 
 <style> form {
             max-width: 400px;

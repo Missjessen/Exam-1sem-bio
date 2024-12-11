@@ -6,7 +6,6 @@ class BookingController {
     public function __construct($db) {
         $this->bookingModel = new BookingModel($db);
     }
-
     
     public function createBooking($customerId, $movieId, $showtimeId, $spotId, $spots, $screen, $rowType) {
         try {
