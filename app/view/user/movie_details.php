@@ -11,14 +11,16 @@
     <ul>
         <?php foreach ($showtimes as $showtime): ?>
             <li>
-                <?= htmlspecialchars($showtime['show_date']) ?> kl. <?= htmlspecialchars($showtime['show_time']) ?> <br>
-                Skærm: <?= htmlspecialchars($showtime['screen']) ?>
+                <?= htmlspecialchars($showtime['show_date']) ?> kl. <?= htmlspecialchars($showtime['show_time']) ?><br>
+                Skærm: <?= htmlspecialchars($showtime['screen']) ?><br>
+                Ledige pladser: <?= htmlspecialchars($showtime['available_spots']) ?>
             </li>
         <?php endforeach; ?>
     </ul>
 <?php else: ?>
     <p>Der er ingen visningstider for denne film i øjeblikket.</p>
 <?php endif; ?>
+
 
 
     <!-- Bookingformular -->

@@ -42,9 +42,14 @@ class MovieDetailsModel {
     public function getShowtimesForMovie($movieId) {
         $stmt = $this->db->prepare("
             SELECT 
-                showtime_id, show_date, show_time, screen 
+                id AS showtime_id, 
+                show_date, 
+                show_time, 
+                screen, 
+                total_spots, 
+                available_spots
             FROM 
-                showtimes 
+                showings
             WHERE 
                 movie_id = :movie_id
         ");

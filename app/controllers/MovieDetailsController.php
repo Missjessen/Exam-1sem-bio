@@ -10,24 +10,17 @@ class MovieDetailsController {
     }
 
     public function showMovieDetailsBySlug($slug) {
-        if (empty($slug)) {
-            throw new Exception("Slug mangler. URL er forkert.");
-        }
-    
         try {
-            // Hent filmens detaljer
             $movie = $this->movieModel->getMovieDetailsBySlug($slug);
             if (!$movie) {
-                throw new Exception("Filmen med slug '{$slug}' blev ikke fundet.");
+                throw new Exception("Ingen data fundet for slug: $slug");
             }
     
-            // Hent visninger for filmen
             $showtimes = $this->movieModel->getShowtimesForMovie($movie['id']);
     
-            // Indlæs siden med de nødvendige data
             $this->pageLoader->loadUserPage('movie_details', [
                 'movie' => $movie,
-                'showtimes' => $showtimes // Kan være tom
+                'showtimes' => $showtimes
             ]);
         } catch (Exception $e) {
             $this->handleError("Fejl: " . $e->getMessage());
