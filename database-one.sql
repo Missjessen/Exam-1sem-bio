@@ -90,6 +90,7 @@ CREATE TABLE showings (
     show_date DATE NOT NULL,
     show_time TIME NOT NULL,
     total_spots INT NOT NULL,
+    available_spots INT NOT NULL DEFAULT 50,
     FOREIGN KEY (movie_id) REFERENCES movies(id)
 );
 
@@ -106,6 +107,8 @@ CREATE TABLE IF NOT EXISTS `bookings` (
     `movie_id` CHAR(36) NOT NULL,          -- Opdateret til CHAR(36) for at matche UUID-formatet
     `spot_id` INT NOT NULL,
     `customer_id` INT,
+    `showtime_id` INT NOT NULL,            -- Visningstidspunkt
+    `price` DECIMAL(10, 2) NOT NULL, 
     `booking_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (`movie_id`) REFERENCES `movies`(`id`) ON DELETE CASCADE,   -- Refererer til `id` i `movies`
     FOREIGN KEY (`spot_id`) REFERENCES `spots`(`spot_id`)
@@ -199,10 +202,15 @@ CREATE TRIGGER after_booking_delete
 AFTER DELETE ON bookings
 FOR EACH ROW
 BEGIN
-    -- Reducer booking_count i movies-tabellen
-    UPDATE movies
-    SET booking_count = GREATEST(booking_count - 1, 0)  -- Sikrer, at værdien ikke bliver negativ
-    WHERE id = OLD.movie_id;
+    -- Forøg tilgængelige pladser i den relevante visning
+    UPDATE showings
+    SET total_spots = total_spots + 1
+    WHERE showtime_id = OLD.showtime_id;
+
+    -- Marker parkeringsplads som 'available'
+    UPDATE spots
+    SET status = 'available'
+    WHERE spot_id = OLD.spot_id;
 END $$
 
 DELIMITER ;
@@ -214,15 +222,26 @@ CREATE TRIGGER after_booking_insert
 AFTER INSERT ON bookings
 FOR EACH ROW
 BEGIN
-    -- Forøg booking_count i movies-tabellen
-    UPDATE movies
-    SET booking_count = booking_count + 1
-    WHERE id = NEW.movie_id;
+    -- Reducer tilgængelige pladser i den relevante visning
+    UPDATE showings
+    SET total_spots = total_spots - 1
+    WHERE showtime_id = NEW.showtime_id;
+
+    -- Marker parkeringsplads som 'booked'
+    UPDATE spots
+    SET status = 'booked'
+    WHERE spot_id = NEW.spot_id;
 END $$
 
 DELIMITER ;
 
-
+INSERT INTO parking_prices (screen, row_type, price_per_spot) VALUES
+('small', 'front', 75.00),
+('small', 'middle', 50.00),
+('small', 'back', 40.00),
+('large', 'front', 100.00),
+('large', 'middle', 75.00),
+('large', 'back', 50.00);
 
 INSERT INTO `movies` (`id`, `slug`, `title`, `director`, `release_year`, `runtime`, `age_limit`, `description`, `length`, `status`, `premiere_date`, `language`, `poster`)
 VALUES

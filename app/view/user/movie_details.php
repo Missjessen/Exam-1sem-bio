@@ -7,83 +7,103 @@
         <p><strong>Skuespillere:</strong> <?= htmlspecialchars($movie['actors']) ?></p>
     </div>
 
-    <div class="movie-showtimes">
-    <h2>Visningstider</h2>
-    <?php if (!empty($showtimes)): ?>
-        <form action="booking.php" method="POST" id="bookingForm">
-            <div class="showtime-cards">
-                <?php foreach ($showtimes as $showtime): ?>
-                    <div class="showtime-card">
-                        <input type="radio" name="showtime_id" id="showtime_<?= htmlspecialchars($showtime['id']) ?>" value="<?= htmlspecialchars($showtime['id']) ?>" required>
-                        <label for="showtime_<?= htmlspecialchars($showtime['id']) ?>">
-                            <p><?= htmlspecialchars($showtime['show_date']) ?> kl. <?= htmlspecialchars($showtime['show_time']) ?></p>
-                            <p><?= htmlspecialchars($showtime['screen']) ?> skærm</p>
-                        </label>
-                    </div>
-                <?php endforeach; ?>
-            </div>
+    <h1>Bookingformular</h1>
+    <form action="booking.php" method="POST">
+        <label for="screen">Vælg skærm:</label>
+        <select name="screen" id="screen" required>
+            <option value="small">Lille skærm</option>
+            <option value="large">Stor skærm</option>
+        </select>
 
-            <label for="spots">Antal pladser:</label>
-            <input type="number" name="spots" id="spots" min="1" max="10" value="1" required>
+        <label for="rowType">Vælg række:</label>
+        <select name="rowType" id="rowType" required>
+            <option value="front">Forreste række</option>
+            <option value="middle">Midterste række</option>
+            <option value="back">Bagerste række</option>
+        </select>
 
-            <p>Total pris: <span id="totalPrice">0</span> DKK</p>
+        <label for="spots">Antal pladser:</label>
+        <input type="number" name="spots" id="spots" min="1" max="10" required>
 
-            <button type="submit">Book nu</button>
-        </form>
-    <?php else: ?>
-        <p>Der er ingen kommende visninger på nuværende tidspunkt.</p>
-    <?php endif; ?>
-</div>
+        <p>Total pris: <span id="totalPrice">0 DKK</span></p>
 
-<script>
-    const pricePerSpot = 50; // Standardpris pr. plads
-    const spotsInput = document.getElementById('spots');
-    const totalPriceElement = document.getElementById('totalPrice');
+        <button type="submit">Book nu</button>
+    </form>
 
-    function updatePrice() {
-        const spots = parseInt(spotsInput.value, 10) || 0;
-        totalPriceElement.textContent = spots * pricePerSpot;
-    }
+    <script>
+        // Hent HTML-elementer
+        const screenInput = document.getElementById('screen');
+        const rowTypeInput = document.getElementById('rowType');
+        const spotsInput = document.getElementById('spots');
+        const totalPriceElement = document.getElementById('totalPrice');
 
-    spotsInput.addEventListener('input', updatePrice);
-    updatePrice(); // Initial opdatering
-</script>
+        // Definer priser
+        const prices = {
+            small: { front: 75, middle: 50, back: 40 },
+            large: { front: 100, middle: 75, back: 50 }
+        };
 
-<style>.showtime-cards {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    margin: 20px 0;
-}
+        // Funktion til at opdatere prisen
+        function updatePrice() {
+            const screen = screenInput.value;
+            const rowType = rowTypeInput.value;
+            const spots = parseInt(spotsInput.value, 10) || 0;
 
-.showtime-card {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 10px;
-    text-align: center;
-    width: 150px;
-    cursor: pointer;
-    background-color: #f9f9f9;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
+            const pricePerSpot = prices[screen]?.[rowType] || 0;
+            totalPriceElement.textContent = (spots * pricePerSpot) + " DKK";
+        }
 
-.showtime-card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
+        // Event listeners
+        screenInput.addEventListener('change', updatePrice);
+        rowTypeInput.addEventListener('change', updatePrice);
+        spotsInput.addEventListener('input', updatePrice);
 
-.showtime-card input {
-    display: none;
-}
+        // Initial opdatering
+        updatePrice();
+    </script>
 
-.showtime-card label {
-    display: block;
-    cursor: pointer;
-}
+<style> form {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
 
-.showtime-card input:checked + label {
-    background-color: #007bff;
-    color: white;
-    border-color: #007bff;
-}
+        label {
+            font-weight: bold;
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+        select, input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #totalPrice {
+            font-weight: bold;
+            color: green;
+        }
+    </style>
 </style>
