@@ -4,20 +4,18 @@
     <p><strong>Genre:</strong> <?= htmlspecialchars($movie['genre'] ?? 'Ikke angivet') ?></p>
     <p><strong>Skuespillere:</strong> <?= htmlspecialchars($movie['actors'] ?? 'Ikke angivet') ?></p>
 
-    <h2>Visningstider</h2>
+    <h3>Vælg spilletid:</h3>
+<select name="showtime_id" id="showtime">
     <?php if (!empty($showtimes)): ?>
-        <ul>
-            <?php foreach ($showtimes as $showtime): ?>
-                <li>
-                    <?= htmlspecialchars($showtime['show_date'] ?? 'Ukendt dato') ?> kl. <?= htmlspecialchars($showtime['show_time'] ?? 'Ukendt tid') ?>
-                    <br> Skærm: <?= htmlspecialchars($showtime['screen'] ?? 'Ukendt skærm') ?>
-                </li>
-            <?php endforeach; ?>
-        </ul>
+        <?php foreach ($showtimes as $showtime): ?>
+            <option value="<?= htmlspecialchars($showtime['showtime_id']) ?>">
+                <?= htmlspecialchars($showtime['show_date']) ?> kl. <?= htmlspecialchars($showtime['show_time']) ?> (Skærm: <?= htmlspecialchars($showtime['screen'] ?? 'Ikke angivet') ?>)
+            </option>
+        <?php endforeach; ?>
     <?php else: ?>
-        <p>Der er ingen visningstider for denne film i øjeblikket.</p>
+        <option disabled>Ingen visningstider tilgængelige</option>
     <?php endif; ?>
-</div>
+</select>
 
     <h2>Bookingformular</h2>
 <form action="booking.php" method="POST">
