@@ -13,13 +13,15 @@
     <div class="showtimes">
         <?php if (!empty($showtimes)): ?>
             <?php foreach ($showtimes as $showtime): ?>
-                <button type="button" 
-                        class="showtime-option" 
-                        data-showtime-id="<?= htmlspecialchars($showtime['showtime_id']) ?>" 
-                        data-showtime="<?= htmlspecialchars($showtime['show_date'] . ' kl. ' . $showtime['show_time']) ?>">
-                    <?= htmlspecialchars($showtime['show_date'] . ' kl. ' . $showtime['show_time']) ?>
-                </button>
-            <?php endforeach; ?>
+    <div class="showtime-card">
+        <h4><?= htmlspecialchars($showtime['show_date']) ?> kl. <?= htmlspecialchars($showtime['show_time']) ?></h4>
+        <p>Skærm: <?= htmlspecialchars($showtime['screen']) ?></p>
+        <form action="book.php" method="post">
+            <input type="hidden" name="showtime_id" value="<?= htmlspecialchars($showtime['showtime_id']) ?>">
+            <button type="submit">Book denne visning</button>
+        </form>
+    </div>
+<?php endforeach; ?>
         <?php else: ?>
             <p>Ingen spilletider tilgængelige.</p>
         <?php endif; ?>
