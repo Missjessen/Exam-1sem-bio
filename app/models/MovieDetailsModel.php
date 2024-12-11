@@ -42,7 +42,7 @@ class MovieDetailsModel {
     public function getShowtimesForMovie($movieId) {
         $stmt = $this->db->prepare("
             SELECT 
-                showtime_id, show_date, show_time, screen 
+                showtime_id, show_date, show_time 
             FROM 
                 showtimes 
             WHERE 
@@ -50,7 +50,8 @@ class MovieDetailsModel {
         ");
         $stmt->execute(['movie_id' => $movieId]);
     
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // Returnér en tom array, hvis der ikke er nogen visninger
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
     }
     
 
