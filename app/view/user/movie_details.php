@@ -7,18 +7,19 @@
 
     <!-- Visningstider -->
     <h2>Visningstider</h2>
-    <?php if (!empty($showtimes)): ?>
-        <ul>
-            <?php foreach ($showtimes as $showtime): ?>
-                <li>
-                    <?= htmlspecialchars($showtime['show_date'] ?? 'Ukendt dato') ?> kl. <?= htmlspecialchars($showtime['show_time'] ?? 'Ukendt tidspunkt') ?>
-                    (Skærm: <?= htmlspecialchars($showtime['screen'] ?? 'Ukendt skærm') ?>)
-                </li>
-            <?php endforeach; ?>
-        </ul>
-    <?php else: ?>
-        <p>Der er ingen visningstider for denne film i øjeblikket.</p>
-    <?php endif; ?>
+<?php if (!empty($showtimes)): ?>
+    <ul>
+        <?php foreach ($showtimes as $showtime): ?>
+            <li>
+                <?= htmlspecialchars($showtime['show_date']) ?> kl. <?= htmlspecialchars($showtime['show_time']) ?> <br>
+                Skærm: <?= htmlspecialchars($showtime['screen']) ?>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+<?php else: ?>
+    <p>Der er ingen visningstider for denne film i øjeblikket.</p>
+<?php endif; ?>
+
 
     <!-- Bookingformular -->
     <h2>Bookingformular</h2>
