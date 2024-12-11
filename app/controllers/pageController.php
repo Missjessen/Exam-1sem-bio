@@ -85,11 +85,14 @@ class PageController {
         }
     }
 
-    public function receipt() {
+    public function bookingAndReceipt() {
         try {
-            $bookingId = $_GET['booking_id'] ?? null; // Tjek, om booking_id er til stede i URL'en
-            if ($bookingId) {
-                // Hent bookingdetaljer via BookingController
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                // Håndter booking POST-anmodning
+                $this->bookingController->handleBooking($_POST); // Gem booking
+            } elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['booking_id'])) {
+                // Håndter kvittering GET-anmodning
+                $bookingId = $_GET['booking_id']; // Hent booking ID fra URL
                 $receiptData = $this->bookingController->getBookingDetails($bookingId);
                 
                 if (!$receiptData) {
@@ -99,12 +102,13 @@ class PageController {
                 // Render kvitteringssiden
                 $this->pageLoader->renderPage('receipt', ['receiptData' => $receiptData], 'user');
             } else {
-                throw new Exception("Booking ID mangler i URL'en.");
+                throw new Exception("Ugyldig anmodning. Booking eller kvittering kunne ikke behandles.");
             }
         } catch (Exception $e) {
-            $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af kvittering: " . $e->getMessage());
+            $this->pageLoader->renderErrorPage(500, "Fejl: " . $e->getMessage());
         }
     }
+    
 
     // Admin dashboard
     public function admin_dashboard() {
