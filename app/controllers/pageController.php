@@ -41,24 +41,24 @@ class PageController {
             $message = null; // Feedback til brugeren
     
             // Håndter kontaktformular, hvis der er en POST-forespørgsel
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $name = htmlspecialchars(trim($_POST['name']));
-                $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
-                $subject = htmlspecialchars(trim($_POST['subject']));
-                $messageContent = htmlspecialchars(trim($_POST['message']));
+            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
+                $mymail = "missjessen87@gmail.com";
+                $email = $_POST['email'];
+                $subject = $_POST['subject'];
+                $messageContent = $_POST['message'];
+                $regexp = "/^[^0-9][A-z0-9_-]+([.][A-z0-9_]+)*[@][A-z0-9_]+([.][A-z0-9_-]+)*[.][A-z]{2,4}$/";
     
-                // Valider input
-                if (empty($name) || empty($email) || empty($subject) || empty($messageContent)) {
-                    $message = "Alle felter skal udfyldes.";
-                } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                // Validering af email
+                if (!preg_match($regexp, $email)) {
                     $message = "Ugyldig email-adresse.";
+                } elseif (empty($email) || empty($messageContent) || empty($subject)) {
+                    $message = "Alle felter skal udfyldes.";
                 } else {
                     // Opsætning af email-indhold
-                    $recipientEmail = "yourname@yourpage.com";
-                    $body = "Navn: $name\nEmail: $email\n\nBesked:\n$messageContent";
+                    $body = "$messageContent\n\nE-mail: $email";
     
                     // Send email
-                    if (mail($recipientEmail, $subject, $body, "From: $email\n")) {
+                    if (mail($mymail, $subject, $body, "From: $email\n")) {
                         $message = "Tak for din besked! Vi vender tilbage hurtigst muligt.";
                     } else {
                         $message = "Der opstod en fejl ved afsendelse af email. Prøv igen senere.";
@@ -81,6 +81,7 @@ class PageController {
             $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af forsiden: " . $e->getMessage());
         }
     }
+    
 
     // Håndter program
     public function program() {
