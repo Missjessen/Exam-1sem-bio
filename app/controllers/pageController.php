@@ -89,10 +89,15 @@ class PageController {
         try {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Håndter booking POST-anmodning
-                $this->bookingController->handleBooking($_POST); // Gem booking
-            } elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['booking_id'])) {
+                $this->bookingController->handleBooking($_POST);
+            } elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 // Håndter kvittering GET-anmodning
-                $bookingId = $_GET['booking_id']; // Hent booking ID fra URL
+                $bookingId = $_GET['booking_id'] ?? null;
+    
+                if (!$bookingId) {
+                    throw new Exception("Booking ID mangler i URL'en.");
+                }
+    
                 $receiptData = $this->bookingController->getBookingDetails($bookingId);
                 
                 if (!$receiptData) {
@@ -102,7 +107,8 @@ class PageController {
                 // Render kvitteringssiden
                 $this->pageLoader->renderPage('receipt', ['receiptData' => $receiptData], 'user');
             } else {
-                throw new Exception("Ugyldig anmodning. Booking eller kvittering kunne ikke behandles.");
+                // Hvis anmodningen hverken er POST eller GET
+                throw new Exception("Ugyldig anmodningstype.");
             }
         } catch (Exception $e) {
             $this->pageLoader->renderErrorPage(500, "Fejl: " . $e->getMessage());
