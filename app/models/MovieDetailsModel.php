@@ -42,17 +42,16 @@ class MovieDetailsModel {
     public function getShowtimesForMovie($movieId) {
         $stmt = $this->db->prepare("
             SELECT 
-                showtime_id, show_date, show_time 
+                show_date, show_time, screen 
             FROM 
-                showtimes 
+                showings 
             WHERE 
                 movie_id = :movie_id
         ");
         $stmt->execute(['movie_id' => $movieId]);
-    
-        // Returnér en tom array, hvis der ikke er nogen visninger
-        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    
     
 
     public function getAvailableShowtimes($movieId) {

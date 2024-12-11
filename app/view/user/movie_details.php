@@ -9,7 +9,8 @@
         <ul>
             <?php foreach ($showtimes as $showtime): ?>
                 <li>
-                    <?= htmlspecialchars($showtime['show_date']) ?> kl. <?= htmlspecialchars($showtime['show_time']) ?>
+                    <?= htmlspecialchars($showtime['show_date'] ?? 'Ukendt dato') ?> kl. <?= htmlspecialchars($showtime['show_time'] ?? 'Ukendt tid') ?>
+                    <br> Skærm: <?= htmlspecialchars($showtime['screen'] ?? 'Ukendt skærm') ?>
                 </li>
             <?php endforeach; ?>
         </ul>
