@@ -89,22 +89,25 @@ class MovieDetailsModel {
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
  
-    public function bookSpot($showingId) {
+    public function bookSpot($showingId, $spots) {
         $query = "
             UPDATE showings
-            SET available_spots = available_spots - 1
-            WHERE id = :showing_id AND available_spots > 0
+            SET available_spots = available_spots - :spots
+            WHERE id = :showing_id AND available_spots >= :spots
         ";
+    
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':showing_id', $showingId, PDO::PARAM_INT);
-
+        $stmt->bindParam(':spots', $spots, PDO::PARAM_INT);
+    
         try {
             $stmt->execute();
         } catch (PDOException $e) {
             throw new Exception("Fejl ved booking: " . $e->getMessage());
         }
-
+    
         return $stmt->rowCount() > 0; // Returner true, hvis en række blev opdateret
     }
 }

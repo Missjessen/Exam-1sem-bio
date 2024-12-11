@@ -6,47 +6,47 @@ class BookingController {
     public function __construct($db) {
         $this->bookingModel = new BookingModel($db);
     }
-    
-    public function createBooking($customerId, $movieId, $showtimeId, $spotId, $spots, $screen, $rowType) {
+
+    public function handleBooking($postData) {
         try {
-            $price = $this->calculatePrice($screen, $rowType, $spots);
-    
-            $stmt = $this->db->prepare("
-                INSERT INTO bookings (customer_id, movie_id, showtime_id, spot_id, price) 
-                VALUES (:customer_id, :movie_id, :showtime_id, :spot_id, :price)
-            ");
-            $stmt->execute([
-                ':customer_id' => $customerId,
-                ':movie_id' => $movieId,
-                ':showtime_id' => $showtimeId,
-                ':spot_id' => $spotId,
-                ':price' => $price
-            ]);
-    
-            return $this->db->lastInsertId();
-        } catch (PDOException $e) {
-            throw new Exception("Fejl ved oprettelse af booking: " . $e->getMessage());
+            // Valider data
+            if (empty($postData['showing_id']) || empty($postData['spots']) || empty($postData['customer_id'])) {
+                throw new Exception('Ugyldige data. Vælg venligst en visning og antal pladser.');
+            }
+
+            $showingId = (int)$postData['showing_id'];
+            $spots = (int)$postData['spots'];
+            $customerId = (int)$postData['customer_id'];
+
+            // Hent visningsdata
+            $showing = $this->bookingModel->getShowingDetails($showingId);
+            if (!$showing) {
+                throw new Exception('Visning ikke fundet.');
+            }
+
+            // Beregn prisen
+            $price = $this->bookingModel->calculatePrice($showing['screen'], $postData['row_type'], $spots);
+
+            // Book pladser
+            $success = $this->bookingModel->bookSpot($showingId, $spots);
+            if (!$success) {
+                throw new Exception('Kunne ikke booke pladser. Ikke nok ledige pladser.');
+            }
+
+            // Opret booking
+            $this->bookingModel->createBooking($customerId, $showing['movie_id'], $showingId, $price, $spots);
+
+            // Redirect til kvittering
+            header('Location: /receipt.php?booking_success=true');
+            exit;
+
+        } catch (Exception $e) {
+            $this->handleError($e->getMessage());
         }
     }
-    
 
-    public function calculatePrice($screen, $rowType, $spots) {
-        try {
-            $stmt = $this->db->prepare("
-                SELECT price_per_spot 
-                FROM parking_prices 
-                WHERE screen = :screen AND row_type = :row_type
-            ");
-            $stmt->execute([':screen' => $screen, ':row_type' => $rowType]);
-            $pricePerSpot = $stmt->fetchColumn();
-    
-            if (!$pricePerSpot) {
-                throw new Exception("Pris for valgt skærm og række ikke fundet.");
-            }
-    
-            return $pricePerSpot * $spots; // Totalpris
-        } catch (PDOException $e) {
-            throw new Exception("Fejl ved beregning af pris: " . $e->getMessage());
-        }
+    private function handleError($message) {
+        $errorController = new ErrorController();
+        $errorController->showErrorPage($message);
     }
 }
