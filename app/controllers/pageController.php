@@ -8,6 +8,7 @@ class PageController {
     private $adminController;
     private $movieFrontendController;
     private $adminBookingModel;
+    private $bookingController;
 
     public function __construct() {
         // Initialiser database og afhængigheder
@@ -17,6 +18,7 @@ class PageController {
         $this->adminController = new AdminController(new AdminModel($this->db));
         $this->movieFrontendController = new MovieFrontendController(new MovieFrontendModel($this->db));
         $this->adminBookingModel = new AdminBookingModel($this->db);
+        $this->bookingController = new BookingController($this->db);
     }
 
     // Håndter en given side baseret på page-parametret
@@ -68,6 +70,39 @@ class PageController {
             }
         } else {
             $this->pageLoader->renderErrorPage(400, "Slug mangler i URL'en.");
+        }
+    }
+
+    public function booking() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            try {
+                $this->bookingController->handleBooking($_POST); // Behandl booking POST-anmodning
+            } catch (Exception $e) {
+                $this->pageLoader->renderErrorPage(500, "Fejl under booking: " . $e->getMessage());
+            }
+        } else {
+            $this->pageLoader->renderErrorPage(400, "Ugyldig anmodning til booking.");
+        }
+    }
+
+    public function receipt() {
+        try {
+            $bookingId = $_GET['booking_id'] ?? null; // Tjek, om booking_id er til stede i URL'en
+            if ($bookingId) {
+                // Hent bookingdetaljer via BookingController
+                $receiptData = $this->bookingController->getBookingDetails($bookingId);
+                
+                if (!$receiptData) {
+                    throw new Exception("Booking med ID '$bookingId' blev ikke fundet.");
+                }
+    
+                // Render kvitteringssiden
+                $this->pageLoader->renderPage('receipt', ['receiptData' => $receiptData], 'user');
+            } else {
+                throw new Exception("Booking ID mangler i URL'en.");
+            }
+        } catch (Exception $e) {
+            $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af kvittering: " . $e->getMessage());
         }
     }
 

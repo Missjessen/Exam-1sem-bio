@@ -1,23 +1,16 @@
-<?php
-$success = $_GET['booking_success'] ?? 'false'; // Tjek om booking_success er sat
-?>
 <div>
     <h1>Booking Kvittering</h1>
-    <?php
-    if ($_GET['booking_success'] === 'true') {
-    $bookingId = $_GET['booking_id'];
-    $stmt = $db->prepare("SELECT * FROM bookings WHERE booking_id = :booking_id");
-    $stmt->execute([':booking_id' => $bookingId]);
-    $booking = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    echo "<h1>Booking Kvittering</h1>";
-    echo "<p>Film: {$booking['movie_id']}</p>";
-    echo "<p>Visning: {$booking['showtime_id']}</p>";
-    echo "<p>Antal pladser: {$booking['spot_id']}</p>";
-    echo "<p>Total pris: {$booking['price']} DKK</p>";
-} else {
-    echo "<p>Booking mislykkedes. Prøv igen.</p>";
-}
-?>
+    <?php if ($success === 'true' && !empty($booking)): ?>
+        <p><strong>Kunde:</strong> <?= htmlspecialchars($booking['customer_name']) ?></p>
+        <p><strong>Email:</strong> <?= htmlspecialchars($booking['customer_email']) ?></p>
+        <p><strong>Film:</strong> <?= htmlspecialchars($booking['movie_title']) ?></p>
+        <p><strong>Visning:</strong> <?= htmlspecialchars($booking['show_date']) ?> kl. <?= htmlspecialchars($booking['show_time']) ?></p>
+        <p><strong>Skærm:</strong> <?= htmlspecialchars($booking['screen']) ?></p>
+        <p><strong>Total pris:</strong> <?= htmlspecialchars($booking['price']) ?> DKK</p>
+        <p><strong>Bookingdato:</strong> <?= htmlspecialchars($booking['booking_date']) ?></p>
+    <?php elseif ($success === 'false'): ?>
+        <p>Booking mislykkedes. Prøv igen.</p>
+    <?php else: ?>
+        <p>Kunne ikke finde bookingoplysninger.</p>
+    <?php endif; ?>
 </div>
-

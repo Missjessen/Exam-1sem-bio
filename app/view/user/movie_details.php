@@ -21,7 +21,7 @@
 
     <!-- Bookingformular -->
     <h2>Bookingformular</h2>
-    <form method="POST" action="booking_process.php">
+    <form method="POST" action="?page=booking">
         <label for="showtime">Vælg spilletid:</label>
         <select name="showing_id" id="showtime" required>
             <?php foreach ($showtimes as $showing): ?>

@@ -104,14 +104,16 @@ CREATE TABLE parking_prices (
 -- Opret tabel for bookinger
 CREATE TABLE IF NOT EXISTS `bookings` (
     `booking_id` INT AUTO_INCREMENT PRIMARY KEY,
-    `movie_id` CHAR(36) NOT NULL,          -- Opdateret til CHAR(36) for at matche UUID-formatet
+    `movie_id` CHAR(36) NOT NULL,          -- Matches UUID format
     `spot_id` INT NOT NULL,
-    `customer_id` INT,
-    `showtime_id` INT NOT NULL,            -- Visningstidspunkt
-    `price` DECIMAL(10, 2) NOT NULL, 
+    `customer_id` INT NOT NULL,            -- Customer ID as a foreign key
+    `showtime_id` INT NOT NULL,            -- Showtime ID
+    `price` DECIMAL(10, 2) NOT NULL,       -- Price of the booking
     `booking_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (`movie_id`) REFERENCES `movies`(`id`) ON DELETE CASCADE,   -- Refererer til `id` i `movies`
-    FOREIGN KEY (`spot_id`) REFERENCES `spots`(`spot_id`)
+    FOREIGN KEY (`movie_id`) REFERENCES `movies`(`id`) ON DELETE CASCADE,   -- Foreign key for movies
+    FOREIGN KEY (`spot_id`) REFERENCES `spots`(`spot_id`) ON DELETE CASCADE, -- Foreign key for spots
+    FOREIGN KEY (`customer_id`) REFERENCES `customers`(`id`) ON DELETE CASCADE, -- Foreign key for customers
+    FOREIGN KEY (`showtime_id`) REFERENCES `showings`(`id`) ON DELETE CASCADE -- Foreign key for showtimes
 );
 
 
@@ -344,11 +346,15 @@ INSERT INTO spots (spot_number, status) VALUES
 (4, 'available'),
 (5, 'booked');
 
--- Indsæt testdata i `bookings` tabellen
+/* -- Indsæt testdata i `bookings` tabellen
 INSERT INTO bookings (movie_id, spot_id, customer_id, price) VALUES
 ((SELECT id FROM movies WHERE slug = 'the-dark-knight-2008'), 3, 1, 100),
-((SELECT id FROM movies WHERE slug = 'inception-2010'), 5, 2, 150);
+((SELECT id FROM movies WHERE slug = 'inception-2010'), 5, 2, 150); */
 
+INSERT INTO `bookings` (`movie_id`, `spot_id`, `customer_id`, `showtime_id`, `price`)
+VALUES
+('12674cad-b79f-11ef-a8b1-4245b9529efb', 1, 1, 1, 100.00),
+('12674cad-b79f-11ef-a8b1-4245b9529efb', 2, 2, 2, 150.00);
 
 
 
