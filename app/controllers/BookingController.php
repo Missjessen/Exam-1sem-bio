@@ -38,7 +38,7 @@ class BookingController {
             $bookingId = $this->bookingModel->createBooking($customerId, $showing['movie_id'], $showingId, $price, $spots);
 
             // Redirect to receipt with booking ID
-            header('Location: /receipt.php?booking_success=true&booking_id=' . $bookingId);
+            header('Location: /?page=bookingAndReceipt&action=receipt&booking_id=' . $bookingId);
             exit;
 
         } catch (Exception $e) {
@@ -59,7 +59,7 @@ class BookingController {
     public function deleteBooking($bookingId) {
         try {
             $this->bookingModel->deleteBooking($bookingId);
-            header('Location: /admin_bookings.php?delete_success=true');
+            header('Location: /?page=admin_bookings&action=delete&status=success');
             exit;
         } catch (Exception $e) {
             $this->handleError($e->getMessage());
@@ -72,7 +72,7 @@ class BookingController {
             $spots = (int)$postData['spots'];
             $price = (float)$postData['price'];
             $this->bookingModel->updateBooking($bookingId, $spots, $price);
-            header('Location: /admin_bookings.php?update_success=true');
+            header('Location: /?page=admin_bookings&action=update&status=success');
             exit;
         } catch (Exception $e) {
             $this->handleError($e->getMessage());
@@ -84,16 +84,12 @@ class BookingController {
         $errorController->showErrorPage($message);
     }
 
+    // Get booking details for receipt
     public function getBookingDetails($bookingId) {
         try {
-            $stmt = $this->bookingModel->getBookingDetails($bookingId);
-            return $stmt;
+            return $this->bookingModel->getBookingDetails($bookingId);
         } catch (Exception $e) {
             throw new Exception("Fejl ved hentning af bookingdetaljer: " . $e->getMessage());
         }
     }
-    
-    
-    
-    
 }
