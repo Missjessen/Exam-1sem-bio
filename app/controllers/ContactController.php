@@ -1,5 +1,5 @@
 <?php 
-
+class ContactController {
 public function handleContactForm() {
     $response = ''; // Feedback-variabel
 
@@ -41,4 +41,5 @@ public function handleContactForm() {
     }
 
     return $response;
+}
 }
