@@ -1,7 +1,8 @@
 <?php
 require_once __DIR__ . '/init.php';
 
-$response = ''; // Variabel til feedback
+// Feedback variabel
+$response = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
     // Hent og valider input fra formularen
@@ -10,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
     $subject = isset($_POST['subject']) ? htmlspecialchars(trim($_POST['subject'])) : '';
     $message = isset($_POST['message']) ? htmlspecialchars(trim($_POST['message'])) : '';
 
-    // Validering af email og felter
+    // Validering af input
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $response = "Ugyldig email-adresse.";
     } elseif (empty($name) || empty($email) || empty($subject) || empty($message)) {
@@ -47,27 +48,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kontakt os</title>
+    <style>
+        .contact-form { max-width: 500px; margin: 0 auto; }
+        .form-group { margin-bottom: 15px; }
+        .contact-message { color: green; }
+        .error-message { color: red; }
+    </style>
 </head>
 <body>
-    <h1>Kontakt os</h1>
-    <?php if ($response): ?>
-        <p><?= htmlspecialchars($response) ?></p>
-    <?php endif; ?>
-
-    <form method="POST" action="">
-        <label for="name">Navn:</label>
-        <input type="text" id="name" name="name" required placeholder="Dit navn">
-
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required placeholder="Din emailadresse">
-
-        <label for="subject">Emne:</label>
-        <input type="text" id="subject" name="subject" required placeholder="Emnet for din besked">
-
-        <label for="message">Besked:</label>
-        <textarea id="message" name="message" rows="4" required placeholder="Skriv din besked her..."></textarea>
-
-        <button type="submit" name="submit">Send besked</button>
-    </form>
+    <div class="contact-form">
+        <h3>Kontakt Os</h3>
+        <?php if (!empty($response)): ?>
+            <p class="<?= strpos($response, 'Tak') !== false ? 'contact-message' : 'error-message' ?>">
+                <?= htmlspecialchars($response) ?>
+            </p>
+        <?php endif; ?>
+        <form method="POST" action="">
+            <div class="form-group">
+                <label for="name">Navn:</label>
+                <input type="text" id="name" name="name" required placeholder="Dit navn">
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required placeholder="Din emailadresse">
+            </div>
+            <div class="form-group">
+                <label for="subject">Emne:</label>
+                <input type="text" id="subject" name="subject" required placeholder="Emnet for din besked">
+            </div>
+            <div class="form-group">
+                <label for="message">Besked:</label>
+                <textarea id="message" name="message" rows="4" required placeholder="Skriv din besked her..."></textarea>
+            </div>
+            <button type="submit" name="submit">Send besked</button>
+        </form>
+    </div>
 </body>
 </html>
