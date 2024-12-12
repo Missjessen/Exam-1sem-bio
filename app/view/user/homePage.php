@@ -80,7 +80,7 @@
     
 
 
-        <div class="contact-form">
+        <div class="contact-form" id="contact">
     <h3>Kontakt Os</h3>
     <?php if (!empty($_SESSION['contactMessage'])): ?>
         <p class="<?= strpos($_SESSION['contactMessage'], 'Tak') !== false ? 'contact-message' : 'error-message' ?>">
@@ -124,8 +124,35 @@
 
 
 
+
     
 </footer>
 
     </div>
 </body>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        if (window.location.hash === '#contact') {
+            const contactSection = document.querySelector('#contact');
+            if (contactSection) {
+                contactSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    });
+</script>
+
+
+<style>
+.contact-message {
+    color: green;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.error-message {
+    color: red;
+    margin-top: 10px;
+    font-weight: bold;
+}
+</style>

@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
     $_SESSION['contactMessage'] = $response;
 
     // Omdiriger tilbage til forsiden eller viewet
-    header("Location: " . BASE_URL . "index.php?page=homePage");
+    header("Location: " . BASE_URL . "index.php?page=homePage#contact");
     exit;
 } else {
     // Direkte adgang omdirigeres
