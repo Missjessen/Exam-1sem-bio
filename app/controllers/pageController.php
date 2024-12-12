@@ -54,7 +54,7 @@ class PageController {
                 'newsMovies' => $movieFrontendModel->getNewsMovies(),
                 'dailyMovies' => $movieFrontendModel->getDailyShowings(),
                 'settings' => $movieFrontendModel->getSiteSettings(),
-                'contactMessage' => $message,
+                'contactMessage' => $message, // Feedback til viewet
             ];
     
             // Render forsiden

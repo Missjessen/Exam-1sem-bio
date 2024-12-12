@@ -32,6 +32,6 @@ class ContactController {
             }
         }
 
-        return $feedback; // Send feedback til viewet
+        return $feedback; // Returnér feedback til PageController
     }
 }
