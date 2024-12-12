@@ -60,58 +60,11 @@
 
 
 
-<section class="genre-selector">
-    <h2>Select a Genre</h2>
-    <form method="GET" action="">
-        <select name="genre" onchange="this.form.submit()">
-            <option value="">-- Select Genre --</option>
-            <?php foreach ($allGenres as $genre): ?>
-                <option value="<?= htmlspecialchars($genre['name'] ?? '') ?>" <?= isset($selectedGenre) && $selectedGenre === ($genre['name'] ?? '') ? 'selected' : '' ?>>
-                    <?= htmlspecialchars($genre['name'] ?? '') ?>
-                </option> <!-- Rettet -->
-            <?php endforeach; ?>
-        </select>
-    </form>
-</section>
 
-<?php if (!empty($moviesByGenre)): ?>
-<section class="movies-by-genre">
-    <h2>Movies in <?= htmlspecialchars($selectedGenre ?? '') ?></h2> <!-- Rettet -->
-    <div class="genre-slider">
-        <?php foreach ($moviesByGenre as $movie): ?>
-            <div class="slide">
-                <img src="<?= htmlspecialchars($movie['poster'] ?? '') ?>" alt="<?= htmlspecialchars($movie['title'] ?? '') ?>"> <!-- Rettet -->
-                <h3><?= htmlspecialchars($movie['title'] ?? '') ?></h3> <!-- Rettet -->
-            </div>
-        <?php endforeach; ?>
-    </div>
-</section>
-<?php endif; ?>
-        <section class="selected-genre-movies">
-    <h2><?= htmlspecialchars($selectedGenre ?? '') ?> Movies</h2> <!-- Rettet -->
-    <div class="genre-slider">
-        <?php foreach ($genreMovies as $movie): ?>
-            <div class="slide">
-                <img src="<?= htmlspecialchars($movie['poster'] ?? '') ?>" alt="<?= htmlspecialchars($movie['title'] ?? '') ?>"> <!-- Rettet -->
-                <h3><?= htmlspecialchars($movie['title'] ?? '') ?></h3> <!-- Rettet -->
-            </div>
-        <?php endforeach; ?>
-    </div>
-</section>
-        <!-- 10 Movies by Genre -->
-        <section class="genre-movies">
-    <h2>Movies by Genre</h2>
-    <div class="genre-slider">
-        <?php foreach ($randomGenreMovies as $movie): ?>
-            <div class="slide">
-                <img src="<?= htmlspecialchars($movie['poster'] ?? '') ?>" alt="<?= htmlspecialchars($movie['title'] ?? '') ?>"> <!-- Rettet -->
-                <h3><?= htmlspecialchars($movie['title'] ?? '') ?></h3> <!-- Rettet -->
-                <p>Genre: <?= htmlspecialchars($movie['genre'] ?? '') ?></p> <!-- Rettet -->
-            </div>
-        <?php endforeach; ?>
-    </div>
-</section>
 
+
+   
+      
 
 
         <footer>
