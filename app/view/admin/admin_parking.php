@@ -4,7 +4,7 @@ require_once dirname(__DIR__, ) . '/init.php';
 $to = "missejessen87@gmail.com";
 $subject = "Test Email";
 $message = "Dette er en testmail for at tjekke mail()-funktionen.";
-$headers = "From: test@yourdomain.com";
+$headers = "From: test@cruise-nights-cinema.dk";
 
 if (mail($to, $subject, $message, $headers)) {
     echo "Mail sendt!";
