@@ -82,12 +82,21 @@
 
         <div class="contact-form" id="contact">
     <h3>Kontakt Os</h3>
-    <?php if (!empty($_SESSION['contactMessage'])): ?>
-        <p class="<?= strpos($_SESSION['contactMessage'], 'Tak') !== false ? 'contact-message' : 'error-message' ?>">
+
+    <!-- Vis besked, hvis den findes -->
+    <?php
+    session_start(); // Start session for at læse beskeden
+    if (!empty($_SESSION['contactMessage'])): ?>
+        <div class="<?= strpos($_SESSION['contactMessage'], 'Tak') !== false ? 'contact-message' : 'error-message' ?>">
             <?= htmlspecialchars($_SESSION['contactMessage']) ?>
-        </p>
-        <?php unset($_SESSION['contactMessage']); // Fjern besked efter visning ?>
+        </div>
+        <?php
+        // Debugging for at sikre, at beskeden vises
+        error_log("Besked vist: " . $_SESSION['contactMessage']);
+        unset($_SESSION['contactMessage']); // Ryd besked efter visning
+        ?>
     <?php endif; ?>
+
     <form method="POST" action="<?= htmlspecialchars(BASE_URL . 'contact-handler.php') ?>">
         <div class="form-group">
             <label for="name">Navn:</label>
@@ -108,6 +117,7 @@
         <button type="submit" name="submit">Send besked</button>
     </form>
 </div>
+
 
 
 

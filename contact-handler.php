@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/init.php'; // Inkluder basisopsætning
 
+session_start(); // Start session for at gemme beskeder
+
 $response = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
@@ -36,10 +38,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
     }
 
     // Gem responsen i sessionen
-    session_start();
     $_SESSION['contactMessage'] = $response;
 
-    // Omdiriger tilbage til forsiden eller viewet
+    // Debugging for at sikre, at beskeden gemmes korrekt
+    error_log("Besked gemt i session: " . $_SESSION['contactMessage']);
+
+    // Omdiriger til forsiden med hash for kontaktsektionen
     header("Location: " . BASE_URL . "index.php?page=homePage#contact");
     exit;
 } else {
@@ -47,3 +51,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
     header("Location: " . BASE_URL . "index.php?page=homePage");
     exit;
 }
+
