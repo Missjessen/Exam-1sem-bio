@@ -29,7 +29,7 @@ class PageController {
     public function showPage($page) {
         try {
             if (method_exists($this, $page)) {
-                $this->$page(); // Kalder metoden med samme navn som siden
+                $this->$page(); // Kald den relevante metode
             } else {
                 $this->pageLoader->loadUserPage($page); // Standard user page
             }
@@ -194,5 +194,34 @@ class PageController {
     public function handleError($message) {
         error_log($message);
         $this->pageLoader->renderErrorPage(500, $message);
+    }
+    public function login() {
+        $error = null;
+    
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $authController = new AuthController($this->db);
+            $error = $authController->login();
+        }
+    
+        $this->pageLoader->renderPage('login', ['error' => $error], 'user');
+    }
+    public function register() {
+        $error = null;
+    
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $authController = new AuthController($this->db);
+            $error = $authController->register();
+        }
+    
+        $this->pageLoader->renderPage('register', ['error' => $error], 'user');
+    }
+
+    private function ensureLoggedIn() {
+        session_start();
+        if (!isset($_SESSION['user_id'])) {
+            $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
+            header("Location: " . BASE_URL . "index.php?page=login");
+            exit;
+        }
     }
 }

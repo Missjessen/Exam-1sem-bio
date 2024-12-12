@@ -42,15 +42,25 @@ $current_slug = $_REQUEST['slug'] ?? '';
             
         </ul>
         <?php if (isset($_SESSION['user_id'])): ?>
+    <!-- Vis brugerens velkomst og log ud -->
     <div class="user-menu">
         <span>Velkommen, <?= htmlspecialchars($_SESSION['username']) ?></span>
         <a href="<?= htmlspecialchars(BASE_URL . 'logout.php') ?>">Log ud</a>
     </div>
 <?php else: ?>
+    <!-- Links til login og registrering -->
     <div class="auth-links">
         <a href="<?= htmlspecialchars(BASE_URL . 'login.php') ?>">Log ind</a>
         <a href="<?= htmlspecialchars(BASE_URL . 'register.php') ?>">Opret profil</a>
     </div>
+<?php endif; ?>
+
+<!-- Beskedhåndtering -->
+<?php if (!empty($_SESSION['message'])): ?>
+    <div class="message">
+        <?= htmlspecialchars($_SESSION['message']) ?>
+    </div>
+    <?php unset($_SESSION['message']); // Ryd beskeden efter visning ?>
 <?php endif; ?>
         
     </nav>
@@ -140,6 +150,28 @@ html, body {
         background-color: #5cb85c;
         color: white;
     }
+
+    .message {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #c3e6cb;
+    border-radius: 5px;
+    font-size: 0.9em;
+}
+
+.auth-links a {
+    margin-right: 10px;
+    text-decoration: none;
+    color: #007bff;
+}
+
+.auth-links a:hover {
+    text-decoration: underline;
+}
+
+
 
     /* Responsive adjustments */
     @media (max-width: 768px) {
