@@ -9,6 +9,7 @@ class PageController {
     private $movieFrontendController;
     private $adminBookingModel;
     private $bookingController;
+  
     
 
 
@@ -21,6 +22,7 @@ class PageController {
         $this->movieFrontendController = new MovieFrontendController(new MovieFrontendModel($this->db));
         $this->adminBookingModel = new AdminBookingModel($this->db);
         $this->bookingController = new BookingController($this->db);
+       
     }
 
     // Håndter en given side baseret på page-parametret
@@ -40,11 +42,12 @@ class PageController {
     public function homePage() {
         try {
             $movieFrontendModel = new MovieFrontendModel($this->db);
+            $contactController = new ContactController();
             $contactMessage = null;
     
             // Håndter kontaktformular
             if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
-                $contactMessage = $this->handleContactForm();
+                $contactMessage = $contactController->handleContactForm();
             }
     
             // Hent data til forsiden
@@ -53,7 +56,7 @@ class PageController {
                 'newsMovies' => $movieFrontendModel->getNewsMovies(),
                 'dailyMovies' => $movieFrontendModel->getDailyShowings(),
                 'settings' => $movieFrontendModel->getSiteSettings(),
-                'contactMessage' => $contactMessage,
+                'contactMessage' => $contactMessage, // Feedback til view
             ];
     
             // Render forsiden
