@@ -43,10 +43,12 @@ class PageController {
             $contactController = new ContactController();
             $contactMessage = null;
     
+            // Håndter kontaktformular
             if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                 $contactMessage = $contactController->handleContactForm();
             }
     
+            // Hent data til forsiden
             $data = [
                 'upcomingMovies' => $movieFrontendModel->getUpcomingMovies(),
                 'newsMovies' => $movieFrontendModel->getNewsMovies(),
@@ -55,11 +57,13 @@ class PageController {
                 'contactMessage' => $contactMessage,
             ];
     
+            // Render forsiden
             $this->pageLoader->renderPage('homePage', $data, 'user');
         } catch (Exception $e) {
             $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af forsiden: " . $e->getMessage());
         }
     }
+    
     
     
     
