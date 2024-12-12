@@ -3,7 +3,7 @@ require_once __DIR__ . '/init.php';
 
 
 // Modtagerens email (udskift med din egen emailadresse)
-$to = "nanjes01@365easv.dk"; // Skift til den emailadresse, du vil teste med
+$to = "nsj@cruise-nights-cinema.dk"; // Skift til den emailadresse, du vil teste med
 
 // Emne for testmailen
 $subject = "Test Email via PHP mail()";
