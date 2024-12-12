@@ -10,39 +10,49 @@ class MovieAdminModel extends CrudBase {
         return $this->create('movies', $data);
     }
 
-    // Opdater en eksisterende film
     public function updateMovie($movieId, $data) {
         try {
-            // Forbindelse til database fra singleton
-            $db = Database::getInstance()->getConnection();
+            // Kontroller, at data ikke er tomt
+            if (empty($data)) {
+                throw new Exception("Data til opdatering er tomt.");
+            }
     
-            // Bygger dynamisk SQL-sætning baseret på data
+            // Bygger dynamisk SQL
             $columns = [];
             foreach ($data as $key => $value) {
                 $columns[] = "$key = :$key";
             }
     
             $sql = "UPDATE movies SET " . implode(', ', $columns) . " WHERE id = :id";
+            $stmt = $this->db->prepare($sql);
     
-            $stmt = $db->prepare($sql); // Bruger singleton-forbindelsen
+            // Log SQL for debugging
+            error_log("SQL til opdatering: $sql");
+            error_log("Data til opdatering: " . print_r($data, true));
     
-            // Binder værdier til SQL-parametrene
+            // Bind værdier
             foreach ($data as $key => $value) {
                 $stmt->bindValue(":$key", $value);
             }
+            $stmt->bindValue(":id", $movieId, PDO::PARAM_STR);
     
-            $stmt->bindValue(":id", $movieId, PDO::PARAM_STR); // Binder movie ID
+            // Udfør forespørgslen
+            $stmt->execute();
     
-            $stmt->execute(); // Udfører opdateringen
+            // Log resultatet
+            if ($stmt->rowCount() > 0) {
+                error_log("Opdatering lykkedes for film med ID $movieId.");
+            } else {
+                error_log("Ingen rækker blev opdateret for ID $movieId.");
+            }
     
-            return $stmt->rowCount(); // Returnerer antallet af opdaterede rækker
+            return $stmt->rowCount();
         } catch (PDOException $e) {
-            // Log fejl og kast en exception for fejlhåndtering
+            // Log og kast fejl
             error_log("Fejl ved opdatering af film med ID $movieId: " . $e->getMessage());
             throw new Exception("Kunne ikke opdatere filmen med ID $movieId.");
         }
     }
-    
 
     // Slet en film
     public function deleteMovie($movieId) {

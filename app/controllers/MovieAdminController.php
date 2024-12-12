@@ -110,64 +110,35 @@ class MovieAdminController {
     
     // Gemmer eller opdaterer en film.
      
-        private function handleMovieSave($action) {
-            // Hent movie_id fra POST-data
-            $movieId = $_POST['movie_id'] ?? null;
-        
-            // Saml filmdata fra formularen
-            $movieData = [
-                'title' => $_POST['title'] ?? '',
-                'release_year' => $_POST['release_year'] ?? '',
-                'length' => $_POST['length'] ?? '',
-                'director' => $_POST['director'] ?? '',
-                'description' => $_POST['description'] ?? '',
-                'premiere_date' => $_POST['premiere_date'] ?? '',
-                'language' => $_POST['language'] ?? '',
-                'age_limit' => $_POST['age_limit'] ?? '',
-                'status' => $_POST['status'] ?? '',
-                'genre' => $_POST['genre'] ?? '',
-
-            ];
-
-             // Generer UUID og slug for nye film
-                if ($action === 'create') {
-                    $movieData['id'] = $this->generateUUID();
-                    $movieData['slug'] = $this->generateSlug($movieData['title']);
-                }
-        
-            // Håndter filupload, hvis en plakat er vedhæftet
-            if (isset($_FILES['poster']) && $_FILES['poster']['error'] === UPLOAD_ERR_OK) {
-                $movieData['poster'] = $this->fileUploadService->uploadFile($_FILES['poster']);
-            }
-        
-            // Hent relationer (actor_ids og genre_ids) fra POST-data
-            $actorIds = $_POST['actor_ids'] ?? [];
-            $genreIds = $_POST['genre_ids'] ?? [];
-        
-            // Håndter oprettelse og opdatering af film
-            if ($action === 'update' && $movieId) {
-                // Opdater eksisterende film
-                $movieData['id'] = $movieId; // Sørg for at inkludere ID til opdatering
-                $this->movieAdminModel->updateMovie($movieId, $movieData);
-        
-                // Adminmistrer relationer til skuespillere og genrer
-                $this->movieAdminModel->manageMovieActors($movieId, $actorIds);
-                $this->movieAdminModel->manageMovieGenres($movieId, $genreIds);
-        
-            } elseif ($action === 'create') {
-                // Opret ny film
-                $movieData['id'] = $this->generateUUID(); // Generer unikt ID
-                $this->movieAdminModel->createMovie($movieData);
-        
-                // Administrer relationer til skuespillere og genrer
-                $this->movieAdminModel->manageMovieActors($movieData['id'], $actorIds);
-                $this->movieAdminModel->manageMovieGenres($movieData['id'], $genreIds);
-            } else {
-                // Håndter ukendt handling eller manglende movie_id
-                error_log("Ukendt handling eller manglende movie_id for handlingen: $action");
-                throw new Exception("Ugyldig handling eller manglende movie_id");
-            }
+    private function handleMovieSave($action) {
+        $movieId = $_POST['movie_id'] ?? null;
+    
+        $movieData = [
+            'title' => $_POST['title'] ?? '',
+            'release_year' => $_POST['release_year'] ?? '',
+            'length' => $_POST['length'] ?? '',
+            'director' => $_POST['director'] ?? '',
+            'description' => $_POST['description'] ?? '',
+            'premiere_date' => $_POST['premiere_date'] ?? '',
+            'language' => $_POST['language'] ?? '',
+            'age_limit' => $_POST['age_limit'] ?? '',
+            'status' => $_POST['status'] ?? '',
+            'poster' => isset($_FILES['poster']) && $_FILES['poster']['error'] === UPLOAD_ERR_OK
+                ? $this->fileUploadService->uploadFile($_FILES['poster'])
+                : null
+        ];
+    
+        error_log("Data sendt til updateMovie: " . print_r($movieData, true));
+    
+        if ($action === 'update' && $movieId) {
+            $this->movieAdminModel->updateMovie($movieId, $movieData);
+        } elseif ($action === 'create') {
+            $movieData['id'] = $this->generateUUID();
+            $this->movieAdminModel->createMovie($movieData);
+        } else {
+            throw new Exception("Ugyldig handling eller manglende movie_id");
         }
+    }
 
     private function prepareMovieEdit() {
         if (isset($_GET['action']) && $_GET['action'] === 'edit') {
