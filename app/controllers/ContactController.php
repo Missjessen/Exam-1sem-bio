@@ -2,49 +2,39 @@
 
 
 class ContactController {
-    public function handleContactForm() {
-        $response = ''; // Feedback til brugeren
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
-            // Hent og rens input
-            $name = isset($_POST['name']) ? htmlspecialchars(trim($_POST['name'])) : '';
-            $email = isset($_POST['email']) ? htmlspecialchars(trim($_POST['email'])) : '';
-            $subject = isset($_POST['subject']) ? htmlspecialchars(trim($_POST['subject'])) : '';
-            $message = isset($_POST['message']) ? htmlspecialchars(trim($_POST['message'])) : '';
-
-            // Validering
-            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $response = "Ugyldig email-adresse.";
-            } elseif (empty($name) || empty($email) || empty($subject) || empty($message)) {
-                $response = "Alle felter skal udfyldes.";
-            } else {
-                // Modtagerens email
-                $to = "nsj@cruise-nights-cinema.dk";
-
-                // Email-indhold
-                $body = "Du har modtaget en ny besked fra kontaktformularen:\n\n";
-                $body .= "Navn: $name\n";
-                $body .= "Email: $email\n";
-                $body .= "Emne: $subject\n\n";
-                $body .= "Besked:\n$message\n";
-
-                // Headers
-                $headers = "From: nsj@cruise-nights-cinema.dk\r\n";
-                $headers .= "Reply-To: $email\r\n";
-                $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
-
-                // Send mail
-                if (mail($to, $subject, $body, $headers)) {
-                    $response = "Tak for din besked, $name! Vi vender tilbage hurtigst muligt.";
-                } else {
-                    $response = "Der opstod en fejl ved afsendelse af din besked.";
+        public function handleContactForm($formData) {
+            try {
+                // Valider data
+                $name = trim($formData['name']);
+                $email = trim($formData['email']);
+                $subject = trim($formData['subject']);
+                $message = trim($formData['message']);
+    
+                if (empty($name) || empty($email) || empty($subject) || empty($message)) {
+                    return "Alle felter skal udfyldes!";
                 }
+    
+                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    return "Ugyldig emailadresse.";
+                }
+    
+                // Send besked (tilpas mail-logikken efter behov)
+                $recipient = "kontakt@dinwebside.dk"; // Skift til din emailadresse
+                $headers = "From: $email";
+    
+                if (mail($recipient, $subject, $message, $headers)) {
+                    return "Din besked er sendt!";
+                } else {
+                    return "Der opstod en fejl. Prøv igen.";
+                }
+            } catch (Exception $e) {
+                error_log("Fejl i kontaktformular: " . $e->getMessage());
+                return "Der opstod en fejl. Kontakt support.";
             }
         }
-
-        // Return feedback til view
-        return $response;
     }
-}
+    
+
 
     
