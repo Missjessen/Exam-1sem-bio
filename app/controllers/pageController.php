@@ -196,30 +196,40 @@ class PageController {
         $this->pageLoader->renderErrorPage(500, $message);
     }
 
-    
-    public function login() {
-        try {
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $email = trim($_POST['email']);
-                $password = trim($_POST['password']);
-    
-                $authController = new AuthController(new CustomerModel($this->db));
-                if ($authController->login($email, $password)) {
-                    $redirect = $_SESSION['redirect_after_login'] ?? BASE_URL . 'index.php?page=profile';
-                    unset($_SESSION['redirect_after_login']);
-                    header("Location: " . $redirect);
-                    exit;
-                } else {
-                    $data = ['error' => 'Forkert email eller adgangskode.'];
-                    $this->pageLoader->renderPage('login', $data, 'user');
-                }
-            } else {
-                $this->pageLoader->renderPage('login', [], 'user');
-            }
-        } catch (Exception $e) {
-            $this->pageLoader->renderErrorPage(500, "Fejl under login: " . $e->getMessage());
+    public function showLoginPage($data = []) {
+        $viewPath = __DIR__ . '/../auth/login_form.php'; // Stien til login_form.php
+        
+        if (file_exists($viewPath)) {
+            require_once $viewPath;
+        } else {
+            throw new Exception("Filen login_form.php kunne ikke findes.");
         }
     }
+
+   public function login() {
+    try {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $email = trim($_POST['email']);
+            $password = trim($_POST['password']);
+
+            $authController = new AuthController(new CustomerModel($this->db));
+            if ($authController->login($email, $password)) {
+                $redirect = $_SESSION['redirect_after_login'] ?? BASE_URL . 'index.php?page=profile';
+                unset($_SESSION['redirect_after_login']);
+                header("Location: " . $redirect);
+                exit;
+            } else {
+                $data = ['error' => 'Forkert email eller adgangskode.'];
+                $this->pageLoader->renderPage('login', $data, 'user');
+            }
+        } else {
+            $this->pageLoader->renderPage('login', [], 'user');
+        }
+    } catch (Exception $e) {
+        $this->pageLoader->renderErrorPage(500, "Fejl under login: " . $e->getMessage());
+    }
+}
+
     
     public function register() {
         try {
