@@ -40,6 +40,14 @@
         <h3>Total pris:</h3>
         <p id="totalPrice">0 DKK</p>
 
+        <?php
+session_start();
+if (!isset($_SESSION['user_id'])) {
+    echo "<p>Du skal være logget ind for at foretage en booking. <a href='" . BASE_URL . "index.php?page=login'>Log ind her</a>.</p>";
+    exit;
+}
+?>
+
         <button type="submit">Book nu</button>
     </form>
 </div>

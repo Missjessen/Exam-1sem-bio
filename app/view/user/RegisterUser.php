@@ -1,24 +1,24 @@
-<form method="POST" action="?page=register">
-    <h2>Opret Bruger</h2>
-    <label for="username">Brugernavn:</label>
-    <input type="text" name="username" id="username" required>
+<?php
+require_once __DIR__ . '/init.php';
 
-    <label for="password">Adgangskode:</label>
-    <input type="password" name="password" id="password" required>
-
-    <label for="email">Email:</label>
-    <input type="email" name="email" id="email" required>
-
-    <button type="submit">Opret</button>
-</form>
-
-<form method="POST" action="?page=login">
-    <h2>Login</h2>
-    <label for="username">Brugernavn:</label>
-    <input type="text" name="username" id="username" required>
-
-    <label for="password">Adgangskode:</label>
-    <input type="password" name="password" id="password" required>
-
-    <button type="submit">Login</button>
-</form>
+$authController = new AuthController(Database::getInstance()->getConnection());
+$error = $authController->login();
+?>
+<body>
+    <h2>Log ind</h2>
+    <?php if (!empty($error)): ?>
+        <p style="color: red;"><?= htmlspecialchars($error) ?></p>
+    <?php endif; ?>
+    <form method="POST" action="">
+        <div>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <div>
+            <label for="password">Adgangskode:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit">Log ind</button>
+    </form>
+</body>
+</html>
