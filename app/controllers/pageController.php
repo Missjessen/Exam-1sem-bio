@@ -42,7 +42,7 @@ class PageController {
     
             // Håndter kontaktformular, hvis der er en POST-forespørgsel
             if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
-                $mymail = "missjessen87@gmail.com";
+                $mymail = "nsj@cruise-nights-cinema.dk";
                 $email = $_POST['email'];
                 $subject = $_POST['subject'];
                 $messageContent = $_POST['message'];
