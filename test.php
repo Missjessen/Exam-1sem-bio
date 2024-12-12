@@ -12,13 +12,13 @@ $subject = "Test Email via PHP mail()";
 $message = "Dette er en testmail sendt via PHP's mail() funktion.";
 
 // Afsenderens emailadresse (skift til en gyldig emailadresse på dit domæne)
-$from = "nsj@cruise-nights-cinema.dk"; 
+$email = $_POST['email'];
 $headers = "From: $from\r\n";
 $headers .= "Reply-To: $from\r\n";
 $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
 
 // Forsøg at sende mailen
-if (mail($to, $subject, $message, $headers)) {
+if (mail($to, $email, $subject, $message, $headers)) {
     echo "Mail blev sendt til $to!";
 } else {
     echo "Mail blev ikke sendt.";
