@@ -2,27 +2,34 @@
 require_once __DIR__ . '/init.php';
 
 
-// Modtagerens email (udskift med din egen emailadresse)
-$to = "nsj@cruise-nights-cinema.dk"; // Skift til den emailadresse, du vil teste med
 
-// Emne for testmailen
-$subject = "Test Email via PHP mail()";
+$mymail = "nsj@cruise-nights-cinema.dk"; // Din modtager-email
+$email = $_POST['email']; // Brugerens email
+$subject = $_POST['subject']; // Emne fra formularen
+$message = $_POST['message']; // Besked fra formularen
 
-// Beskedens indhold
-$message = "Dette er en testmail sendt via PHP's mail() funktion.";
+// Regex til validering af email
+$regexp = "/^[^0-9][A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/";
 
-// Afsenderens emailadresse (skift til en gyldig emailadresse på dit domæne)
-$email = $_POST['email'];
-$headers = "From: $from\r\n";
-$headers .= "Reply-To: $from\r\n";
-$headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
+// Valider email og tjek for tomme felter
+if (!preg_match($regexp, $email)) {
+    echo "Ugyldig email-adresse.";
+} elseif (empty($email) || empty($message) || empty($subject)) {
+    echo "Alle felter skal udfyldes.";
+} elseif (isset($_POST['submit'])) {
+    // Email-indhold
+    $body = "Besked:\n$message\n\nAfsenderens email: $email";
 
-// Forsøg at sende mailen
-if (mail($to, $email, $subject, $message, $headers)) {
-    echo "Mail blev sendt til $to!";
-} else {
-    echo "Mail blev ikke sendt.";
+    // Header med fast afsender og brugerens email i Reply-To
+    $headers = "From: nsj@cruise-nights-cinema.dk\r\n";
+    $headers .= "Reply-To: $email\r\n";
+    $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
+
+    // Send mail
+    if (mail($mymail, $subject, $body, $headers)) {
+        echo "Tak for din besked! Vi vender tilbage hurtigst muligt.";
+    } else {
+        echo "Der opstod en fejl ved afsendelse af din besked.";
+    }
 }
-
-
 ?>
