@@ -40,12 +40,11 @@ class PageController {
     public function homePage() {
         try {
             $movieFrontendModel = new MovieFrontendModel($this->db);
-            $contactController = new ContactController();
             $contactMessage = null;
     
             // Håndter kontaktformular
             if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
-                $contactMessage = $contactController->handleContactForm();
+                $contactMessage = $this->handleContactForm();
             }
     
             // Hent data til forsiden
@@ -63,6 +62,26 @@ class PageController {
             $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af forsiden: " . $e->getMessage());
         }
     }
+    
+    private function handleContactForm() {
+        // Hent og valider input
+        $name = htmlspecialchars(trim($_POST['name']));
+        $email = filter_var(trim($_POST['email']), FILTER_VALIDATE_EMAIL);
+        $subject = htmlspecialchars(trim($_POST['subject']));
+        $message = htmlspecialchars(trim($_POST['message']));
+    
+        if (empty($name) || empty($email) || empty($subject) || empty($message)) {
+            return "Alle felter skal udfyldes.";
+        }
+    
+        if (!$email) {
+            return "Ugyldig email-adresse.";
+        }
+    
+        // Håndter beskeden (du kan tilføje logik til at sende email)
+        return "Tak for din besked, $name! Vi vender tilbage hurtigst muligt.";
+    }
+    
     
     
     
