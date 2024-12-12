@@ -1,7 +1,7 @@
 <?php
 // Start output buffering for sikkerhed
 ob_start();
-require_once 'init.php';
+require_once __DIR__ . '/init.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Indsamler data fra POST
@@ -32,10 +32,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $_SESSION['contactMessage'] = $contactMessage;
 
     // Omdiriger til forsiden
-    header("Location: index.php?page=homePage");
+    header("Location: " . BASE_URL . "index.php?page=homePage");
     exit;
 } else {
     // Hvis nogen prøver at tilgå direkte
-    header("Location: index.php?page=homePage");
+    header("Location: " . BASE_URL . "index.php?page=homePage");
     exit;
 }
