@@ -9,6 +9,8 @@ class PageController {
     private $movieFrontendController;
     private $adminBookingModel;
     private $bookingController;
+    
+
 
     public function __construct() {
         // Initialiser database og afhængigheder
@@ -38,32 +40,12 @@ class PageController {
     public function homePage() {
         try {
             $movieFrontendModel = new MovieFrontendModel($this->db);
-            $message = null; // Feedback til brugeren
+            $contactController = new ContactController($this->db);
+            $message = null;
     
-            // Håndter kontaktformular, hvis der er en POST-forespørgsel
+            // Håndter kontaktformular
             if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
-                $mymail = "nsj@cruise-nights-cinema.dk";
-                $email = $_POST['email'];
-                $subject = $_POST['subject'];
-                $messageContent = $_POST['message'];
-                $regexp = "/^[^0-9][A-z0-9_-]+([.][A-z0-9_]+)*[@][A-z0-9_]+([.][A-z0-9_-]+)*[.][A-z]{2,4}$/";
-    
-                // Validering af email
-                if (!preg_match($regexp, $email)) {
-                    $message = "Ugyldig email-adresse.";
-                } elseif (empty($email) || empty($messageContent) || empty($subject)) {
-                    $message = "Alle felter skal udfyldes.";
-                } else {
-                    // Opsætning af email-indhold
-                    $body = "$messageContent\n\nE-mail: $email";
-    
-                    // Send email
-                    if (mail($mymail, $subject, $body, "From: $email\n")) {
-                        $message = "Tak for din besked! Vi vender tilbage hurtigst muligt.";
-                    } else {
-                        $message = "Der opstod en fejl ved afsendelse af email. Prøv igen senere.";
-                    }
-                }
+                $message = $contactController->handleFormSubmission();
             }
     
             // Hent data til forsiden
@@ -72,7 +54,7 @@ class PageController {
                 'newsMovies' => $movieFrontendModel->getNewsMovies(),
                 'dailyMovies' => $movieFrontendModel->getDailyShowings(),
                 'settings' => $movieFrontendModel->getSiteSettings(),
-                'contactMessage' => $message, // Feedback til formularen
+                'contactMessage' => $message,
             ];
     
             // Render forsiden

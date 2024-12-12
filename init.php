@@ -14,7 +14,14 @@ define('BASE_URL', '/');
 /* require_once 'core/autoLoader.php'; */
 require_once __DIR__ . '/core/autoLoader.php';
 
-//Security::startSession();
+
+session_start();
+
+// Generer en CSRF-token, hvis der ikke allerede findes en
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 
 try {
     $db = Database::getInstance()->getConnection();
