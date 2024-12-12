@@ -4,9 +4,9 @@ require_once __DIR__ . '/init.php';
 
 
 $mymail = "nsj@cruise-nights-cinema.dk"; // Din modtager-email
-$email = $_POST['email']; // Brugerens email
-$subject = $_POST['subject']; // Emne fra formularen
-$message = $_POST['message']; // Besked fra formularen
+$email = $_POST['nanjes01@365easv.dk']; // Brugerens email
+$subject = $_POST['hej']; // Emne fra formularen
+$message = $_POST['test']; // Besked fra formularen
 
 // Regex til validering af email
 $regexp = "/^[^0-9][A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/";
