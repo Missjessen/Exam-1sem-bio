@@ -1,5 +1,6 @@
 <div class="movie-details">
     <h1><?= htmlspecialchars($movie['title']) ?></h1>
+    <img src="<?= htmlspecialchars($movie['poster'] ?? '/default_poster.jpg') ?>" alt="<?= htmlspecialchars($movie['title']) ?>">
     <p><strong>Beskrivelse:</strong> <?= nl2br(htmlspecialchars($movie['description'] ?? 'Ingen beskrivelse tilgængelig')) ?></p>
     <p><strong>Genre:</strong> <?= htmlspecialchars($movie['genre'] ?? 'Ikke angivet') ?></p>
     <p><strong>Skuespillere:</strong> <?= htmlspecialchars($movie['actors'] ?? 'Ikke angivet') ?></p>
