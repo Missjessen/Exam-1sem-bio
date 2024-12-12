@@ -57,8 +57,8 @@ class PageController {
                     $message = "Ugyldig email-adresse.";
                 } else {
                     // Opsætning af email
-                    $to = "your_email@example.com"; // Din modtager-email
-                    $headers = "From: noreply@yourdomain.com\r\n";
+                    $to = "nsj@cruise-nights-cinema.dk"; // Din modtager-email
+                    $headers = "From: nsj@cruise-nights-cinema.dk\r\n";
                     $headers .= "Reply-To: $email\r\n";
                     $body = "Navn: $name\nEmail: $email\n\nBesked:\n$userMessage";
     
