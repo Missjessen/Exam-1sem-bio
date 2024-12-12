@@ -162,7 +162,6 @@
             <textarea id="message" name="message" rows="4" required placeholder="Skriv din besked her..."></textarea>
         </div>
 
-        <!-- Send-knap -->
         <button type="submit" name="submit">Send besked</button>
     </form>
 </div>

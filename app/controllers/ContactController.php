@@ -2,36 +2,46 @@
 
 class ContactController {
     public function handleContactForm() {
-        $feedback = null;
+        $response = ''; // Variabel til feedback
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
-            // Hent og rens data
-            $name = htmlspecialchars(trim($_POST['name']));
-            $email = htmlspecialchars(trim($_POST['email']));
-            $subject = htmlspecialchars(trim($_POST['subject']));
-            $message = htmlspecialchars(trim($_POST['message']));
+            // Hent og valider input fra formularen
+            $name = isset($_POST['name']) ? htmlspecialchars(trim($_POST['name'])) : '';
+            $email = isset($_POST['email']) ? htmlspecialchars(trim($_POST['email'])) : '';
+            $subject = isset($_POST['subject']) ? htmlspecialchars(trim($_POST['subject'])) : '';
+            $message = isset($_POST['message']) ? htmlspecialchars(trim($_POST['message'])) : '';
 
-            // Validering
-            if (empty($name) || empty($email) || empty($subject) || empty($message)) {
-                $feedback = "Alle felter skal udfyldes.";
-            } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $feedback = "Ugyldig email-adresse.";
+            // Validering af email og felter
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $response = "Ugyldig email-adresse.";
+            } elseif (empty($name) || empty($email) || empty($subject) || empty($message)) {
+                $response = "Alle felter skal udfyldes.";
             } else {
-                // Opsætning af email
-                $to = "nsj@cruise-nights-cinema.dk"; // Din modtager-email
-                $headers = "From: nsj@cruise-nights-cinema.dk\r\n";
-                $headers .= "Reply-To: $email\r\n";
-                $body = "Navn: $name\nEmail: $email\n\nBesked:\n$message";
+                // Modtagerens email (din virksomheds e-mail)
+                $to = "nsj@cruise-nights-cinema.dk";
 
-                // Send mai
+                // Email-indhold
+                $body = "Du har modtaget en ny besked fra kontaktformularen:\n\n";
+                $body .= "Navn: $name\n";
+                $body .= "Email: $email\n";
+                $body .= "Emne: $subject\n\n";
+                $body .= "Besked:\n$message\n";
+
+                // Headers
+                $headers = "From: nsj@cruise-nights-cinema.dk\r\n"; // Fast afsender fra dit domæne
+                $headers .= "Reply-To: $email\r\n"; // Kundens email
+                $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
+
+                // Send mail
                 if (mail($to, $subject, $body, $headers)) {
-                    $feedback = "Tak for din besked, $name! Vi vender tilbage hurtigst muligt.";
+                    $response = "Tak for din besked, $name! Vi vender tilbage hurtigst muligt.";
                 } else {
-                    $feedback = "Der opstod en fejl ved afsendelse af din besked. Prøv igen senere.";
+                    $response = "Der opstod en fejl ved afsendelse af din besked.";
                 }
             }
         }
 
-        return $feedback; // Returnér feedback til PageController
+        return $response; // Feedback til PageController
     }
 }
+
