@@ -79,37 +79,27 @@
         </div>
     
 
-        <?php if (isset($feedback)) : ?>
-    <div class="feedback">
-        <p><?php echo htmlspecialchars($feedback, ENT_QUOTES, 'UTF-8'); ?></p>
-    </div>
-<?php endif; ?>
-
-<div class="contact-form">
+        <div class="contact-form">
     <h3>Kontakt Os</h3>
     <?php if (!empty($contactMessage)): ?>
         <p class="contact-message"><?= htmlspecialchars($contactMessage) ?></p>
     <?php endif; ?>
     <form method="POST" action="">
-        <!-- Navn -->
         <div class="form-group">
             <label for="name">Navn:</label>
             <input type="text" id="name" name="name" required placeholder="Dit navn">
         </div>
 
-        <!-- Email -->
         <div class="form-group">
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required placeholder="Din emailadresse">
         </div>
 
-        <!-- Emne -->
         <div class="form-group">
             <label for="subject">Emne:</label>
             <input type="text" id="subject" name="subject" required placeholder="Emnet for din besked">
         </div>
 
-        <!-- Besked -->
         <div class="form-group">
             <label for="message">Besked:</label>
             <textarea id="message" name="message" rows="4" required placeholder="Skriv din besked her..."></textarea>
@@ -118,6 +108,7 @@
         <button type="submit" name="submit">Send besked</button>
     </form>
 </div>
+
 
 
 

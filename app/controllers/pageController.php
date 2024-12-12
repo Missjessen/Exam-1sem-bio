@@ -41,11 +41,11 @@ class PageController {
         try {
             $movieFrontendModel = new MovieFrontendModel($this->db);
             $contactController = new ContactController();
-            $message = null;
+            $contactMessage = null;
     
             // Håndter kontaktformular
             if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
-                $message = $contactController->handleContactForm();
+                $contactMessage = $contactController->handleContactForm();
             }
     
             // Hent data til forsiden
@@ -54,7 +54,7 @@ class PageController {
                 'newsMovies' => $movieFrontendModel->getNewsMovies(),
                 'dailyMovies' => $movieFrontendModel->getDailyShowings(),
                 'settings' => $movieFrontendModel->getSiteSettings(),
-                'contactMessage' => $message, // Feedback til viewet
+                'contactMessage' => $contactMessage,
             ];
     
             // Render forsiden

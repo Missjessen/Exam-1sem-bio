@@ -17,7 +17,7 @@ class ContactController {
             } elseif (empty($name) || empty($email) || empty($subject) || empty($message)) {
                 $response = "Alle felter skal udfyldes.";
             } else {
-                // Modtagerens email (din virksomheds e-mail)
+                // Modtagerens email
                 $to = "nsj@cruise-nights-cinema.dk";
 
                 // Email-indhold
@@ -28,8 +28,8 @@ class ContactController {
                 $body .= "Besked:\n$message\n";
 
                 // Headers
-                $headers = "From: nsj@cruise-nights-cinema.dk\r\n"; // Fast afsender fra dit domæne
-                $headers .= "Reply-To: $email\r\n"; // Kundens email
+                $headers = "From: nsj@cruise-nights-cinema.dk\r\n";
+                $headers .= "Reply-To: $email\r\n";
                 $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
 
                 // Send mail
@@ -41,7 +41,8 @@ class ContactController {
             }
         }
 
-        return $response; // Feedback til PageController
+        return $response;
     }
 }
+
 
