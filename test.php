@@ -1,6 +1,5 @@
 <?php
-require_once dirname(__DIR__) . '/init.php';
-
+require_once __DIR__ . '/init.php';
 // Modtagerens email (udskift med din egen emailadresse)
 $to = "Missjessen87@gmail.com";
 
