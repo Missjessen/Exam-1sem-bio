@@ -42,12 +42,43 @@ class PageController {
     public function homePage() {
         try {
             $movieFrontendModel = new MovieFrontendModel($this->db);
-            $contactController = new ContactController();
             $contactMessage = null;
     
             // Håndter kontaktformular
             if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
-                $contactMessage = $contactController->handleContactForm();
+                $name = isset($_POST['name']) ? htmlspecialchars(trim($_POST['name'])) : '';
+                $email = isset($_POST['email']) ? htmlspecialchars(trim($_POST['email'])) : '';
+                $subject = isset($_POST['subject']) ? htmlspecialchars(trim($_POST['subject'])) : '';
+                $message = isset($_POST['message']) ? htmlspecialchars(trim($_POST['message'])) : '';
+    
+                // Validering
+                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    $contactMessage = "Ugyldig email-adresse.";
+                } elseif (empty($name) || empty($email) || empty($subject) || empty($message)) {
+                    $contactMessage = "Alle felter skal udfyldes.";
+                } else {
+                    // Modtagerens email
+                    $to = "nsj@cruise-nights-cinema.dk";
+    
+                    // Email-indhold
+                    $body = "Du har modtaget en ny besked fra kontaktformularen:\n\n";
+                    $body .= "Navn: $name\n";
+                    $body .= "Email: $email\n";
+                    $body .= "Emne: $subject\n\n";
+                    $body .= "Besked:\n$message\n";
+    
+                    // Headers
+                    $headers = "From: nsj@cruise-nights-cinema.dk\r\n";
+                    $headers .= "Reply-To: $email\r\n";
+                    $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
+    
+                    // Send mail
+                    if (mail($to, $subject, $body, $headers)) {
+                        $contactMessage = "Tak for din besked, $name! Vi vender tilbage hurtigst muligt.";
+                    } else {
+                        $contactMessage = "Der opstod en fejl ved afsendelse af din besked.";
+                    }
+                }
             }
     
             // Hent data til forsiden
@@ -56,7 +87,7 @@ class PageController {
                 'newsMovies' => $movieFrontendModel->getNewsMovies(),
                 'dailyMovies' => $movieFrontendModel->getDailyShowings(),
                 'settings' => $movieFrontendModel->getSiteSettings(),
-                'contactMessage' => $contactMessage, // Feedback til view
+                'contactMessage' => $contactMessage,
             ];
     
             // Render forsiden
@@ -65,6 +96,7 @@ class PageController {
             $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af forsiden: " . $e->getMessage());
         }
     }
+    
     
     
     

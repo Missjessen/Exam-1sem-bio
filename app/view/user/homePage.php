@@ -80,12 +80,14 @@
     
 
 
-    <div class="contact-form">
+        <div class="contact-form">
     <h3>Kontakt Os</h3>
     <?php if (!empty($contactMessage)): ?>
-        <p class="contact-message"><?= htmlspecialchars($contactMessage) ?></p>
+        <p class="<?= strpos($contactMessage, 'Tak') !== false ? 'contact-message' : 'error-message' ?>">
+            <?= htmlspecialchars($contactMessage) ?>
+        </p>
     <?php endif; ?>
-    <form method="POST" action="<?= htmlspecialchars(BASE_URL . 'index.php?page=homePage') ?>">
+    <form method="POST" action="">
         <div class="form-group">
             <label for="name">Navn:</label>
             <input type="text" id="name" name="name" required placeholder="Dit navn">
@@ -105,6 +107,8 @@
         <button type="submit" name="submit">Send besked</button>
     </form>
 </div>
+
+
 
 
 
