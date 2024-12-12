@@ -1,14 +1,14 @@
 <?php
-$to = "missejssen87@gmail.com";
+require_once dirname(__DIR__, ) . '/init.php';
+
+$to = "missejessen87@gmail.com";
 $subject = "Test Email";
-$message = "Dette er en testmail.";
-$headers = "From: missjessen87@cruise-nights-cinema.com";
+$message = "Dette er en testmail for at tjekke mail()-funktionen.";
+$headers = "From: test@yourdomain.com";
 
 if (mail($to, $subject, $message, $headers)) {
-    echo "Mail blev sendt!";
+    echo "Mail sendt!";
 } else {
-    echo "Mail blev ikke .";
+    echo "Mail blev ikke sendt.";
 }
-
-
 ?>

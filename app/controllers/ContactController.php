@@ -29,7 +29,7 @@ class ContactController {
         }
 
         // Sæt mailheaders og send e-mail
-        $to = "admin@dinwebshop.dk";  // Modtager
+        $to = "Missjessen87@gmail.com";  // Modtager
         $headers = "From: $email";
         $emailMessage = "Navn: $name\nEmail: $email\nBesked: $message";
         if ($this->contactModel->sendMail($to, $subject, $emailMessage, $headers)) {
