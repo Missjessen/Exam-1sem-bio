@@ -42,6 +42,7 @@ class PageController {
     public function homePage() {
         try {
             $movieFrontendModel = new MovieFrontendModel($this->db);
+            $contactController = new ContactController();
             $contactMessage = null;
     
             // Håndter kontaktformular
@@ -57,27 +58,8 @@ class PageController {
                 } elseif (empty($name) || empty($email) || empty($subject) || empty($message)) {
                     $contactMessage = "Alle felter skal udfyldes.";
                 } else {
-                    // Modtagerens email
-                    $to = "nsj@cruise-nights-cinema.dk";
-    
-                    // Email-indhold
-                    $body = "Du har modtaget en ny besked fra kontaktformularen:\n\n";
-                    $body .= "Navn: $name\n";
-                    $body .= "Email: $email\n";
-                    $body .= "Emne: $subject\n\n";
-                    $body .= "Besked:\n$message\n";
-    
-                    // Headers
-                    $headers = "From: nsj@cruise-nights-cinema.dk\r\n";
-                    $headers .= "Reply-To: $email\r\n";
-                    $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
-    
-                    // Send mail
-                    if (mail($to, $subject, $body, $headers)) {
-                        $contactMessage = "Tak for din besked, $name! Vi vender tilbage hurtigst muligt.";
-                    } else {
-                        $contactMessage = "Der opstod en fejl ved afsendelse af din besked.";
-                    }
+                    // Brug ContactController til at håndtere emailhåndtering
+                    $contactMessage = $contactController->handleContactForm($name, $email, $subject, $message);
                 }
             }
     
