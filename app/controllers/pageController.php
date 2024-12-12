@@ -40,35 +40,11 @@ class PageController {
     public function homePage() {
         try {
             $movieFrontendModel = new MovieFrontendModel($this->db);
-            $message = null;
+            $contactMessage = null;
     
             // Håndter kontaktformular
             if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
-                // Hent og rens data fra kontaktformularen
-                $name = htmlspecialchars(trim($_POST['name']));
-                $email = htmlspecialchars(trim($_POST['email']));
-                $subject = htmlspecialchars(trim($_POST['subject']));
-                $userMessage = htmlspecialchars(trim($_POST['message']));
-    
-                // Valider data
-                if (empty($name) || empty($email) || empty($subject) || empty($userMessage)) {
-                    $message = "Alle felter skal udfyldes.";
-                } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                    $message = "Ugyldig email-adresse.";
-                } else {
-                    // Opsætning af email
-                    $to = "nsj@cruise-nights-cinema.dk"; // Din modtager-email
-                    $headers = "From: nsj@cruise-nights-cinema.dk\r\n";
-                    $headers .= "Reply-To: $email\r\n";
-                    $body = "Navn: $name\nEmail: $email\n\nBesked:\n$userMessage";
-    
-                    // Send e-mail
-                    if (mail($to, $subject, $body, $headers)) {
-                        $message = "Tak for din besked, $name! Vi vender tilbage hurtigst muligt.";
-                    } else {
-                        $message = "Der opstod en fejl ved afsendelse af din besked. Prøv igen senere.";
-                    }
-                }
+                $contactMessage = $this->handleContactForm();
             }
     
             // Hent data til forsiden
@@ -77,7 +53,7 @@ class PageController {
                 'newsMovies' => $movieFrontendModel->getNewsMovies(),
                 'dailyMovies' => $movieFrontendModel->getDailyShowings(),
                 'settings' => $movieFrontendModel->getSiteSettings(),
-                'contactMessage' => $message, // Feedback til kontaktformularen
+                'contactMessage' => $contactMessage,
             ];
     
             // Render forsiden

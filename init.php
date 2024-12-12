@@ -7,7 +7,8 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 // Definér den aktuelle side og slug
-define('BASE_URL', (isset($_SERVER['HTTPS']) ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . '/');
+define('BASE_URL', (isset($_SERVER['HTTPS']) ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . dirname($_SERVER['SCRIPT_NAME']) . '/');
+
 
 function currentPageURL($page, $additionalParams = []) {
     $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? "https" : "http");
