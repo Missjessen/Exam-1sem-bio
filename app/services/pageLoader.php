@@ -75,27 +75,17 @@ class PageLoader {
     }
 
 
-    function currentPageURL($page, $additionalParams = []) {
-        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? "https" : "http");
-        $host = $_SERVER['HTTP_HOST'];
-        $uri = $_SERVER['REQUEST_URI'];
     
-        // Parsér eksisterende query-parametre
-        $queryParams = [];
-        parse_str(parse_url($uri, PHP_URL_QUERY), $queryParams);
-    
-        // Opdater eller tilføj page-parametret
-        $queryParams['page'] = $page;
-    
-        // Tilføj evt. ekstra parametre som slug
-        foreach ($additionalParams as $key => $value) {
-            $queryParams[$key] = $value;
+    public function renderErrorPage($errorCode, $errorMessage) {
+        $errorViewPath = __DIR__ . "/../../app/view/errors/{$errorCode}.php";
+
+        if (file_exists($errorViewPath)) {
+            include $errorViewPath;
+        } else {
+            echo "<h1>Error $errorCode</h1>";
+            echo "<p>$errorMessage</p>";
         }
-    
-        // Generér ny URL med de opdaterede parametre
-        $baseUri = strtok($uri, '?'); // Fjern eksisterende query-parametre fra URI
-        $queryString = http_build_query($queryParams);
-    
-        return $protocol . '://' . $host . $baseUri . '?' . $queryString;
+
+        exit;
     }
 }

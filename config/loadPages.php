@@ -1,7 +1,4 @@
 <?php
-
-
-
 // config/loadPages.php - Konfigurationsfil for sider
 return [
     'default_css' => '/assets/css/common.css',
