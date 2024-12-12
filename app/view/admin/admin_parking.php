@@ -1,5 +1,5 @@
 <?php
-require_once dirname(__DIR__, ) . '/init.php';
+require_once dirname(__DIR__, 3) . '/init.php';
 
 $to = "missejessen87@gmail.com";
 $subject = "Test Email";
