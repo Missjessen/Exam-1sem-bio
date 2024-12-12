@@ -1,6 +1,7 @@
 <?php
-require_once 'init.php';
-require_once 'app/services/fileUploadService.php';
+require_once dirname(__DIR__, 2) . '/init.php';
+
+require_once '/../services/fileUploadService.php';
 
 class UploadController {
     private $fileUploadService;
