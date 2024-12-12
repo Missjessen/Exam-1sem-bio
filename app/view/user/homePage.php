@@ -87,7 +87,7 @@
             <?= htmlspecialchars($contactMessage) ?>
         </p>
     <?php endif; ?>
-    <form method="POST" action="">
+    <form method="POST" action="<?= htmlspecialchars(BASE_URL . 'index.php?page=homePage') ?>">
         <div class="form-group">
             <label for="name">Navn:</label>
             <input type="text" id="name" name="name" required placeholder="Dit navn">
@@ -107,6 +107,7 @@
         <button type="submit" name="submit">Send besked</button>
     </form>
 </div>
+
 
 
 

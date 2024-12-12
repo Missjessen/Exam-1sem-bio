@@ -38,7 +38,6 @@ class PageController {
         }
     }
 
-    // Håndter forsiden
     public function homePage() {
         try {
             $movieFrontendModel = new MovieFrontendModel($this->db);
@@ -47,20 +46,8 @@ class PageController {
     
             // Håndter kontaktformular
             if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
-                $name = isset($_POST['name']) ? htmlspecialchars(trim($_POST['name'])) : '';
-                $email = isset($_POST['email']) ? htmlspecialchars(trim($_POST['email'])) : '';
-                $subject = isset($_POST['subject']) ? htmlspecialchars(trim($_POST['subject'])) : '';
-                $message = isset($_POST['message']) ? htmlspecialchars(trim($_POST['message'])) : '';
-    
-                // Validering
-                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                    $contactMessage = "Ugyldig email-adresse.";
-                } elseif (empty($name) || empty($email) || empty($subject) || empty($message)) {
-                    $contactMessage = "Alle felter skal udfyldes.";
-                } else {
-                    // Brug ContactController til at håndtere emailhåndtering
-                    $contactMessage = $contactController->handleContactForm($name, $email, $subject, $message);
-                }
+                // Brug ContactController til at håndtere mail-logik
+                $contactMessage = $contactController->handleContactForm();
             }
     
             // Hent data til forsiden
