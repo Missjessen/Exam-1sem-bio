@@ -19,4 +19,3 @@ define('CURRENT_PAGE', $current_page);
 
     $router = new Router();
     $router->route($current_page);
-

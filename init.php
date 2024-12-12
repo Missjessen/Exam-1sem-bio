@@ -61,5 +61,3 @@ try {
     error_log("SQL-fejl: " . $e->getMessage());
     die("SQL-fejl.");
 }
-
-
