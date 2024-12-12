@@ -1,10 +1,18 @@
 <?php
 require_once __DIR__ . '/init.php';
+
+
 // Modtagerens email (udskift med din egen emailadresse)
+$to = "missjessen87@gmail.com"; // Skift til den emailadresse, du vil teste med
+
+// Emne for testmailen
+$subject = "Test Email via PHP mail()";
+
+// Beskedens indhold
 $message = "Dette er en testmail sendt via PHP's mail() funktion.";
 
-// Afsenderens emailadresse
-$from = "Missjessen87@"; // Skift til en gyldig emailadresse på dit domæne
+// Afsenderens emailadresse (skift til en gyldig emailadresse på dit domæne)
+$from = "noreply@yourdomain.com"; 
 $headers = "From: $from\r\n";
 $headers .= "Reply-To: $from\r\n";
 $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
@@ -15,4 +23,6 @@ if (mail($to, $subject, $message, $headers)) {
 } else {
     echo "Mail blev ikke sendt.";
 }
+
+
 ?>
