@@ -74,8 +74,6 @@ class PageLoader {
         }
     }
 
-
-    
     public function renderErrorPage($errorCode, $errorMessage) {
         $errorViewPath = __DIR__ . "/../../app/view/errors/{$errorCode}.php";
 

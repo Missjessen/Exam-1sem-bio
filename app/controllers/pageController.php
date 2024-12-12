@@ -39,13 +39,18 @@ class PageController {
     // Håndter forsiden
     public function homePage() {
         try {
+            // Initialiser nødvendige modeller og kontroller
             $movieFrontendModel = new MovieFrontendModel($this->db);
             $contactController = new ContactController();
             $contactMessage = null;
     
             // Håndter kontaktformular
             if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
-                $contactMessage = $contactController->handleContactForm();
+                try {
+                    $contactMessage = $contactController->handleContactForm();
+                } catch (Exception $e) {
+                    $contactMessage = "Der opstod en fejl: " . $e->getMessage();
+                }
             }
     
             // Hent data til forsiden
@@ -54,12 +59,13 @@ class PageController {
                 'newsMovies' => $movieFrontendModel->getNewsMovies(),
                 'dailyMovies' => $movieFrontendModel->getDailyShowings(),
                 'settings' => $movieFrontendModel->getSiteSettings(),
-                'contactMessage' => $contactMessage,
+                'contactMessage' => $contactMessage, // Feedback til view
             ];
     
             // Render forsiden
             $this->pageLoader->renderPage('homePage', $data, 'user');
         } catch (Exception $e) {
+            // Fejl ved rendering eller datahentning
             $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af forsiden: " . $e->getMessage());
         }
     }
