@@ -1,37 +1,35 @@
 <?php
 require_once __DIR__ . '/init.php';
 
+$response = ''; // Variabel til at vise feedback til brugeren
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
-    // Modtagerens email (udskift med din egen emailadresse)
-    $mymail = "nsj@cruise-nights-cinema.dk";
+    // Hent og valider input fra formularen
+    $name = htmlspecialchars(trim($_POST['name']));
+    $email = htmlspecialchars(trim($_POST['email']));
+    $subject = htmlspecialchars(trim($_POST['subject']));
+    $message = htmlspecialchars(trim($_POST['message']));
 
-    // Hent data fra POST
-    $email = isset($_POST['email']) ? $_POST['email'] : '';
-    $subject = isset($_POST['subject']) ? $_POST['subject'] : '';
-    $message = isset($_POST['message']) ? $_POST['message'] : '';
-
-    // Regex til validering af email
-    $regexp = "/^[^0-9][A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/";
-
-    // Validering
-    if (!preg_match($regexp, $email)) {
+    // Validering af email
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $response = "Ugyldig email-adresse.";
-    } elseif (empty($email) || empty($message) || empty($subject)) {
+    } elseif (empty($name) || empty($email) || empty($subject) || empty($message)) {
         $response = "Alle felter skal udfyldes.";
     } else {
-        // Email-indhold
-        $body = "Besked:\n$message\n\nAfsenderens email: $email";
+        // Modtagerens email
+        $to = "nsj@cruise-nights-cinema.dk"; // Skift til din egen emailadresse
+        $body = "Navn: $name\nEmail: $email\n\nBesked:\n$message";
 
         // Headers
-        $headers = "From: noreply@yourdomain.com\r\n"; // Fast afsender fra dit domæne
-        $headers .= "Reply-To: $email\r\n"; // Brugerens email i Reply-To
+        $headers = "From: nsj@cruise-nights-cinema.dk\r\n"; // En gyldig afsender fra dit domæne
+        $headers .= "Reply-To: $email\r\n";
         $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
 
         // Send mail
-        if (mail($mymail, $subject, $body, $headers)) {
-            $response = "Mail blev sendt til $mymail!";
+        if (mail($to, $subject, $body, $headers)) {
+            $response = "Tak for din besked! Vi vender tilbage hurtigst muligt.";
         } else {
-            $response = "Mail blev ikke sendt. Der opstod en fejl.";
+            $response = "Der opstod en fejl ved afsendelse af din besked.";
         }
     }
 }
@@ -42,26 +40,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Mail</title>
+    <title>Kontaktformular</title>
 </head>
 <body>
-    <h1>Mail Test Script</h1>
-    <?php if (!empty($response)): ?>
+    <h1>Kontakt os</h1>
+    <?php if ($response): ?>
         <p><?= htmlspecialchars($response) ?></p>
     <?php endif; ?>
 
     <form method="POST" action="">
-        <label for="email">Din Email:</label>
-        <input type="email" id="email" name="email" required placeholder="Indtast din email">
+        <label for="name">Navn:</label>
+        <input type="text" id="name" name="name" required placeholder="Dit navn">
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required placeholder="Din emailadresse">
 
         <label for="subject">Emne:</label>
-        <input type="text" id="subject" name="subject" required placeholder="Indtast emne">
+        <input type="text" id="subject" name="subject" required placeholder="Emnet for din besked">
 
         <label for="message">Besked:</label>
-        <textarea id="message" name="message" rows="4" required placeholder="Skriv din besked"></textarea>
+        <textarea id="message" name="message" rows="4" required placeholder="Skriv din besked her..."></textarea>
 
-        <button type="submit" name="submit">Send Test Mail</button>
+        <button type="submit" name="submit">Send besked</button>
     </form>
 </body>
 </html>
-
