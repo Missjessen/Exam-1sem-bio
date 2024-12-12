@@ -9,36 +9,47 @@ class ContactController {
 
     public function handleFormSubmission() {
         try {
-            // Tjek CSRF-token
-            if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-                throw new Exception("CSRF Validation Failed");
+            // Tjek om formularen er indsendt
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                throw new Exception("Ugyldig forespørgsel.");
             }
-
-            // Sanitering af input
-            $name = $this->contactModel->sanitizeInput($_POST['name']);
-            $email = $this->contactModel->sanitizeInput($_POST['email']);
-            $subject = $this->contactModel->sanitizeInput($_POST['subject']);
-            $message = $this->contactModel->sanitizeInput($_POST['message']);
-
-            // Validering af email
-            if (!$this->contactModel->validateEmail($email)) {
+    
+            // Tjek om CSRF-token matcher
+            if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+                throw new Exception("CSRF Validation Failed.");
+            }
+    
+            // Saniter og valider input
+            $name = htmlspecialchars(trim($_POST['name']));
+            $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
+            $subject = htmlspecialchars(trim($_POST['subject']));
+            $message = htmlspecialchars(trim($_POST['message']));
+    
+            if (empty($name) || empty($email) || empty($subject) || empty($message)) {
+                throw new Exception("Alle felter skal udfyldes.");
+            }
+    
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 throw new Exception("Ugyldig email-adresse.");
             }
-
-            // Sæt mailheaders og send e-mail
-            $to = "Missjessen87@gmail.com"; // Modtagerens e-mail
-            $headers = "From: noreply@cruise-nights-cinema.dk\r\n";
+    
+            // Send email
+            $to = "your_email@example.com"; // Din modtager-email
+            $headers = "From: noreply@yourdomain.com\r\n";
             $headers .= "Reply-To: $email\r\n";
-            $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
-            $emailMessage = "Navn: $name\nEmail: $email\n\nBesked:\n$message";
-
-            if ($this->contactModel->sendMail($to, $subject, $emailMessage, $headers)) {
-                return "Din besked er sendt!";
-            } else {
+            $body = "Navn: $name\nEmail: $email\n\nBesked:\n$message";
+    
+            if (!mail($to, $subject, $body, $headers)) {
                 throw new Exception("Der opstod en fejl ved afsendelse af beskeden.");
             }
+    
+            // Forny CSRF-token efter vellykket indsendelse
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    
+            return "Din besked er sendt!";
         } catch (Exception $e) {
             return $e->getMessage();
         }
     }
+    
 }
