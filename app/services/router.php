@@ -20,15 +20,4 @@ class Router {
             $errorController->show404("Page not found: $page");
         }
     }
-
-    public static function getPageURL($page) {
-        $baseUrl = '/'; // Justér basestien for dit projekt
-        $loadPages = require dirname(__DIR__) . '/config/loadPages.php';
-
-        if (!isset($loadPages['pages'][$page])) {
-            return $baseUrl . '?page=404'; // Fallback til 404
-        }
-
-        return $baseUrl . '?page=' . $page;
-    }
 }

@@ -10,7 +10,7 @@ require_once __DIR__ . '/app/models/Security.php';
 
 
 // Start session
-Security::startSession();
+//Security::startSession();
 
 // Definér den aktuelle side
 $current_page = $_REQUEST['page'] ?? 'homePage';
