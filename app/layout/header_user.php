@@ -2,9 +2,15 @@
 require_once dirname(__DIR__, 2) . '/init.php';
 
 
-$current_page = $_REQUEST['page'] ?? 'homePage';
-$current_slug = $_REQUEST['slug'] ?? '';
 
+// Hent den aktuelle side
+$current_page = $_REQUEST['page'] ?? 'homePage';
+
+// Indlæs konfigurationen
+$config = require dirname(__DIR__) . '/config/config.php';
+
+// Find den korrekte CSS-fil
+$cssPath = $config['base_url'] . ($config['pages'][$current_page]['css'] ?? $config['default_css']);
 ?>
 
 <!DOCTYPE html>
@@ -24,12 +30,9 @@ $current_slug = $_REQUEST['slug'] ?? '';
         ?>
     </title>
     <link rel="stylesheet" href="/assets/css/variables.css">
-    <?php
-    // Dynamisk CSS for hver side
-    if (!empty($current_page)) {
-        echo "<link rel='stylesheet' href='/assets/css/{$current_page}.css'>";
-    }
-    ?>
+    <link rel="stylesheet" href="<?= $cssPath ?>">
+    <?php if ($current_page === 'movie_details') : ?>
+        <link rel="stylesheet" href="/assets/css/movie_details.css">
 </head>
 <body>
 <header>

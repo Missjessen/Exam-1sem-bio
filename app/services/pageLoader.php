@@ -74,6 +74,19 @@ class PageLoader {
         }
     }
 
+
+    public function getPageURL($page, $params = []) {
+        $baseUrl = $this->config['base_url'];
+
+        // Tjek, om siden findes i konfigurationen
+        if (!isset($this->config['pages'][$page])) {
+            return $baseUrl . '?page=404';
+        }
+
+        // Byg URL med parametre
+        $queryParams = array_merge(['page' => $page], $params);
+        return $baseUrl . '?' . http_build_query($queryParams);
+    }
     public function renderErrorPage($errorCode, $errorMessage) {
         $errorViewPath = __DIR__ . "/../../app/view/errors/{$errorCode}.php";
 

@@ -10,6 +10,8 @@ error_reporting(E_ALL);
 define('BASE_URL', '/');
 
 
+
+
 // Inkluder nødvendige filer
 /* require_once 'core/autoLoader.php'; */
 require_once __DIR__ . '/core/autoLoader.php';

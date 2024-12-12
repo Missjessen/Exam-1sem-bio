@@ -1,5 +1,16 @@
 <?php
 
+function loadPage($pageConfig) {
+  $viewFile = dirname(__DIR__, 2) . $pageConfig['view'];
+
+  if (!file_exists($viewFile)) {
+      throw new Exception("View file not found: " . $viewFile);
+  }
+
+  // Inkludér view-filen
+  require $viewFile;
+}
+
 // config/loadPages.php - Konfigurationsfil for sider
 return [
     'default_css' => '/assets/css/common.css',
