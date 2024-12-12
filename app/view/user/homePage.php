@@ -139,34 +139,22 @@
 <div class="contact-form">
     <h3>Kontakt Os</h3>
     <form method="POST" action="">
-        <!-- CSRF-token -->
-        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-
-        <!-- Navn -->
         <div class="form-group">
             <label for="name">Navn:</label>
             <input type="text" id="name" name="name" required placeholder="Dit navn">
         </div>
-
-        <!-- Email -->
         <div class="form-group">
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required placeholder="Din emailadresse">
         </div>
-
-        <!-- Emne -->
         <div class="form-group">
             <label for="subject">Emne:</label>
             <input type="text" id="subject" name="subject" required placeholder="Emnet for din besked">
         </div>
-
-        <!-- Besked -->
         <div class="form-group">
             <label for="message">Besked:</label>
             <textarea id="message" name="message" rows="4" required placeholder="Skriv din besked her..."></textarea>
         </div>
-
-        <!-- Send-knap -->
         <button type="submit" name="submit">Send besked</button>
     </form>
 </div>
