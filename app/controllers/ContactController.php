@@ -16,7 +16,7 @@ class ContactController {
     
             // Tjek om CSRF-token matcher
             if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-                throw new Exception("CSRF Validation Failed.");
+                throw new Exception("CSRF-validation mislykkedes.");
             }
     
             // Saniter og valider input
@@ -34,8 +34,8 @@ class ContactController {
             }
     
             // Send email
-            $to = "your_email@example.com"; // Din modtager-email
-            $headers = "From: noreply@yourdomain.com\r\n";
+            $to = "nsj@cruise-nights-cinema.dk";
+            $headers = "From: nsj@cruise-nights-cinema.dk\r\n";
             $headers .= "Reply-To: $email\r\n";
             $body = "Navn: $name\nEmail: $email\n\nBesked:\n$message";
     
@@ -51,5 +51,6 @@ class ContactController {
             return $e->getMessage();
         }
     }
+    
     
 }
