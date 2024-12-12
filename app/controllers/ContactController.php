@@ -23,7 +23,7 @@ class ContactController {
                 $headers .= "Reply-To: $email\r\n";
                 $body = "Navn: $name\nEmail: $email\n\nBesked:\n$message";
 
-                // Send mail
+                // Send mai
                 if (mail($to, $subject, $body, $headers)) {
                     $feedback = "Tak for din besked, $name! Vi vender tilbage hurtigst muligt.";
                 } else {
