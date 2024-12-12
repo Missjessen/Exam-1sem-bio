@@ -42,16 +42,15 @@ $current_slug = $_REQUEST['slug'] ?? '';
             
         </ul>
         <?php if (isset($_SESSION['user_id'])): ?>
-    <!-- Vis brugerens velkomst og log ud -->
     <div class="user-menu">
         <span>Velkommen, <?= htmlspecialchars($_SESSION['username']) ?></span>
+        <a href="<?= htmlspecialchars(BASE_URL . 'index.php?page=profile') ?>">Min Profil</a>
         <a href="<?= htmlspecialchars(BASE_URL . 'logout.php') ?>">Log ud</a>
     </div>
 <?php else: ?>
-    <!-- Links til login og registrering -->
     <div class="auth-links">
-        <a href="<?= htmlspecialchars(BASE_URL . 'login.php') ?>">Log ind</a>
-        <a href="<?= htmlspecialchars(BASE_URL . 'register.php') ?>">Opret profil</a>
+        <a href="<?= htmlspecialchars(BASE_URL . 'index.php?page=login') ?>">Log ind</a>
+        <a href="<?= htmlspecialchars(BASE_URL . 'index.php?page=register') ?>">Opret Profil</a>
     </div>
 <?php endif; ?>
 

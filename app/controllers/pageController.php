@@ -195,25 +195,80 @@ class PageController {
         error_log($message);
         $this->pageLoader->renderErrorPage(500, $message);
     }
+
+    
     public function login() {
-        $error = null;
+        try {
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $email = trim($_POST['email']);
+                $password = trim($_POST['password']);
     
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $authController = new AuthController($this->db);
-            $error = $authController->login();
+                $authController = new AuthController(new CustomerModel($this->db));
+                if ($authController->login($email, $password)) {
+                    $redirect = $_SESSION['redirect_after_login'] ?? BASE_URL . 'index.php?page=profile';
+                    unset($_SESSION['redirect_after_login']);
+                    header("Location: " . $redirect);
+                    exit;
+                } else {
+                    $data = ['error' => 'Forkert email eller adgangskode.'];
+                    $this->pageLoader->renderPage('login', $data, 'user');
+                }
+            } else {
+                $this->pageLoader->renderPage('login', [], 'user');
+            }
+        } catch (Exception $e) {
+            $this->pageLoader->renderErrorPage(500, "Fejl under login: " . $e->getMessage());
         }
-    
-        $this->pageLoader->renderPage('login', ['error' => $error], 'user');
     }
+    
     public function register() {
-        $error = null;
+        try {
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $name = trim($_POST['name']);
+                $email = trim($_POST['email']);
+                $password = trim($_POST['password']);
+                $confirmPassword = trim($_POST['confirm_password']);
     
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $authController = new AuthController($this->db);
-            $error = $authController->register();
+                if ($password !== $confirmPassword) {
+                    $data = ['error' => 'Adgangskoderne matcher ikke.'];
+                    $this->pageLoader->renderPage('register', $data, 'user');
+                    return;
+                }
+    
+                $authController = new AuthController(new CustomerModel($this->db));
+                if ($authController->register($name, $email, $password)) {
+                    $_SESSION['message'] = "Registrering fuldført! Du kan nu logge ind.";
+                    header("Location: " . BASE_URL . "index.php?page=login");
+                    exit;
+                } else {
+                    $data = ['error' => 'Registrering mislykkedes. Prøv igen.'];
+                    $this->pageLoader->renderPage('register', $data, 'user');
+                }
+            } else {
+                $this->pageLoader->renderPage('register', [], 'user');
+            }
+        } catch (Exception $e) {
+            $this->pageLoader->renderErrorPage(500, "Fejl under registrering: " . $e->getMessage());
         }
+    }
     
-        $this->pageLoader->renderPage('register', ['error' => $error], 'user');
+    public function profile() {
+        try {
+            if (!isset($_SESSION['user_id'])) {
+                $_SESSION['redirect_after_login'] = BASE_URL . "index.php?page=profile";
+                header("Location: " . BASE_URL . "index.php?page=login");
+                exit;
+            }
+    
+            $customerId = $_SESSION['user_id'];
+            $bookingController = new BookingController(new BookingModel($this->db));
+            $customerBookings = $bookingController->getCustomerBookings($customerId);
+    
+            $data = ['customerBookings' => $customerBookings];
+            $this->pageLoader->renderPage('profile', $data, 'user');
+        } catch (Exception $e) {
+            $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af profilen: " . $e->getMessage());
+        }
     }
 
     private function ensureLoggedIn() {
