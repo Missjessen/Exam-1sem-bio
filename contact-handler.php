@@ -1,41 +1,49 @@
 <?php
-// Start output buffering for sikkerhed
-ob_start();
-require_once __DIR__ . '/init.php';
+require_once __DIR__ . '/init.php'; // Inkluder basisopsætning
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Indsamler data fra POST
-    $name = trim($_POST['name'] ?? '');
-    $email = trim($_POST['email'] ?? '');
-    $subject = trim($_POST['subject'] ?? '');
-    $message = trim($_POST['message'] ?? '');
+$response = '';
 
-    // Validerer data
-    if (empty($name) || empty($email) || empty($subject) || empty($message)) {
-        $contactMessage = "Alle felter skal udfyldes!";
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $contactMessage = "Ugyldig emailadresse.";
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
+    // Hent og valider input fra formularen
+    $name = isset($_POST['name']) ? htmlspecialchars(trim($_POST['name'])) : '';
+    $email = isset($_POST['email']) ? htmlspecialchars(trim($_POST['email'])) : '';
+    $subject = isset($_POST['subject']) ? htmlspecialchars(trim($_POST['subject'])) : '';
+    $message = isset($_POST['message']) ? htmlspecialchars(trim($_POST['message'])) : '';
+
+    // Validering
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $response = "Ugyldig email-adresse.";
+    } elseif (empty($name) || empty($email) || empty($subject) || empty($message)) {
+        $response = "Alle felter skal udfyldes.";
     } else {
-        // Forsøger at sende email
-        $recipient = "nsj@cruise-nights-cinema.dk "; // Skift til din email
-        $headers = "From: $email";
+        $to = "nsj@cruise-nights-cinema.dk"; // Din virksomheds e-mail
+        $body = "Du har modtaget en ny besked fra kontaktformularen:\n\n";
+        $body .= "Navn: $name\n";
+        $body .= "Email: $email\n";
+        $body .= "Emne: $subject\n\n";
+        $body .= "Besked:\n$message\n";
 
-        if (mail($recipient, $subject, $message, $headers)) {
-            $contactMessage = "Din besked er sendt!";
+        $headers = "From: nsj@cruise-nights-cinema.dk\r\n";
+        $headers .= "Reply-To: $email\r\n";
+        $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
+
+        // Send email
+        if (mail($to, $subject, $body, $headers)) {
+            $response = "Tak for din besked, $name! Vi vender tilbage hurtigst muligt.";
         } else {
-            $contactMessage = "Der opstod en fejl. Prøv igen.";
+            $response = "Der opstod en fejl ved afsendelse af din besked.";
         }
     }
 
-    // Gem besked i session for at vise den på forsiden
+    // Gem responsen i sessionen
     session_start();
-    $_SESSION['contactMessage'] = $contactMessage;
+    $_SESSION['contactMessage'] = $response;
 
-    // Omdiriger til forsiden
+    // Omdiriger tilbage til forsiden eller viewet
     header("Location: " . BASE_URL . "index.php?page=homePage");
     exit;
 } else {
-    // Hvis nogen prøver at tilgå direkte
+    // Direkte adgang omdirigeres
     header("Location: " . BASE_URL . "index.php?page=homePage");
     exit;
 }
