@@ -12,7 +12,7 @@ $subject = "Test Email via PHP mail()";
 $message = "Dette er en testmail sendt via PHP's mail() funktion.";
 
 // Afsenderens emailadresse (skift til en gyldig emailadresse på dit domæne)
-$from = "nanjes01@365essv.dk"; 
+$from = "nsj@cruise-nights-cinema.dk"; 
 $headers = "From: $from\r\n";
 $headers .= "Reply-To: $from\r\n";
 $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
