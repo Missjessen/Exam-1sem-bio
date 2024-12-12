@@ -43,7 +43,7 @@
     <!-- Section: Create/Edit Movie -->
     <section id="create-movie">
         <h2><?= isset($movieToEdit) ? 'Rediger Film' : 'Opret Ny Film' ?></h2>
-        <form action="<?= htmlspecialchars(currentPageURL('admin_movie')) ?>" method="post" enctype="multipart/form-data">
+        <form action="<?= htmlspecialchars(BASE_URL . 'admin_movie') ?>" method="post" enctype="multipart/form-data">
             <input type="hidden" name="movie_id" value="<?= isset($movieToEdit) ? htmlspecialchars($movieToEdit['id']) : '' ?>">
 
             <label for="title">Titel:</label>
@@ -77,7 +77,7 @@
 <label for="actors">Vælg skuespillere:</label>
 <select id="actors" name="actor_ids[]" class="select2-multiple" multiple>
     <?php foreach ($actors as $actor): ?>
-        <option value="<?= htmlspecialchars($actor['id']) ?>"
+        <option value="<?= htmlspecialchars(BASE_URL . 'admin_movie') ?>"
             <?= isset($movieToEdit) && isset($movieToEdit['actors']) && in_array($actor['id'], array_column($movieToEdit['actors'], 'id')) ? 'selected' : '' ?>>
             <?= htmlspecialchars($actor['name']) ?>
         </option>
@@ -87,7 +87,7 @@
 <label for="genres">Vælg genrer:</label>
 <select id="genres" name="genre_ids[]" class="select2-multiple" multiple>
     <?php foreach ($genres as $genre): ?>
-        <option value="<?= htmlspecialchars($genre['id']) ?>"
+        <option value="<?= htmlspecialchars(BASE_URL . 'admin_movie') ?>"
             <?= isset($movieToEdit) && isset($movieToEdit['genres']) && in_array($genre['id'], array_column($movieToEdit['genres'], 'id')) ? 'selected' : '' ?>>
             <?= htmlspecialchars($genre['name']) ?>
         </option>
@@ -108,14 +108,14 @@
         <h2>Tilføj ny skuespiller eller genre</h2>
 
         <!-- Form til at tilføje ny skuespiller -->
-        <form action="<?= htmlspecialchars(currentPageURL('admin_movie')) ?>" method="post">
+        <form action="<?= htmlspecialchars(BASE_URL . 'admin_movie') ?>" method="post">
             <label for="actor_name">Tilføj ny skuespiller:</label>
             <input type="text" id="actor_name" name="actor_name" placeholder="Indtast skuespillers navn" required>
             <button type="submit" name="action" value="create_actor">Tilføj Skuespiller</button>
         </form>
 
         <!-- Form til at tilføje ny genre -->
-        <form action="<?= htmlspecialchars(currentPageURL('admin_movie')) ?>"method="post">
+        <form action="<?= htmlspecialchars(BASE_URL . 'admin_movie') ?>"method="post">
             <label for="genre_name">Tilføj ny genre:</label>
             <input type="text" id="genre_name" name="genre_name" placeholder="Indtast genrenavn" required>
             <button type="submit" name="action" value="create_genre">Tilføj Genre</button>
