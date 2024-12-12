@@ -14,11 +14,6 @@ class ContactController {
                 throw new Exception("CSRF Validation Failed");
             }
 
-            // Valider reCAPTCHA
-            if (empty($_POST['g-recaptcha-response']) || !$this->contactModel->validateRecaptcha($_POST['g-recaptcha-response'])) {
-                throw new Exception("ReCAPTCHA validation failed.");
-            }
-
             // Sanitering af input
             $name = $this->contactModel->sanitizeInput($_POST['name']);
             $email = $this->contactModel->sanitizeInput($_POST['email']);
