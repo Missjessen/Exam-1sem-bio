@@ -40,12 +40,35 @@ class PageController {
     public function homePage() {
         try {
             $movieFrontendModel = new MovieFrontendModel($this->db);
-            $contactController = new ContactController();
-            $contactMessage = null;
+            $message = null;
     
             // Håndter kontaktformular
             if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
-                $contactMessage = $contactController->handleContactForm();
+                // Hent og rens data fra kontaktformularen
+                $name = htmlspecialchars(trim($_POST['name']));
+                $email = htmlspecialchars(trim($_POST['email']));
+                $subject = htmlspecialchars(trim($_POST['subject']));
+                $userMessage = htmlspecialchars(trim($_POST['message']));
+    
+                // Valider data
+                if (empty($name) || empty($email) || empty($subject) || empty($userMessage)) {
+                    $message = "Alle felter skal udfyldes.";
+                } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    $message = "Ugyldig email-adresse.";
+                } else {
+                    // Opsætning af email
+                    $to = "your_email@example.com"; // Din modtager-email
+                    $headers = "From: noreply@yourdomain.com\r\n";
+                    $headers .= "Reply-To: $email\r\n";
+                    $body = "Navn: $name\nEmail: $email\n\nBesked:\n$userMessage";
+    
+                    // Send e-mail
+                    if (mail($to, $subject, $body, $headers)) {
+                        $message = "Tak for din besked, $name! Vi vender tilbage hurtigst muligt.";
+                    } else {
+                        $message = "Der opstod en fejl ved afsendelse af din besked. Prøv igen senere.";
+                    }
+                }
             }
     
             // Hent data til forsiden
@@ -54,7 +77,7 @@ class PageController {
                 'newsMovies' => $movieFrontendModel->getNewsMovies(),
                 'dailyMovies' => $movieFrontendModel->getDailyShowings(),
                 'settings' => $movieFrontendModel->getSiteSettings(),
-                'contactMessage' => $contactMessage,
+                'contactMessage' => $message, // Feedback til kontaktformularen
             ];
     
             // Render forsiden
@@ -63,6 +86,7 @@ class PageController {
             $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af forsiden: " . $e->getMessage());
         }
     }
+    
     
     
     
