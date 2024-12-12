@@ -1,9 +1,24 @@
-<div class="login_sektion"><h2>Login</h2>
-    <form action="/Exam-1sem-bio/app/controllers/loginController.php" method="POST">
-        <label for="username">Brugernavn:</label>
-        <input type="text" id="username" name="username" required>
-        <label for="password">Adgangskode:</label>
-        <input type="password" id="password" name="password" required>
+<?php
+require_once __DIR__ . '/init.php';
+
+$authController = new AuthController(Database::getInstance()->getConnection());
+$error = $authController->login();
+?>
+<body>
+    <h2>Log ind</h2>
+    <?php if (!empty($error)): ?>
+        <p style="color: red;"><?= htmlspecialchars($error) ?></p>
+    <?php endif; ?>
+    <form method="POST" action="">
+        <div>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <div>
+            <label for="password">Adgangskode:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
         <button type="submit">Log ind</button>
     </form>
-    </div>
+</body>
+</html>
