@@ -15,12 +15,8 @@ define('BASE_URL', '/');
 require_once __DIR__ . '/core/autoLoader.php';
 
 
-session_start();
 
-// Generer en CSRF-token, hvis der ikke allerede findes en
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-}
+
 
 
 try {

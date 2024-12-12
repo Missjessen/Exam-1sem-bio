@@ -1,56 +1,37 @@
 <?php 
 
 class ContactController {
-    private $contactModel;
+    public function handleContactForm() {
+        $feedback = null;
 
-    public function __construct($db) {
-        $this->contactModel = new ContactModel($db);
-    }
-
-    public function handleFormSubmission() {
-        try {
-            // Tjek om formularen er indsendt
-            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-                throw new Exception("Ugyldig forespørgsel.");
-            }
-    
-            // Tjek om CSRF-token matcher
-            if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-                throw new Exception("CSRF-validation mislykkedes.");
-            }
-    
-            // Saniter og valider input
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
+            // Hent og rens data
             $name = htmlspecialchars(trim($_POST['name']));
-            $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
+            $email = htmlspecialchars(trim($_POST['email']));
             $subject = htmlspecialchars(trim($_POST['subject']));
             $message = htmlspecialchars(trim($_POST['message']));
-    
+
+            // Validering
             if (empty($name) || empty($email) || empty($subject) || empty($message)) {
-                throw new Exception("Alle felter skal udfyldes.");
+                $feedback = "Alle felter skal udfyldes.";
+            } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $feedback = "Ugyldig email-adresse.";
+            } else {
+                // Opsætning af email
+                $to = "nsj@cruise-nights-cinema.dk"; // Din modtager-email
+                $headers = "From: nsj@cruise-nights-cinema.dk\r\n";
+                $headers .= "Reply-To: $email\r\n";
+                $body = "Navn: $name\nEmail: $email\n\nBesked:\n$message";
+
+                // Send mail
+                if (mail($to, $subject, $body, $headers)) {
+                    $feedback = "Tak for din besked, $name! Vi vender tilbage hurtigst muligt.";
+                } else {
+                    $feedback = "Der opstod en fejl ved afsendelse af din besked. Prøv igen senere.";
+                }
             }
-    
-            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                throw new Exception("Ugyldig email-adresse.");
-            }
-    
-            // Send email
-            $to = "nsj@cruise-nights-cinema.dk";
-            $headers = "From: nsj@cruise-nights-cinema.dk\r\n";
-            $headers .= "Reply-To: $email\r\n";
-            $body = "Navn: $name\nEmail: $email\n\nBesked:\n$message";
-    
-            if (!mail($to, $subject, $body, $headers)) {
-                throw new Exception("Der opstod en fejl ved afsendelse af beskeden.");
-            }
-    
-            // Forny CSRF-token efter vellykket indsendelse
-            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-    
-            return "Din besked er sendt!";
-        } catch (Exception $e) {
-            return $e->getMessage();
         }
+
+        return $feedback; // Send feedback til viewet
     }
-    
-    
 }
