@@ -27,38 +27,43 @@ class PageLoader {
 
     public function renderPage($viewName, $data = [], $type = 'user') {
         $current_page = $viewName;
-
+    
         // Sikrer, at $data altid er et array
         if (!is_array($data)) {
             $data = [];
         }
-
+    
         // Tilføj $page til data
         $data['page'] = $viewName;
-
+    
         // Gør data tilgængelige som variabler
         extract($data);
-
+    
         // Inkluder dynamisk CSS
         $this->includeCSS($viewName);
-
+    
         // Inkluder header
         $headerFile = $type === 'admin' ? 'header_admin.php' : 'header_user.php';
         $this->includeLayout($headerFile, compact('current_page'));
-
-        // Indlæs view baseret på type
-        $viewPath = __DIR__ . "/../../app/view/$type/$viewName.php";
-
+    
+        // Tilpas stien baseret på viewets placering
+        if ($type === 'auth') {
+            $viewPath = __DIR__ . "/../../auth/view/$viewName.php";
+        } else {
+            $viewPath = __DIR__ . "/../../app/view/$type/$viewName.php";
+        }
+    
         if (file_exists($viewPath)) {
             require $viewPath;
         } else {
             throw new Exception("View-filen $viewName for $type kunne ikke indlæses.");
         }
-
+    
         // Inkluder footer
         $footerFile = 'footer.php';
         $this->includeLayout($footerFile, compact('current_page'));
     }
+    
 
     private function includeCSS($page) {
         $cssPath = "/assets/css/$page.css";
