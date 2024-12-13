@@ -170,18 +170,8 @@ class PageController {
         }
     }
 
-    // Bookinger
-    public function admin_dashboard() {
-        try {
-            $data = [
-                'dailyShowings' => (new AdminDashboardModel($this->db))->getDailyShowings(),
-                'newsMovies' => (new AdminDashboardModel($this->db))->getNewsMovies(),
-            ];
-            $this->pageLoader->loadAdminPage('admin_dashboard', $data);
-        } catch (Exception $e) {
-            $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af admin dashboard: " . $e->getMessage());
-        }
-    }
+   
+
     
 
     // Indstillinger
