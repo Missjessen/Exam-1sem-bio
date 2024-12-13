@@ -196,28 +196,29 @@ class PageController {
         $this->pageLoader->renderErrorPage(500, $message);
     }
 
-
     public function admin_login() {
         try {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $email = trim($_POST['email']);
                 $password = trim($_POST['password']);
+        
                 $authController = new AuthController($this->db);
-    
                 if ($authController->loginAdmin($email, $password)) {
                     header("Location: index.php?page=admin_dashboard");
                     exit;
                 } else {
                     $data = ['error' => 'Forkert email eller adgangskode.'];
-                    $this->pageLoader->renderPage('admin_login', $data, 'auth');
+                    $this->pageLoader->renderPage('admin_login', $data, 'admin');
                 }
             } else {
-                $this->pageLoader->renderPage('admin_login', [], 'auth');
+                $this->pageLoader->renderPage('admin_login', [], 'admin');
             }
         } catch (Exception $e) {
-            $this->pageLoader->renderErrorPage(500, $e->getMessage());
+            $this->pageLoader->renderErrorPage(500, "Fejl under admin-login: " . $e->getMessage());
         }
     }
+
+    
     
     public function login() {
         try {
