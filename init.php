@@ -1,6 +1,6 @@
 <?php
 ob_start(); // Start output buffering for at undgå header-fejl
-
+echo currentPageURL()
 session_start();
 
 // Definér den aktuelle side og slug
