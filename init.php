@@ -4,7 +4,7 @@ ob_start(); // Start output buffering for at undgå header-fejl
 session_start();
 
 // Definér den aktuelle side og slug
-define('BASE_URL', (isset($_SERVER['HTTPS']) ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . dirname($_SERVER['SCRIPT_NAME']) . '/');
+define('BASE_URL', (isset($_SERVER['HTTPS']) ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . dirname($_SERVER['SCRIPT_NAME']) . '');
 
 
 function currentPageURL($page, $additionalParams = []) {
