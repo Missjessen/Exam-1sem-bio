@@ -43,6 +43,3 @@ class AuthController {
         exit;
     }
 }
-
-
-
