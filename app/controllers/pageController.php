@@ -254,7 +254,33 @@ class PageController {
     
 
     public function register() {
-        $this->pageLoader->renderPage('register', [], 'user');
+        try {
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $name = trim($_POST['name']);
+                $email = trim($_POST['email']);
+                $password = trim($_POST['password']);
+    
+                // Validering
+                if (empty($name) || empty($email) || empty($password)) {
+                    $data = ['error' => 'Alle felter skal udfyldes.'];
+                    $this->pageLoader->renderPage('register', $data, 'auth');
+                    return;
+                }
+    
+                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    $data = ['error' => 'Indtast en gyldig email-adresse.'];
+                    $this->pageLoader->renderPage('register', $data, 'auth');
+                    return;
+                }
+    
+                $authController = new AuthController($this->db);
+                $authController->registerUser($name, $email, $password);
+            } else {
+                $this->pageLoader->renderPage('register', [], 'auth');
+            }
+        } catch (Exception $e) {
+            $this->pageLoader->renderPage('register', ['error' => $e->getMessage()], 'auth');
+        }
     }
 
 

@@ -3,10 +3,12 @@
 class AuthController {
     private $userModel;
     private $adminModel;
+   
 
     public function __construct($db) {
         $this->userModel = new UserModel($db);
         $this->adminModel = new AdminModel($db);
+         $this->userModel = new UserModel($db);
     }
 
     public function loginUser($email, $password) {
@@ -38,6 +40,20 @@ class AuthController {
         session_unset();
         session_destroy();
         header("Location: " . BASE_URL . "index.php?page=homePage");
+        exit;
+    }
+
+    public function registerUser($name, $email, $password) {
+        if ($this->userModel->emailExists($email)) {
+            throw new Exception("Emailen er allerede registreret.");
+        }
+
+        // Opret brugeren
+        $this->userModel->createUser($name, $email, $password);
+
+        // Sæt en besked og omdiriger til login-siden
+        $_SESSION['message'] = "Din profil er oprettet. Du kan nu logge ind.";
+        header("Location: index.php?page=login");
         exit;
     }
 }
