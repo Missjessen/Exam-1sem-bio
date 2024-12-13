@@ -199,31 +199,45 @@ class PageController {
 
     public function admin_login() {
         try {
-            // Hvis allerede logget ind som admin, omdiriger til dashboard
-            if (isset($_SESSION['admin_id'])) {
-                header("Location: index.php?page=admin_dashboard");
-                exit;
-            }
-    
-            // Behandling af login-formular
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $email = trim($_POST['email']);
                 $password = trim($_POST['password']);
-    
                 $authController = new AuthController($this->db);
-                if ($authController->adminLogin($email, $password)) {
+    
+                if ($authController->loginAdmin($email, $password)) {
                     header("Location: index.php?page=admin_dashboard");
                     exit;
                 } else {
                     $data = ['error' => 'Forkert email eller adgangskode.'];
-                    $this->pageLoader->renderPage('admin_login', $data, 'admin');
+                    $this->pageLoader->renderPage('admin_login', $data, 'auth');
                 }
             } else {
-                // Vis login-siden
-                $this->pageLoader->renderPage('admin_login', [], 'admin');
+                $this->pageLoader->renderPage('admin_login', [], 'auth');
             }
         } catch (Exception $e) {
-            $this->pageLoader->renderErrorPage(500, "Fejl under admin-login: " . $e->getMessage());
+            $this->pageLoader->renderErrorPage(500, $e->getMessage());
+        }
+    }
+    
+    public function login() {
+        try {
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $email = trim($_POST['email']);
+                $password = trim($_POST['password']);
+                $authController = new AuthController($this->db);
+    
+                if ($authController->loginUser($email, $password)) {
+                    header("Location: index.php?page=profile");
+                    exit;
+                } else {
+                    $data = ['error' => 'Forkert email eller adgangskode.'];
+                    $this->pageLoader->renderPage('login', $data, 'auth');
+                }
+            } else {
+                $this->pageLoader->renderPage('login', [], 'auth');
+            }
+        } catch (Exception $e) {
+            $this->pageLoader->renderErrorPage(500, $e->getMessage());
         }
     }
     public function profile() {
@@ -237,9 +251,7 @@ class PageController {
         $this->pageLoader->renderPage('profile', $data, 'user');
     }
 
-    public function login() {
-        $this->pageLoader->renderPage('login', [], 'user');
-    }
+    
 
     public function register() {
         $this->pageLoader->renderPage('register', [], 'user');

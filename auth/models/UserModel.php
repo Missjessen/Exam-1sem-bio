@@ -1,9 +1,8 @@
-<?php
+<?php 
+
 class UserModel extends CrudBase {
-    public function createUser($name, $email, $password) {
-        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-        $data = ['name' => $name, 'email' => $email, 'password' => $hashedPassword];
-        return $this->create('customers', $data);
+    public function __construct($db) {
+        parent::__construct($db);
     }
 
     public function getUserByEmail($email) {
@@ -11,6 +10,16 @@ class UserModel extends CrudBase {
     }
 
     public function emailExists($email) {
-        return !empty($this->getUserByEmail($email));
+        $user = $this->getUserByEmail($email);
+        return !empty($user);
+    }
+
+    public function createUser($name, $email, $password) {
+        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+        return $this->create('customers', [
+            'name' => $name,
+            'email' => $email,
+            'password' => $hashedPassword
+        ]);
     }
 }
