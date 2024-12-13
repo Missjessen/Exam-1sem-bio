@@ -28,7 +28,7 @@ function currentPageURL($page, $additionalParams = []) {
     $baseUri = strtok($uri, '?'); // Fjern eksisterende query-parametre fra URI
     $queryString = http_build_query($queryParams);
 
-    return $protocol . '://' . $host . $baseUri . '?' . $queryString;
+    return $protocol . ':/' . $host . $baseUri . '?' . $queryString;
 }
 
 
