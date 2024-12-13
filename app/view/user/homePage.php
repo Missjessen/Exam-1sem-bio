@@ -1,3 +1,11 @@
+
+<?php
+$password = "admin123"; // Sæt din ønskede adgangskode her
+$hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+echo $hashedPassword;
+?>
+
+
 <body>
      <!-- Hero Image Section -->
      <header class="hero-image">
@@ -117,23 +125,6 @@
         <button type="submit" name="submit">Send besked</button>
     </form>
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     
 </footer>

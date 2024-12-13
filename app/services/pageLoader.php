@@ -14,6 +14,10 @@ class PageLoader {
     }
 
     public function loadAdminPage($viewName, $data = []) {
+        if (!isset($_SESSION['admin_id'])) {
+            header("Location: " . BASE_URL . "index.php?page=admin_login");
+            exit;
+        }
         $this->renderPage($viewName, $data, 'admin');
     }
 
@@ -21,9 +25,6 @@ class PageLoader {
         $this->renderPage($viewName, $data, 'user');
     }
 
-    /**
-     * Generisk metode til at håndtere både user og admin views.
-     */
     public function renderPage($viewName, $data = [], $type = 'user') {
         $current_page = $viewName;
 
@@ -60,7 +61,12 @@ class PageLoader {
     }
 
     private function includeCSS($page) {
-        echo "<link rel='stylesheet' href='/assets/css/$page.css'>";
+        $cssPath = "/assets/css/$page.css";
+        if (file_exists(__DIR__ . "/../../" . $cssPath)) {
+            echo "<link rel='stylesheet' href='" . BASE_URL . $cssPath . "'>";
+        } else {
+            error_log("CSS-fil $cssPath ikke fundet.");
+        }
     }
 
     private function includeLayout($layout, $data = []) {
@@ -74,15 +80,14 @@ class PageLoader {
         }
     }
 
-    
-
     public function renderErrorPage($errorCode, $errorMessage) {
+        http_response_code($errorCode);
         $errorViewPath = __DIR__ . "/../../app/view/errors/{$errorCode}.php";
 
         if (file_exists($errorViewPath)) {
             include $errorViewPath;
         } else {
-            echo "<h1>Error $errorCode</h1>";
+            echo "<h1>Fejl $errorCode</h1>";
             echo "<p>$errorMessage</p>";
         }
 

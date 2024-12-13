@@ -38,11 +38,6 @@ class PageController {
         }
     }
 
-    public function loginPage() {
-        require_once __DIR__ . '/../auth/LoginController.php';
-        $loginController = new LoginController($this->db);
-        $loginController->handleLogin();
-    }
     
 
     public function homePage() {
@@ -69,13 +64,6 @@ class PageController {
             $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af forsiden: " . $e->getMessage());
         }
     }
-    
-    
-    
-    
-    
-    
-    
     
 
     // Håndter program
@@ -147,13 +135,24 @@ class PageController {
     // Admin dashboard
     public function admin_dashboard() {
         try {
+            // Sikkerhedstjek for admin-login
+            if (!isset($_SESSION['admin_id'])) {
+                // Hvis admin ikke er logget ind, omdiriger til admin_login
+                header("Location: index.php?page=admin_login");
+                exit;
+            }
+    
+            // Hent data til dashboard
             $adminDashboardModel = new AdminDashboardModel($this->db);
             $data = [
                 'dailyShowings' => $adminDashboardModel->getDailyShowings(),
                 'newsMovies' => $adminDashboardModel->getNewsMovies(),
             ];
+    
+            // Render admin-dashboard
             $this->pageLoader->renderPage('admin_dashboard', $data, 'admin');
         } catch (Exception $e) {
+            // Fejlhåndtering
             $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af admin dashboard: " . $e->getMessage());
         }
     }
@@ -172,14 +171,18 @@ class PageController {
     }
 
     // Bookinger
-    public function admin_bookings() {
+    public function admin_dashboard() {
         try {
-            $data = $this->adminBookingModel->getAllBookings();
-            $this->pageLoader->renderPage('admin_bookings', $data, 'admin');
+            $data = [
+                'dailyShowings' => (new AdminDashboardModel($this->db))->getDailyShowings(),
+                'newsMovies' => (new AdminDashboardModel($this->db))->getNewsMovies(),
+            ];
+            $this->pageLoader->loadAdminPage('admin_dashboard', $data);
         } catch (Exception $e) {
-            $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af bookingsiden: " . $e->getMessage());
+            $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af admin dashboard: " . $e->getMessage());
         }
     }
+    
 
     // Indstillinger
     public function admin_settings() {
@@ -203,42 +206,55 @@ class PageController {
         $this->pageLoader->renderErrorPage(500, $message);
     }
 
-    public function loginPage() {
-        require_once __DIR__ . '/../auth/AuthController.php';
-        $authController = new AuthController($this->db);
-    
-        $isAdmin = isset($_GET['admin']); // Use query param to distinguish admin login
+
+    public function admin_login() {
         try {
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $authController->login($_POST['email'], $_POST['password'], $isAdmin);
-            } else {
-                include __DIR__ . '/../auth/views/login_form.php';
-            }
-        } catch (Exception $e) {
-            $error = $e->getMessage();
-            include __DIR__ . '/../auth/views/login_form.php';
-        }
-    }
-    
-    
-    public function profile() {
-        try {
-            if (!isset($_SESSION['user_id'])) {
-                $_SESSION['redirect_after_login'] = BASE_URL . "index.php?page=profile";
-                header("Location: " . BASE_URL . "index.php?page=login");
+            // Hvis allerede logget ind som admin, omdiriger til dashboard
+            if (isset($_SESSION['admin_id'])) {
+                header("Location: index.php?page=admin_dashboard");
                 exit;
             }
     
-            $customerId = $_SESSION['user_id'];
-            $bookingController = new BookingController(new BookingModel($this->db));
-            $customerBookings = $bookingController->getCustomerBookings($customerId);
+            // Behandling af login-formular
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $email = trim($_POST['email']);
+                $password = trim($_POST['password']);
     
-            $data = ['customerBookings' => $customerBookings];
-            $this->pageLoader->renderPage('profile', $data, 'user');
+                $authController = new AuthController($this->db);
+                if ($authController->adminLogin($email, $password)) {
+                    header("Location: index.php?page=admin_dashboard");
+                    exit;
+                } else {
+                    $data = ['error' => 'Forkert email eller adgangskode.'];
+                    $this->pageLoader->renderPage('admin_login', $data, 'admin');
+                }
+            } else {
+                // Vis login-siden
+                $this->pageLoader->renderPage('admin_login', [], 'admin');
+            }
         } catch (Exception $e) {
-            $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af profilen: " . $e->getMessage());
+            $this->pageLoader->renderErrorPage(500, "Fejl under admin-login: " . $e->getMessage());
         }
     }
+    public function profile() {
+        if (!isset($_SESSION['user_id'])) {
+            header("Location: index.php?page=login");
+            exit;
+        }
+
+        // Data til profil
+        $data = ['userName' => $_SESSION['username']];
+        $this->pageLoader->renderPage('profile', $data, 'user');
+    }
+
+    public function login() {
+        $this->pageLoader->renderPage('login', [], 'user');
+    }
+
+    public function register() {
+        $this->pageLoader->renderPage('register', [], 'user');
+    }
+
 
     private function ensureLoggedIn() {
         session_start();
