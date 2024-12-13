@@ -38,6 +38,13 @@ class PageController {
         }
     }
 
+    public function loginPage() {
+        require_once __DIR__ . '/../auth/LoginController.php';
+        $loginController = new LoginController($this->db);
+        $loginController->handleLogin();
+    }
+    
+
     public function homePage() {
         try {
             $movieFrontendModel = new MovieFrontendModel($this->db);
@@ -196,71 +203,23 @@ class PageController {
         $this->pageLoader->renderErrorPage(500, $message);
     }
 
-    public function showLoginPage($data = []) {
-        $viewPath = __DIR__ . '/../auth/login_form.php'; // Stien til login_form.php
-        
-        if (file_exists($viewPath)) {
-            require_once $viewPath;
-        } else {
-            throw new Exception("Filen login_form.php kunne ikke findes.");
-        }
-    }
-
-   public function login() {
-    try {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $email = trim($_POST['email']);
-            $password = trim($_POST['password']);
-
-            $authController = new AuthController(new CustomerModel($this->db));
-            if ($authController->login($email, $password)) {
-                $redirect = $_SESSION['redirect_after_login'] ?? BASE_URL . 'index.php?page=profile';
-                unset($_SESSION['redirect_after_login']);
-                header("Location: " . $redirect);
-                exit;
-            } else {
-                $data = ['error' => 'Forkert email eller adgangskode.'];
-                $this->pageLoader->renderPage('login', $data, 'user');
-            }
-        } else {
-            $this->pageLoader->renderPage('login', [], 'user');
-        }
-    } catch (Exception $e) {
-        $this->pageLoader->renderErrorPage(500, "Fejl under login: " . $e->getMessage());
-    }
-}
-
+    public function loginPage() {
+        require_once __DIR__ . '/../auth/AuthController.php';
+        $authController = new AuthController($this->db);
     
-    public function register() {
+        $isAdmin = isset($_GET['admin']); // Use query param to distinguish admin login
         try {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $name = trim($_POST['name']);
-                $email = trim($_POST['email']);
-                $password = trim($_POST['password']);
-                $confirmPassword = trim($_POST['confirm_password']);
-    
-                if ($password !== $confirmPassword) {
-                    $data = ['error' => 'Adgangskoderne matcher ikke.'];
-                    $this->pageLoader->renderPage('register', $data, 'user');
-                    return;
-                }
-    
-                $authController = new AuthController(new CustomerModel($this->db));
-                if ($authController->register($name, $email, $password)) {
-                    $_SESSION['message'] = "Registrering fuldført! Du kan nu logge ind.";
-                    header("Location: " . BASE_URL . "index.php?page=login");
-                    exit;
-                } else {
-                    $data = ['error' => 'Registrering mislykkedes. Prøv igen.'];
-                    $this->pageLoader->renderPage('register', $data, 'user');
-                }
+                $authController->login($_POST['email'], $_POST['password'], $isAdmin);
             } else {
-                $this->pageLoader->renderPage('register', [], 'user');
+                include __DIR__ . '/../auth/views/login_form.php';
             }
         } catch (Exception $e) {
-            $this->pageLoader->renderErrorPage(500, "Fejl under registrering: " . $e->getMessage());
+            $error = $e->getMessage();
+            include __DIR__ . '/../auth/views/login_form.php';
         }
     }
+    
     
     public function profile() {
         try {

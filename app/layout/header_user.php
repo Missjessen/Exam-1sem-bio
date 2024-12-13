@@ -41,13 +41,22 @@ $current_slug = $_REQUEST['slug'] ?? '';
             <li class="<?= $current_page === 'admin_dashboard' ? 'active' : '' ?>"><a href="?page=admin_dashboard">Admin</a></li>
             
         </ul>
-        <?php if (isset($_SESSION['user_id'])): ?>
+        <?php if (isset($_SESSION['user_id']) && $_SESSION['role'] === 'user'): ?>
+    <!-- Bruger er logget ind -->
     <div class="user-menu">
         <span>Velkommen, <?= htmlspecialchars($_SESSION['username']) ?></span>
         <a href="<?= htmlspecialchars(BASE_URL . 'index.php?page=profile') ?>">Min Profil</a>
-        <a href="<?= htmlspecialchars(BASE_URL . 'logout.php') ?>">Log ud</a>
+        <a href="<?= htmlspecialchars(BASE_URL . 'auth/logout.php') ?>">Log ud</a>
+    </div>
+<?php elseif (isset($_SESSION['admin_id']) && $_SESSION['role'] === 'admin'): ?>
+    <!-- Admin er logget ind -->
+    <div class="admin-menu">
+        <span>Velkommen, <?= htmlspecialchars($_SESSION['username']) ?> (Admin)</span>
+        <a href="<?= htmlspecialchars(BASE_URL . 'index.php?page=admin_dashboard') ?>">Admin Dashboard</a>
+        <a href="<?= htmlspecialchars(BASE_URL . 'auth/logout.php') ?>">Log ud</a>
     </div>
 <?php else: ?>
+    <!-- Ingen er logget ind -->
     <div class="auth-links">
         <a href="<?= htmlspecialchars(BASE_URL . 'index.php?page=login') ?>">Log ind</a>
         <a href="<?= htmlspecialchars(BASE_URL . 'index.php?page=register') ?>">Opret Profil</a>
@@ -61,7 +70,7 @@ $current_slug = $_REQUEST['slug'] ?? '';
     </div>
     <?php unset($_SESSION['message']); // Ryd beskeden efter visning ?>
 <?php endif; ?>
-        
+
     </nav>
 </header>
 </body>
