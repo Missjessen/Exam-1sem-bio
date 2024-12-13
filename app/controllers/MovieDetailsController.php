@@ -41,3 +41,5 @@ class MovieDetailsController {
         $errorController->showErrorPage($message);
     }
 }
+
+
