@@ -12,12 +12,12 @@ class AuthController {
     }
 
     public function loginUser($email, $password) {
+        session_start();
         $user = $this->userModel->getUserByEmail($email);
 
         if ($user && password_verify($password, $user['password'])) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['name'];
-            $_SESSION['role'] = 'user';
             return true;
         }
         throw new Exception("Forkert email eller adgangskode.");

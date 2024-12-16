@@ -201,7 +201,7 @@ class PageController {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $email = trim($_POST['email']);
                 $password = trim($_POST['password']);
-        
+    
                 $authController = new AuthController($this->db);
                 if ($authController->loginAdmin($email, $password)) {
                     header("Location: index.php?page=admin_dashboard");
@@ -225,32 +225,23 @@ class PageController {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $email = trim($_POST['email']);
                 $password = trim($_POST['password']);
+        
                 $authController = new AuthController($this->db);
-    
                 if ($authController->loginUser($email, $password)) {
                     header("Location: index.php?page=profile");
                     exit;
                 } else {
                     $data = ['error' => 'Forkert email eller adgangskode.'];
-                    $this->pageLoader->renderPage('login', $data, 'auth');
+                    $this->pageLoader->renderPage('login', $data, 'user');
                 }
             } else {
-                $this->pageLoader->renderPage('login', [], 'auth');
+                $this->pageLoader->renderPage('login', [], 'user');
             }
         } catch (Exception $e) {
-            $this->pageLoader->renderErrorPage(500, $e->getMessage());
+            $this->pageLoader->renderErrorPage(500, "Fejl under login: " . $e->getMessage());
         }
     }
-    public function profile() {
-        if (!isset($_SESSION['user_id'])) {
-            header("Location: index.php?page=login");
-            exit;
-        }
-
-        // Data til profil
-        $data = ['userName' => $_SESSION['username']];
-        $this->pageLoader->renderPage('profile', $data, 'user');
-    }
+    
 
     
 
