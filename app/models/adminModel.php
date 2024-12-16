@@ -110,6 +110,18 @@ public function getSettings(array $keys): array {
     }
 
     
+// Metode til at hente en admin ved email
+public function getAdminByEmail($email) {
+    try {
+        $stmt = $this->db->prepare("SELECT * FROM employees WHERE email = :email");
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+        error_log("Fejl i getAdminByEmail: " . $e->getMessage());
+        return null;
+    }
+}
 }
 
 
