@@ -8,7 +8,7 @@ class AuthController {
     public function __construct($db) {
         $this->userModel = new UserModel($db);
         $this->adminModel = new AdminModel($db);
-         $this->userModel = new UserModel($db);
+       
     }
 
     public function loginUser($email, $password) {
