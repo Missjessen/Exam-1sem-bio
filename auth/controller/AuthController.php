@@ -26,15 +26,17 @@ class AuthController {
      // Admin login-metode
      public function loginAdmin($email, $password) {
         session_start();
-        
+
         $admin = $this->adminModel->getAdminByEmail($email);
         if ($admin && password_verify($password, $admin['password'])) {
             $_SESSION['admin_id'] = $admin['id'];
             $_SESSION['username'] = $admin['name'];
+            $_SESSION['role'] = 'admin';
             return true;
         }
         throw new Exception("Forkert email eller adgangskode.");
     }
+
 
     public function logout() {
         session_start();

@@ -203,20 +203,25 @@ class PageController {
                 $password = trim($_POST['password']);
     
                 $authController = new AuthController($this->db);
+    
                 if ($authController->loginAdmin($email, $password)) {
-                    header("Location: index.php?page=admin_dashboard");
+                    // Brug BASE_URL til omdirigering
+                    header("Location: " . BASE_URL . "/index.php?page=admin_dashboard");
                     exit;
                 } else {
                     $data = ['error' => 'Forkert email eller adgangskode.'];
+                    // Render siden med fejl
                     $this->pageLoader->renderPage('admin_login', $data, 'admin');
                 }
             } else {
+                // Hvis GET, vis login-siden
                 $this->pageLoader->renderPage('admin_login', [], 'admin');
             }
         } catch (Exception $e) {
             $this->pageLoader->renderErrorPage(500, "Fejl under admin-login: " . $e->getMessage());
         }
     }
+    
 
     
     
