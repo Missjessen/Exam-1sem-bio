@@ -2,7 +2,7 @@
 
 class MovieFrontendController {
     private $model;
-    private $recipientEmail = "nsj@cruise-nights-cinema.dk";
+    //private $recipientEmail = "nsj@cruise-nights-cinema.dk";
 
     public function __construct(MovieFrontendModel $model) {
         $this->model = $model;
