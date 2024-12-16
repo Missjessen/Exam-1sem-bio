@@ -5,7 +5,12 @@ class UserModel extends CrudBase {
     }
   // Hent admin-bruger baseret på email
   public function getAdminByEmail($email) {
-    return $this->read('employees', '*', ['email' => $email], true);
+    try {
+        return $this->read('employees', '*', ['email' => $email], true);
+    } catch (Exception $e) {
+        error_log("Fejl i getAdminByEmail: " . $e->getMessage());
+        return null;
+    }
 }
 
 // Tjek om en email allerede eksisterer

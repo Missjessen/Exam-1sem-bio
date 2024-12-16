@@ -1,6 +1,16 @@
 <?php
 require_once __DIR__ . '/init.php';
 
+$db = Database::getInstance()->getConnection(); // Din databaseforbindelse
+$adminModel = new AdminModel($db);
+
+$result = $adminModel->getAdminByEmail('nuller@hallo.com');
+if ($result) {
+    var_dump($result);
+} else {
+    echo "Ingen admin fundet.";
+}
+
 // Feedback variabel
 $response = '';
 
@@ -85,3 +95,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
     </div>
 </body>
 </html>
+
+
