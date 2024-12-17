@@ -14,10 +14,10 @@ class PageLoader {
     }
 
     public function loadAdminPage($viewName, $data = []) {
-        if (!isset($_SESSION['admin_id'])) {
+      /*   if (!isset($_SESSION['admin_id'])) {
             header("Location: " . BASE_URL . "index.php?page=admin_login");
             exit;
-        }
+        } */
         $this->renderPage($viewName, $data, 'admin');
     }
 
