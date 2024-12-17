@@ -27,7 +27,7 @@ class PageLoader {
 
     
 
-    public function renderPage($viewName, $data = [], $type = 'user') {
+    public function renderPage($viewName, $data = []) {
         $current_page = $viewName;
     
         // Sikrer, at $data altid er et array
@@ -35,45 +35,44 @@ class PageLoader {
             $data = [];
         }
     
-        // Tilføj $page til data
-        $data['page'] = $viewName;
+        // Hent view-konfiguration fra config
+        if (!isset($this->config[$viewName]['view'])) {
+            throw new Exception("View-konfiguration for '$viewName' findes ikke.");
+        }
+    
+        $viewPath = __DIR__ . "/../.." . $this->config[$viewName]['view'];
+    
+        // Tilføj CSS, hvis det er defineret
+        if (!empty($this->config[$viewName]['css'])) {
+            $this->includeCSS($this->config[$viewName]['css']);
+        }
     
         // Gør data tilgængelige som variabler
         extract($data);
     
-        // Inkluder dynamisk CSS
-        $this->includeCSS($viewName);
-    
-        // Inkluder header
-        $headerFile = $type === 'admin' ? 'header_admin.php' : 'header_user.php';
+        // Inkluder header baseret på type (admin eller user)
+        $headerFile = strpos($viewName, 'admin') !== false ? 'header_admin.php' : 'header_user.php';
         $this->includeLayout($headerFile, compact('current_page'));
     
-         // Indlæs view
-    if (file_exists($viewPath)) {
-        require $viewPath;
-    } else {
-        throw new Exception("View-filen $viewPath kunne ikke indlæses.");
-    }
+        // Indlæs view
+        if (file_exists($viewPath)) {
+            require $viewPath;
+        } else {
+            throw new Exception("View-filen $viewPath kunne ikke indlæses.");
+        }
     
         // Inkluder footer
-        $footerFile = 'footer.php';
-        $this->includeLayout($footerFile, compact('current_page'));
+        $this->includeLayout('footer.php', compact('current_page'));
     }
     
-
-    private function includeCSS($page) {
-        $cssPath = "/assets/css/$page.css";
-        if (file_exists(__DIR__ . "/../../" . $cssPath)) {
-            echo "<link rel='stylesheet' href='" . BASE_URL . $cssPath . "'>";
-        } else {
-            error_log("CSS-fil $cssPath ikke fundet.");
-        }
+    private function includeCSS($cssPath) {
+        echo "<link rel='stylesheet' href='" . BASE_URL . "/" . ltrim($cssPath, '/') . "'>";
     }
-
+    
     private function includeLayout($layout, $data = []) {
-        extract($data); 
+        extract($data);
         $layoutPath = __DIR__ . "/../../app/layout/$layout";
-
+    
         if (file_exists($layoutPath)) {
             require $layoutPath;
         } else {
