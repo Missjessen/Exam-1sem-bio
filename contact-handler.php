@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/init.php'; // Inkluder basisopsætning
 
-session_start(); // Start session for at gemme beskeder
+
 
 $response = '';
 
