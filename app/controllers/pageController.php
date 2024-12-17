@@ -222,10 +222,6 @@ class PageController {
         }
     }
     
-
-    
-
-    
     
     public function login() {
         try {
