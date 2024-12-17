@@ -22,4 +22,5 @@ jobs:
           port: 22
           uploads: |
             ./ => /home/cjsfkt3sf_ssh/webroots/a050556f/
+          overwrite: true
 
