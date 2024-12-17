@@ -121,6 +121,7 @@ public function getAdminByEmail($email) {
         if (!$result) {
             error_log("Ingen admin fundet for email: $email");
         }
+        
 
         return $result;
     } catch (Exception $e) {
