@@ -52,9 +52,9 @@ class PageLoader {
         if ($type === 'auth') {
             $viewPath = __DIR__ . "/../../auth/view/$viewName.php";
         } elseif ($type === 'admin') {
-            $viewPath = __DIR__ . "/../../app/view/admin/$viewName.php";
+            $viewPath = __DIR__ . "/../app/view/admin/$viewName.php";
         } else {
-            $viewPath = __DIR__ . "/../../app/view/user/$viewName.php";
+            $viewPath = __DIR__ . "/../app/view/user/$viewName.php";
         }
     
         // Tjek om view-filen findes og inkluder den
