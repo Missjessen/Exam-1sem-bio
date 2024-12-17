@@ -13,16 +13,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4  # Updated to v4 for Node.js 20 compatibility
 
-      - name: Cleanup server files
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SFTP_HOST }}
-          username: ${{ secrets.SFTP_USERNAME }}
-          password: ${{ secrets.SFTP_PASSWORD }}
-          port: 22
-          script: |
-            rm -rf /home/cjsfkt3sf_ssh/webroots/a050556f/
-            
       - name: SFTP upload
         uses: Dylan700/sftp-upload-action@latest
         with:
