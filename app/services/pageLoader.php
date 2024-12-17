@@ -48,18 +48,12 @@ class PageLoader {
         $headerFile = $type === 'admin' ? 'header_admin.php' : 'header_user.php';
         $this->includeLayout($headerFile, compact('current_page'));
     
-        // Tilpas stien baseret på viewets placering
-        if ($type === 'auth') {
-            $viewPath = __DIR__ . "/../../auth/view/$viewName.php";
-        } else {
-            $viewPath = __DIR__ . "/../../app/view/$type/$viewName.php";
-        }
-    
-        if (file_exists($viewPath)) {
-            require $viewPath;
-        } else {
-            throw new Exception("View-filen $viewName for $type kunne ikke indlæses.");
-        }
+         // Indlæs view
+    if (file_exists($viewPath)) {
+        require $viewPath;
+    } else {
+        throw new Exception("View-filen $viewPath kunne ikke indlæses.");
+    }
     
         // Inkluder footer
         $footerFile = 'footer.php';
