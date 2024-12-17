@@ -7,7 +7,7 @@ class FileUploadService {
 
     public function __construct() {
         // Brug DOCUMENT_ROOT til at pege på roden
-        $this->upload_dir = $_SERVER['DOCUMENT_ROOT'] . '/uploads';
+        $this->upload_dir = htmlspecialchars(BASE_URL . '/uploads') ;
         error_log("Upload-sti: " . $this->upload_dir); // Debug for at kontrollere stien
     }
 
