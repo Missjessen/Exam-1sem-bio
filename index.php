@@ -6,7 +6,7 @@ error_reporting(E_ALL);
 
 // Inkluder nødvendige filer
 require_once __DIR__ . '/init.php';
-require_once __DIR__ . '/app/models/Security.php';
+
 
 
 // Start session
