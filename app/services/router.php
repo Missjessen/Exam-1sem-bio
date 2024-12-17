@@ -20,4 +20,6 @@ class Router {
             $errorController->show404("Page not found: $page");
         }
     }
+
+    
 }

@@ -114,14 +114,19 @@ public function getSettings(array $keys): array {
 public function getAdminByEmail($email) {
     try {
         $stmt = $this->db->prepare("SELECT * FROM employees WHERE email = :email");
-        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$result) {
+            error_log("Ingen admin fundet for email: $email");
+        }
+
+        return $result;
     } catch (Exception $e) {
         error_log("Fejl i getAdminByEmail: " . $e->getMessage());
         return null;
     }
-}
 }
 
 

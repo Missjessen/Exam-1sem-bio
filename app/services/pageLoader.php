@@ -25,6 +25,8 @@ class PageLoader {
         $this->renderPage($viewName, $data, 'user');
     }
 
+    
+
     public function renderPage($viewName, $data = [], $type = 'user') {
         $current_page = $viewName;
     
