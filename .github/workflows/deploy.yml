@@ -1,17 +1,47 @@
-name: Deploy to one.com via FTP
+# name: Deploy to one.com via FTP
 
-on:
-  push:
-    branches:
-      - main
+# on:
+#   push:
+#     branches:
+#       - main
+
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v4  # Updated to v4 for Node.js 20 compatibility
+
+#       - name: SFTP upload
+#         uses: Dylan700/sftp-upload-action@latest
+#         with:
+#           server: ${{ secrets.SFTP_HOST }}
+#           username: ${{ secrets.SFTP_USERNAME }}
+#           password: ${{ secrets.SFTP_PASSWORD }}
+#           port: 22
+#           uploads: |
+#             ./ => /home/cjsfkt3sf_ssh/webroots/a050556f/
+#           overwrite: true
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4  # Updated to v4 for Node.js 20 compatibility
+      - name: Checkout kode
+        uses: actions/checkout@v4
+
+      - name: Ryd gamle filer med SFTP
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SFTP_HOST }}
+          username: ${{ secrets.SFTP_USERNAME }}
+          password: ${{ secrets.SFTP_PASSWORD }}
+          port: 22
+          script: |
+            cd /home/cjsfkt3sf_ssh/webroots/a050556f/
+            rm -rf *
 
       - name: SFTP upload
         uses: Dylan700/sftp-upload-action@latest
@@ -23,4 +53,3 @@ jobs:
           uploads: |
             ./ => /home/cjsfkt3sf_ssh/webroots/a050556f/
           overwrite: true
-
