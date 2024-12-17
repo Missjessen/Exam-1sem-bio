@@ -22,7 +22,5 @@ jobs:
           port: 22
           uploads: |
             ./ => /home/cjsfkt3sf_ssh/webroots/a050556f/
-          target: "/home/cjsfkt3sf_ssh/webroots/a050556f/"  # Destination
-          strip_components: 1  # Fjern rodmappen fra upload
-          overwrite: true      # Overskriv eksisterende filer
+          overwrite: true
 
