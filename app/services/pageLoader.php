@@ -27,7 +27,7 @@ class PageLoader {
 
     
 
-    public function renderPage($viewName, $data = []) {
+    public function renderPage($viewName, $data = [], $type = 'user') {
         $current_page = $viewName;
     
         // Sikrer, at $data altid er et array
@@ -35,34 +35,35 @@ class PageLoader {
             $data = [];
         }
     
-        // Hent view-konfiguration fra config
-        if (!isset($this->config[$viewName]['view'])) {
-            throw new Exception("View-konfiguration for '$viewName' findes ikke.");
-        }
-    
-        $viewPath = __DIR__ . "/../.." . $this->config[$viewName]['view'];
-    
-        // Tilføj CSS, hvis det er defineret
-        if (!empty($this->config[$viewName]['css'])) {
-            $this->includeCSS($this->config[$viewName]['css']);
-        }
+        // Tilføj $page til data
+        $data['page'] = $viewName;
     
         // Gør data tilgængelige som variabler
         extract($data);
     
-        // Inkluder header baseret på type (admin eller user)
-        $headerFile = strpos($viewName, 'admin') !== false ? 'header_admin.php' : 'header_user.php';
+        // Inkluder dynamisk CSS
+        $this->includeCSS($viewName);
+    
+        // Inkluder header
+        $headerFile = $type === 'admin' ? 'header_admin.php' : 'header_user.php';
         $this->includeLayout($headerFile, compact('current_page'));
     
-        // Indlæs view
+        // Tilpas stien baseret på viewets placering
+        if ($type === 'auth') {
+            $viewPath = __DIR__ . "/../../auth/view/$viewName.php";
+        } else {
+            $viewPath = __DIR__ . "/../../app/view/$type/$viewName.php";
+        }
+    
         if (file_exists($viewPath)) {
             require $viewPath;
         } else {
-            throw new Exception("View-filen $viewPath kunne ikke indlæses.");
+            throw new Exception("View-filen $viewName for $type kunne ikke indlæses.");
         }
     
         // Inkluder footer
-        $this->includeLayout('footer.php', compact('current_page'));
+        $footerFile = 'footer.php';
+        $this->includeLayout($footerFile, compact('current_page'));
     }
     
     private function includeCSS($cssPath) {

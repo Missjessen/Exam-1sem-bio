@@ -45,10 +45,10 @@ class PageController {
             $movieFrontendModel = new MovieFrontendModel($this->db);
     
             // Hent besked fra session, hvis den findes
-            session_start();
+          /*   session_start();
             $contactMessage = $_SESSION['contactMessage'] ?? null;
             unset($_SESSION['contactMessage']); // Ryd besked, så den kun vises én gang
-    
+     */
             // Hent data til forsiden
             $data = [
                 'upcomingMovies' => $movieFrontendModel->getUpcomingMovies(),
