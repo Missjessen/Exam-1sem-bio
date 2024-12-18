@@ -185,7 +185,7 @@ class PageController {
 
             // Hent data til visningen
             $data = $this->adminController->getCustomersAndEmployeesData();
-            $this->pageLoader->renderPage('admin_manageUsers', $data, 'admin');
+            $this->pageLoader->renderPage('admin_ManageUsers', $data, 'admin');
         } catch (Exception $e) {
             $this->pageLoader->renderErrorPage(500, "Fejl under administration af brugere: " . $e->getMessage());
         }
