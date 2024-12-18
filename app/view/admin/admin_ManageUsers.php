@@ -1,5 +1,6 @@
 <h1>Administrer Kunder</h1>
 
+<h1>Administrer Kunder</h1>
 <form method="POST" action="?page=admin_ManageUsers">
     <input type="hidden" name="id" value="<?= htmlspecialchars($data['editCustomer']['id'] ?? ''); ?>">
     <label>Navn:</label>
@@ -8,6 +9,8 @@
     <input type="email" name="email" value="<?= htmlspecialchars($data['editCustomer']['email'] ?? ''); ?>" required>
     <label>Telefon:</label>
     <input type="text" name="phone" value="<?= htmlspecialchars($data['editCustomer']['phone'] ?? ''); ?>" required>
+    <label>Adgangskode:</label>
+    <input type="password" name="password">
     <button type="submit" name="add_or_update_customer">Gem Kunde</button>
 </form>
 
@@ -19,12 +22,14 @@
         <th>Email</th>
         <th>Telefon</th>
         <th>Handling</th>
+        <th>password</th>
     </tr>
     <?php foreach ($data['customers'] as $customer): ?>
         <tr>
             <td><?= htmlspecialchars($customer['name']); ?></td>
             <td><?= htmlspecialchars($customer['email']); ?></td>
             <td><?= htmlspecialchars($customer['phone']); ?></td>
+            <td><?= htmlspecialchars($customer['password']); ?></td>
             <td>
             <a href="?page=admin_ManageUsers&edit_customer_id=<?= $customer['id']; ?>">Rediger</a>
                 <a href="?page=admin_ManageUsers&delete_customer_id=<?= $customer['id']; ?>" onclick="return confirm('Er du sikker?');">Slet</a>
@@ -50,6 +55,8 @@
     <input type="text" name="employee_role" value="<?= htmlspecialchars($data['editEmployee']['role'] ?? ''); ?>" required>
     <label>Adresse:</label>
     <input type="text" name="employee_address" value="<?= htmlspecialchars($data['editEmployee']['address'] ?? ''); ?>" required>
+    <label>Adgangskode:</label>
+    <input type="password" name="password">
     <button type="submit" name="add_or_update_employee">Gem Ansat</button>
 </form>
 
@@ -61,6 +68,7 @@
         <th>Rolle</th>
         <th>Adresse</th>
         <th>Handling</th>
+        <th>password</th>
     </tr>
     <?php foreach ($data['employees'] as $employee): ?>
         <tr>
@@ -68,6 +76,7 @@
             <td><?= htmlspecialchars($employee['email']); ?></td>
             <td><?= htmlspecialchars($employee['role']); ?></td>
             <td><?= htmlspecialchars($employee['address']); ?></td>
+            <td><?= htmlspecialchars($employee['password']); ?></td>
             <td>
             <a href="?page=admin_ManageUsers&edit_employee_id=<?= $employee['id']; ?>">Rediger</a>
                 <a href="?page=admin_ManageUsers&delete_employee_id=<?= $employee['id']; ?>" onclick="return confirm('Er du sikker?');">Slet</a>

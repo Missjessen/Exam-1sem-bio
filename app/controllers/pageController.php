@@ -176,6 +176,21 @@ class PageController {
         }
     }
 
+    public function admin_ManageUsers() {
+        try {
+            // Behandl formularer og forespørgsler
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $this->adminController->handleCustomerAndEmployeeSubmission($_POST, $_GET);
+            }
+
+            // Hent data til visningen
+            $data = $this->adminController->getCustomersAndEmployeesData();
+            $this->pageLoader->renderPage('admin_manageUsers', $data, 'admin');
+        } catch (Exception $e) {
+            $this->pageLoader->renderErrorPage(500, "Fejl under administration af brugere: " . $e->getMessage());
+        }
+    }
+ 
     // Indstillinger
     public function admin_settings() {
         try {

@@ -34,13 +34,14 @@ public function getSettings(array $keys): array {
 
         // Customers methods
             // CRUD-metoder for kunder
-    public function createCustomer($data) {
-        $stmt = $this->db->prepare("INSERT INTO customers (name, email, phone) VALUES (:name, :email, :phone)");
-        $stmt->bindParam(':name', $data['name']);
-        $stmt->bindParam(':email', $data['email']);
-        $stmt->bindParam(':phone', $data['phone']);
-        return $stmt->execute();
-    }
+            public function createCustomer($data) {
+                $stmt = $this->db->prepare("INSERT INTO customers (name, email, phone, password) VALUES (:name, :email, :phone, :password)");
+                $stmt->bindParam(':name', $data['name']);
+                $stmt->bindParam(':email', $data['email']);
+                $stmt->bindParam(':phone', $data['phone']);
+                $stmt->bindParam(':password', $data['password']);
+                return $stmt->execute();
+            }
 
     public function updateCustomer($id, $data) {
         $stmt = $this->db->prepare("UPDATE customers SET name = :name, email = :email, phone = :phone WHERE id = :id");
@@ -48,6 +49,7 @@ public function getSettings(array $keys): array {
         $stmt->bindParam(':name', $data['name']);
         $stmt->bindParam(':email', $data['email']);
         $stmt->bindParam(':phone', $data['phone']);
+        $stmt->bindparam(':password', $data['password']);
         return $stmt->execute();
     }
 
@@ -71,12 +73,13 @@ public function getSettings(array $keys): array {
 
     // CRUD-metoder for ansatte
     public function createEmployee($data) {
-        $stmt = $this->db->prepare("INSERT INTO employees (name, email, phone, role, address) VALUES (:name, :email, :phone, :role, :address)");
+        $stmt = $this->db->prepare("INSERT INTO employees (name, email, phone, role, address, password) VALUES (:name, :email, :phone, :role, :address, :password)");
         $stmt->bindParam(':name', $data['name']);
         $stmt->bindParam(':email', $data['email']);
         $stmt->bindParam(':phone', $data['phone']);
         $stmt->bindParam(':role', $data['role']);
         $stmt->bindParam(':address', $data['address']);
+        $stmt->bindParam(':password', $data['password']);
         return $stmt->execute();
     }
 
@@ -88,6 +91,7 @@ public function getSettings(array $keys): array {
         $stmt->bindParam(':phone', $data['phone']);
         $stmt->bindParam(':role', $data['role']);
         $stmt->bindParam(':address', $data['address']);
+        $stmt->bindParam(':password', $data['password']);
         return $stmt->execute();
     }
 
