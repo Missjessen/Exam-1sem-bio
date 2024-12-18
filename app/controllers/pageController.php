@@ -43,12 +43,15 @@ class PageController {
     public function homePage() {
         try {
             $movieFrontendModel = new MovieFrontendModel($this->db);
+            $contactController = new ContactController();
+            $contactMessage = null;
     
-            // Hent besked fra session, hvis den findes
-          /*   session_start();
-            $contactMessage = $_SESSION['contactMessage'] ?? null;
-            unset($_SESSION['contactMessage']); // Ryd besked, så den kun vises én gang
-     */
+            // Håndter kontaktformular
+            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
+                // Brug ContactController til at håndtere mail-logik
+                $contactMessage = $contactController->handleContactForm();
+            }
+    
             // Hent data til forsiden
             $data = [
                 'upcomingMovies' => $movieFrontendModel->getUpcomingMovies(),
@@ -64,6 +67,10 @@ class PageController {
             $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af forsiden: " . $e->getMessage());
         }
     }
+
+
+
+
     
 
     // Håndter program
@@ -115,7 +122,7 @@ class PageController {
             }
 
             $receiptData = $this->bookingController->getBookingDetails($bookingId);
-            
+
             if (!$receiptData) {
                 throw new Exception("Booking med ID '$bookingId' blev ikke fundet.");
             }
@@ -130,29 +137,18 @@ class PageController {
         $this->pageLoader->renderErrorPage(500, "Fejl: " . $e->getMessage());
     }
 }
-    
+
 
     // Admin dashboard
     public function admin_dashboard() {
         try {
-           /*  // Sikkerhedstjek for admin-login
-            if (!isset($_SESSION['admin_id'])) {
-                // Hvis admin ikke er logget ind, omdiriger til admin_login
-                header("Location: index.php?page=admin_login");
-                exit;
-            }
-     */
-            // Hent data til dashboard
             $adminDashboardModel = new AdminDashboardModel($this->db);
             $data = [
                 'dailyShowings' => $adminDashboardModel->getDailyShowings(),
                 'newsMovies' => $adminDashboardModel->getNewsMovies(),
             ];
-    
-            // Render admin-dashboard
             $this->pageLoader->renderPage('admin_dashboard', $data, 'admin');
         } catch (Exception $e) {
-            // Fejlhåndtering
             $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af admin dashboard: " . $e->getMessage());
         }
     }
@@ -170,9 +166,15 @@ class PageController {
         }
     }
 
-   
-
-    
+    // Bookinger
+    public function admin_bookings() {
+        try {
+            $data = $this->adminBookingModel->getAllBookings();
+            $this->pageLoader->renderPage('admin_bookings', $data, 'admin');
+        } catch (Exception $e) {
+            $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af bookingsiden: " . $e->getMessage());
+        }
+    }
 
     // Indstillinger
     public function admin_settings() {
