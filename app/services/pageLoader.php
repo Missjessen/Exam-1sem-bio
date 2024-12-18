@@ -14,7 +14,7 @@ class PageLoader {
     }
 
     public function loadAdminPage($viewName, $data = []) {
-        if (!isset($_SESSION['admin_id'])) /* {
+      /*   if (!isset($_SESSION['admin_id'])) {
             header("Location: " . BASE_URL . "index.php?page=admin_login");
             exit;
         } */
@@ -48,17 +48,20 @@ class PageLoader {
         $headerFile = $type === 'admin' ? 'header_admin.php' : 'header_user.php';
         $this->includeLayout($headerFile, compact('current_page'));
     
-        // Tilpas stien baseret på viewets placering
+        // **Sikring af korrekt sti til view-filen**
         if ($type === 'auth') {
             $viewPath = __DIR__ . "/../../auth/view/$viewName.php";
+        } elseif ($type === 'admin') {
+            $viewPath = __DIR__ . "/../app/view/admin/$viewName.php";
         } else {
-            $viewPath = __DIR__ . "/../../app/view/$type/$viewName.php";
+            $viewPath = __DIR__ . "/../app/view/user/$viewName.php";
         }
     
+        // Tjek om view-filen findes og inkluder den
         if (file_exists($viewPath)) {
             require $viewPath;
         } else {
-            throw new Exception("View-filen $viewName for $type kunne ikke indlæses.");
+            throw new Exception("View-filen kunne ikke findes: " . htmlspecialchars($viewPath));
         }
     
         // Inkluder footer
@@ -66,20 +69,15 @@ class PageLoader {
         $this->includeLayout($footerFile, compact('current_page'));
     }
     
-
-    private function includeCSS($page) {
-        $cssPath = "/assets/css/$page.css";
-        if (file_exists(__DIR__ . "/../../" . $cssPath)) {
-            echo "<link rel='stylesheet' href='" . BASE_URL . $cssPath . "'>";
-        } else {
-            error_log("CSS-fil $cssPath ikke fundet.");
-        }
+    
+    private function includeCSS($cssPath) {
+        echo "<link rel='stylesheet' href='" . BASE_URL . "/" . ltrim($cssPath, '/') . "'>";
     }
-
+    
     private function includeLayout($layout, $data = []) {
-        extract($data); 
+        extract($data);
         $layoutPath = __DIR__ . "/../../app/layout/$layout";
-
+    
         if (file_exists($layoutPath)) {
             require $layoutPath;
         } else {
