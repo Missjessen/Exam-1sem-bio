@@ -27,16 +27,7 @@ $current_page = $_REQUEST['page'] ?? 'admin_dashboard';
             
             
         </ul>
-        <?php if (isset($_SESSION['admin_id']) && $_SESSION['role'] === 'admin'): ?>
-    <div class="admin-menu">
-        <span>Velkommen, <?= htmlspecialchars($_SESSION['username']) ?> (Admin)</span>
-        <a href="<?= htmlspecialchars(BASE_URL . 'index.php?page=admin_dashboard') ?>">Admin Dashboard</a>
-        <a href="<?= htmlspecialchars(BASE_URL . 'auth/logout.php') ?>">Log ud</a>
-    </div>
-<?php else: ?>
-    <!-- Ingen adgang, omdiriger til login -->
-    <?php header("Location: " . BASE_URL . "index.php?page=login"); exit; ?>
-<?php endif; ?>
+
     </nav>
 </header>
 

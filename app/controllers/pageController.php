@@ -135,13 +135,13 @@ class PageController {
     // Admin dashboard
     public function admin_dashboard() {
         try {
-            // Sikkerhedstjek for admin-login
+           /*  // Sikkerhedstjek for admin-login
             if (!isset($_SESSION['admin_id'])) {
                 // Hvis admin ikke er logget ind, omdiriger til admin_login
                 header("Location: index.php?page=admin_login");
                 exit;
             }
-    
+     */
             // Hent data til dashboard
             $adminDashboardModel = new AdminDashboardModel($this->db);
             $data = [
