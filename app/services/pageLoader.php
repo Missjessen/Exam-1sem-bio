@@ -14,10 +14,6 @@ class PageLoader {
     }
 
     public function loadAdminPage($viewName, $data = []) {
-      /*   if (!isset($_SESSION['admin_id'])) {
-            header("Location: " . BASE_URL . "index.php?page=admin_login");
-            exit;
-        } */
         $this->renderPage($viewName, $data, 'admin');
     }
 
@@ -25,59 +21,52 @@ class PageLoader {
         $this->renderPage($viewName, $data, 'user');
     }
 
-    
-
+    /**
+     * Generisk metode til at håndtere både user og admin views.
+     */
     public function renderPage($viewName, $data = [], $type = 'user') {
         $current_page = $viewName;
-    
+
         // Sikrer, at $data altid er et array
         if (!is_array($data)) {
             $data = [];
         }
-    
+
         // Tilføj $page til data
         $data['page'] = $viewName;
-    
+
         // Gør data tilgængelige som variabler
         extract($data);
-    
+
         // Inkluder dynamisk CSS
         $this->includeCSS($viewName);
-    
+
         // Inkluder header
         $headerFile = $type === 'admin' ? 'header_admin.php' : 'header_user.php';
         $this->includeLayout($headerFile, compact('current_page'));
-    
-        // **Sikring af korrekt sti til view-filen**
-        if ($type === 'auth') {
-            $viewPath = __DIR__ . "/../../auth/view/$viewName.php";
-        } elseif ($type === 'admin') {
-            $viewPath = __DIR__ . "/../app/view/admin/$viewName.php";
-        } else {
-            $viewPath = __DIR__ . "/../app/view/user/$viewName.php";
-        }
-    
-        // Tjek om view-filen findes og inkluder den
+
+        // Indlæs view baseret på type
+        $viewPath = __DIR__ . "/../../app/view/$type/$viewName.php";
+
         if (file_exists($viewPath)) {
             require $viewPath;
         } else {
-            throw new Exception("View-filen kunne ikke findes: " . htmlspecialchars($viewPath));
+            throw new Exception("View-filen $viewName for $type kunne ikke indlæses.");
         }
-    
+
         // Inkluder footer
         $footerFile = 'footer.php';
         $this->includeLayout($footerFile, compact('current_page'));
     }
-    
-    
-    private function includeCSS($cssPath) {
-        echo "<link rel='stylesheet' href='" . BASE_URL . "/" . ltrim($cssPath, '/') . "'>";
+
+    private function includeCSS($page) {
+        echo "<link rel='stylesheet' href='/assets/css/$page.css'>";
     }
-    
+
     private function includeLayout($layout, $data = []) {
-        extract($data);
+        extract($data); 
         $layoutPath = __DIR__ . "/../../app/layout/$layout";
-    
+
         if (file_exists($layoutPath)) {
             require $layoutPath;
         } else {
@@ -85,14 +74,15 @@ class PageLoader {
         }
     }
 
+
+    
     public function renderErrorPage($errorCode, $errorMessage) {
-        http_response_code($errorCode);
         $errorViewPath = __DIR__ . "/../../app/view/errors/{$errorCode}.php";
 
         if (file_exists($errorViewPath)) {
             include $errorViewPath;
         } else {
-            echo "<h1>Fejl $errorCode</h1>";
+            echo "<h1>Error $errorCode</h1>";
             echo "<p>$errorMessage</p>";
         }
 
