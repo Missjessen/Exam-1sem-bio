@@ -1,7 +1,7 @@
 <h1>Administrer Kunder</h1>
 
 <h1>Administrer Kunder</h1>
-<form method="POST" action="?page=admin_ManageUsers">
+<form method="POST" action="<?= htmlspecialchars(BASE_URL . 'index.php?page=admin_ManageUsers') ?>">
     <input type="hidden" name="id" value="<?= htmlspecialchars($data['editCustomer']['id'] ?? ''); ?>">
     <label>Navn:</label>
     <input type="text" name="name" value="<?= htmlspecialchars($data['editCustomer']['name'] ?? ''); ?>" required>
@@ -43,7 +43,7 @@
 </table>
 
 <h1>Administrer Ansatte</h1>
-<form method="POST" action="?page=admin_ManageUsers">
+<form method="POST" action="<?= htmlspecialchars(BASE_URL . 'index.php?page=admin_ManageUsers') ?>">
     <input type="hidden" name="id" value="<?= htmlspecialchars($data['editEmployee']['id'] ?? ''); ?>">
     <label>Navn:</label>
     <input type="text" name="employee_name" value="<?= htmlspecialchars($data['editEmployee']['name'] ?? ''); ?>" required>
