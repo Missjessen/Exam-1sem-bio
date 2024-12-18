@@ -7,8 +7,6 @@
     <input type="text" name="name" value="<?= htmlspecialchars($data['editCustomer']['name'] ?? ''); ?>" required>
     <label>Email:</label>
     <input type="email" name="email" value="<?= htmlspecialchars($data['editCustomer']['email'] ?? ''); ?>" required>
-    <label>Telefon:</label>
-    <input type="text" name="phone" value="<?= htmlspecialchars($data['editCustomer']['phone'] ?? ''); ?>" required>
     <label>Adgangskode:</label>
     <input type="password" name="password">
     <button type="submit" name="add_or_update_customer">Gem Kunde</button>
@@ -28,7 +26,6 @@
         <tr>
             <td><?= htmlspecialchars($customer['name']); ?></td>
             <td><?= htmlspecialchars($customer['email']); ?></td>
-            <td><?= htmlspecialchars($customer['phone']); ?></td>
             <td><?= htmlspecialchars($customer['password']); ?></td>
             <td>
             <a href="?page=admin_ManageUsers&edit_customer_id=<?= $customer['id']; ?>">Rediger</a>
