@@ -49,12 +49,17 @@ class PageLoader {
         $this->includeLayout($headerFile, compact('current_page'));
     
         // **Sikring af korrekt sti til view-filen**
-        if ($type === 'auth') {
-            $viewPath = __DIR__ . "/../../auth/view/$viewName.php";
-        } elseif ($type === 'admin') {
-            $viewPath = __DIR__ . "/../app/view/admin/$viewName.php";
-        } else {
-            $viewPath = __DIR__ . "/../app/view/user/$viewName.php";
+        $basePath = dirname(__DIR__, 2); // Base for hele projektet
+        switch ($type) {
+            case 'auth':
+                $viewPath = "$basePath/auth/view/$viewName.php";
+                break;
+            case 'admin':
+                $viewPath = "$basePath/app/view/admin/$viewName.php";
+                break;
+            default:
+                $viewPath = "$basePath/app/view/user/$viewName.php";
+                break;
         }
     
         // Tjek om view-filen findes og inkluder den
