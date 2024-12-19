@@ -66,7 +66,7 @@ class AdminController {
                     'id' => $postData['id'] ?? null,
                     'name' => $postData['name'],
                     'email' => $postData['email'],
-                    'password' => $password['password'],
+                   
                 ]);
             }
     
@@ -80,7 +80,7 @@ class AdminController {
                     'phone' => $postData['employee_phone'],
                     'role' => $postData['employee_role'],
                     'address' => $postData['employee_address'],
-                    'password' => $password['password'],
+                    'password' => $password,
                 ]);
             }
         }

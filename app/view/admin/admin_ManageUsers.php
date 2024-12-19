@@ -7,8 +7,6 @@
     <input type="text" name="name" value="<?= htmlspecialchars($data['editCustomer']['name'] ?? ''); ?>" required>
     <label>Email:</label>
     <input type="email" name="email" value="<?= htmlspecialchars($data['editCustomer']['email'] ?? ''); ?>" required>
-    <label>Adgangskode:</label>
-    <input type="password" name="password">
     <button type="submit" name="add_or_update_customer">Gem Kunde</button>
 </form>
 
@@ -19,8 +17,7 @@
         <th>Navn</th>
         <th>Email</th>
         <th>Telefon</th>
-        <th>Handling</th>
-        <th>password</th>
+       
     </tr>
     <?php foreach ($data['customers'] as $customer): ?>
         <tr>
@@ -52,8 +49,6 @@
     <input type="text" name="employee_role" value="<?= htmlspecialchars($data['editEmployee']['role'] ?? ''); ?>" required>
     <label>Adresse:</label>
     <input type="text" name="employee_address" value="<?= htmlspecialchars($data['editEmployee']['address'] ?? ''); ?>" required>
-    <label>Adgangskode:</label>
-    <input type="password" name="password">
     <button type="submit" name="add_or_update_employee">Gem Ansat</button>
 </form>
 
@@ -64,7 +59,6 @@
         <th>Email</th>
         <th>Rolle</th>
         <th>Adresse</th>
-        <th>Handling</th>
         <th>password</th>
     </tr>
     <?php foreach ($data['employees'] as $employee): ?>
