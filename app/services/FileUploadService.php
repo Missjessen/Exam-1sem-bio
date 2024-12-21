@@ -6,9 +6,8 @@ class FileUploadService {
     private $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif'];
 
     public function __construct() {
-        // Brug DOCUMENT_ROOT til at pege på roden
         $this->upload_dir = $_SERVER['DOCUMENT_ROOT'] . '/uploads';
-        error_log("Upload-sti: " . $this->upload_dir); // Debug for at kontrollere stien
+        error_log("Upload-sti: " . $this->upload_dir); // Debug
     }
 
     public function uploadFile($file) {
@@ -16,31 +15,30 @@ class FileUploadService {
             throw new Exception("Fejl: Ingen fil blev uploadet, eller der opstod en fejl.");
         }
 
-        // Ekstra tjek for at sikre, at upload-mappen eksisterer
+        // Tjek om mappen findes eller opret den
         if (!is_dir($this->upload_dir) && !mkdir($this->upload_dir, 0777, true)) {
-            throw new Exception("Fejl: Kunne ikke oprette upload-mappen: " . $this->upload_dir);
+            throw new Exception("Fejl: Kunne ikke oprette upload-mappen.");
         }
 
-        $poster_name = basename($file['name']);
-        $poster_path = $this->upload_dir . $poster_name;
+        $poster_name = preg_replace('/[^a-zA-Z0-9\._-]/', '_', basename($file['name']));
+        $poster_path = $this->upload_dir . '/' . $poster_name;
         $extension = strtolower(pathinfo($poster_name, PATHINFO_EXTENSION));
 
-        // Filtypekontrol
+        // Tjek filtype
         if (!in_array($extension, $this->allowed_extensions)) {
-            throw new Exception("Fejl: Ukendt filtype! Kun jpg, jpeg, png, og gif er tilladt.");
+            throw new Exception("Fejl: Ukendt filtype. Kun jpg, jpeg, png og gif er tilladt.");
         }
 
-        // Filstørrelseskontrol
+        // Tjek filstørrelse
         if ($file['size'] > self::MAX_SIZE) {
-            throw new Exception("Fejl: Billedet er for stort! Maksimal størrelse er " . (self::MAX_SIZE / 1024) . " KB.");
+            throw new Exception("Fejl: Filen er for stor. Maksimal størrelse er " . (self::MAX_SIZE / 1024) . " KB.");
         }
 
-        // Flytning af den uploadede fil
+        // Flyt filen
         if (!move_uploaded_file($file['tmp_name'], $poster_path)) {
-            throw new Exception("Fejl: Kunne ikke flytte den uploadede fil til $poster_path. Kontroller mappeindstillingerne.");
+            throw new Exception("Fejl: Kunne ikke flytte den uploadede fil.");
         }
 
-        // Returnér en relativ sti til brug i HTML
-        return '/uploads' . $poster_name;
+        return '/uploads/' . $poster_name; // Returner relativ sti
     }
 }
