@@ -6,7 +6,8 @@ class FileUploadService {
     private $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif'];
 
     public function __construct() {
-        $this->upload_dir = $_SERVER['DOCUMENT_ROOT'] . '/uploads';
+        $this->upload_dir = rtrim(dirname(__DIR__, 2), '/') . '/uploads';
+
 
         error_log("Upload-sti: " . $this->upload_dir); // Debug
     }

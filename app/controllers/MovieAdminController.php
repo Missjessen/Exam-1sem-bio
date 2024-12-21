@@ -20,7 +20,6 @@ class MovieAdminController {
 
             $movieToEdit = $this->prepareMovieEdit();
 
-            $movieToEdit = null;
             if (isset($_GET['action']) && $_GET['action'] === 'edit') {
                 $movieId = $_GET['movie_id'] ?? null;
                 if ($movieId) {
@@ -102,8 +101,9 @@ class MovieAdminController {
         }
     
         // Redirect tilbage til admin_movie siden
-        header("Location: " . currentPageURL('admin_movie'));
+        header("Location: " . BASE_URL . "index.php?page=admin_movie");
         exit;
+        
     }
 
         
