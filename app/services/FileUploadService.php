@@ -7,6 +7,7 @@ class FileUploadService {
 
     public function __construct() {
         $this->upload_dir = $_SERVER['DOCUMENT_ROOT'] . '/uploads';
+
         error_log("Upload-sti: " . $this->upload_dir); // Debug
     }
 
