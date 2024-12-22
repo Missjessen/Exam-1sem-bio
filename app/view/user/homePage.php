@@ -38,7 +38,8 @@ echo $hashedPassword;
         <div class="news-grid">
             <?php foreach ($newsMovies as $movie): ?>
                 <div class="news-item">
-                <a href="?page=movie_details&slug=<?= htmlspecialchars($movie['slug'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+                <a href="<?= htmlspecialchars(BASE_URL . '?page=movie_details&slug=' . $movie['slug'], ENT_QUOTES, 'UTF-8') ?>">
+
 
 
                         <img src="<?= htmlspecialchars($movie['poster'] ?? '', ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($movie['title'] ?? 'Unknown Movie', ENT_QUOTES, 'UTF-8') ?>">
@@ -55,7 +56,8 @@ echo $hashedPassword;
         <div class="movie-grid">
             <?php foreach ($dailyMovies as $movie): ?>
                 <div class="movie-card">
-                <a href="?page=movie_details&slug=<?= htmlspecialchars($movie['slug'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+                <a href="<?= htmlspecialchars(BASE_URL . '?page=movie_details&slug=' . $movie['slug'], ENT_QUOTES, 'UTF-8') ?>">
+
                     <img src="<?= htmlspecialchars($movie['poster'] ?? '/default_poster.jpg', ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($movie['title'] ?? 'Unknown Movie', ENT_QUOTES, 'UTF-8') ?>">
                     <h3><?= htmlspecialchars($movie['title'] ?? 'Unknown Movie', ENT_QUOTES, 'UTF-8') ?></h3>
                     <p>Show Time: <?= htmlspecialchars($movie['show_time'] ?? 'TBD', ENT_QUOTES, 'UTF-8') ?></p>
@@ -65,17 +67,7 @@ echo $hashedPassword;
         </div>
     </section>
 
-
-
-
-
-
-
-   
-      
-
-
-        <footer>
+     <footer>
         <div class="footer-container">
         <!-- Virksomhedsinfo -->
         <div class="company-info">
