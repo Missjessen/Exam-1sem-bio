@@ -15,6 +15,10 @@ class MovieDetailsController {
             if (empty($slug)) {
                 throw new Exception("Slug mangler i URL'en.");
             }
+            if (!preg_match('/^[a-zA-Z0-9-_]+$/', $slug)) {
+                throw new Exception("Slug indeholder ugyldige tegn.");
+            }
+            
 
             // Hent filmens detaljer
             $movie = $this->movieModel->getMovieDetailsBySlug($slug);

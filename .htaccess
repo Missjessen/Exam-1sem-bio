@@ -1,14 +1,12 @@
 
-
 RewriteEngine On
 
-
-# Start omskrivning for alle anmodninger, der ikke er en fil eller mappe
-RewriteBase /
+# Undgå konflikter ved at ekskludere 'movie/' fra generel regel
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-
-RewriteRule ^([a-zA-Z0-9-_]+)$ index.php?page=$1 [L,QSA]
-
-# Rewriter URL'er der har en slug som 'movie/film-titel'
 RewriteRule ^movie/([a-zA-Z0-9-_]+)$ index.php?page=movieDetails&slug=$1 [L,QSA]
+
+# Generel regel for alle andre sider
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(?!movie/)([a-zA-Z0-9-_]+)$ index.php?page=$1 [L,QSA]
