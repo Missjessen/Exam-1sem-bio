@@ -41,6 +41,8 @@ class PageLoader {
         // Inkluder dynamisk CSS
         $this->includeCSS($viewName);
 
+        
+
         // Inkluder header
         $headerFile = $type === 'admin' ? 'header_admin.php' : 'header_user.php';
         $this->includeLayout($headerFile, compact('current_page'));
