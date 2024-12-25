@@ -1,3 +1,6 @@
+<?php
+$current_slug = 'test-slug';
+?>
 <div class="movie-details">
     <h1><?= htmlspecialchars($movie['title']) ?></h1>
     <img src="<?= htmlspecialchars($movie['poster'] ?? '/default_poster.jpg') ?>" alt="<?= htmlspecialchars($movie['title']) ?>">
