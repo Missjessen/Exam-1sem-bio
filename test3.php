@@ -36,7 +36,8 @@ function currentPageURL($page, $additionalParams = []) {
             // Generér ny URL
             return $protocol . "://" . $host . $uri . '?' . http_build_query($queryParams);
         }
-    }
+    } }
+    
 
 // Test med en dummy slug
 $generatedUrl = currentPageURL('movie_details', ['slug' => 'test-slug']);
