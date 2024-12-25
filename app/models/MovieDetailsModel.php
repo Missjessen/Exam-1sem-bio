@@ -31,18 +31,21 @@ class MovieDetailsModel {
                 m.slug = :slug
             GROUP BY 
                 m.id";
-    
+        
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':slug', $slug, PDO::PARAM_STR);
-
+    
         try {
             $stmt->execute();
         } catch (PDOException $e) {
             throw new Exception("Fejl ved hentning af film: " . $e->getMessage());
         }
-
+    
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+    
+    
+
     public function getShowingsForMovie($movieId) {
         $query = "
             SELECT 
@@ -61,15 +64,16 @@ class MovieDetailsModel {
         ";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':movie_id', $movieId, PDO::PARAM_STR);
-
+    
         try {
             $stmt->execute();
         } catch (PDOException $e) {
             throw new Exception("Fejl ved hentning af visninger: " . $e->getMessage());
         }
-
+    
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    
     
     
     

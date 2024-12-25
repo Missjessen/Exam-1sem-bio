@@ -19,6 +19,7 @@
     <?php else: ?>
         <p>Der er ingen planlagte visninger for denne film i øjeblikket.</p>
     <?php endif; ?>
+</div>
 
     <!-- Bookingformular -->
     <h2>Bookingformular</h2>
