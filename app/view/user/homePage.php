@@ -22,7 +22,7 @@ echo $hashedPassword;
         <div class="hero-grid">
             <?php foreach ($upcomingMovies as $movie): ?>
                 <div class="hero-slide">
-                <a href="<?= currentPageURL('movie_details', ['slug' => $movie['slug']]) ?>">
+                <a href="<?= htmlspecialchars(currentPageURL('movie_details', ['slug' => $movie['slug']]), ENT_QUOTES, 'UTF-8') ?>">
                     <img src="<?= htmlspecialchars($movie['poster'] ?? '', ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($movie['title'] ?? 'Unknown Movie', ENT_QUOTES, 'UTF-8') ?>">
                     <h3><?= htmlspecialchars($movie['title'] ?? 'Unknown Title', ENT_QUOTES, 'UTF-8') ?></h3>
                     <p>Premiere: <?= htmlspecialchars($movie['release_date'] ?? 'N/A', ENT_QUOTES, 'UTF-8') ?></p>
@@ -56,7 +56,7 @@ echo $hashedPassword;
         <div class="movie-grid">
             <?php foreach ($dailyMovies as $movie): ?>
                 <div class="movie-card">
-                <a href="<?= currentPageURL('movie_details', ['slug' => $movie['slug']]) ?>">
+                <a href="<?= htmlspecialchars(currentPageURL('movie_details', ['slug' => $movie['slug']]), ENT_QUOTES, 'UTF-8') ?>">
 
                     <img src="<?= htmlspecialchars($movie['poster'] ?? '/default_poster.jpg', ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($movie['title'] ?? 'Unknown Movie', ENT_QUOTES, 'UTF-8') ?>">
                     <h3><?= htmlspecialchars($movie['title'] ?? 'Unknown Movie', ENT_QUOTES, 'UTF-8') ?></h3>

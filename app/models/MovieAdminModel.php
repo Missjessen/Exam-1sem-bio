@@ -61,13 +61,22 @@ class MovieAdminModel extends CrudBase {
 
     // Hent alle film
     public function getAllMovies() {
-        $stmt = $this->db->prepare("
-            SELECT id, slug, title, poster, premiere_date 
-            FROM movies 
+        $query = "
+            SELECT 
+                id, slug, title, description, poster, premiere_date 
+            FROM movies
+            WHERE status = 'active' 
             ORDER BY premiere_date ASC
-        ");
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC); // Returner filmene som en array
+        ";
+        $stmt = $this->db->prepare($query);
+    
+        try {
+            $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception("Fejl ved hentning af film: " . $e->getMessage());
+        }
+    
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     // Hent en specifik film
