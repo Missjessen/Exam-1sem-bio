@@ -22,6 +22,7 @@ class PageController {
         $this->movieFrontendController = new MovieFrontendController(new MovieFrontendModel($this->db));
         $this->adminBookingModel = new AdminBookingModel($this->db);
         $this->bookingController = new BookingController($this->db);
+        $this->movieFrontendController = new MovieFrontendController($this->db); // Send database til controlleren
        
     }
 
