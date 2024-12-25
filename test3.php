@@ -4,6 +4,9 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+require_once 'init.php';
+
+
 // Simuler en slug for test
 $testSlug = $_GET['slug'] ?? null;
 
@@ -16,20 +19,7 @@ if ($testSlug) {
     echo "<p style='color:red;'>Slug mangler! Tjek din URL.</p>";
 }
 
-// Test generering af en URL
-if (!function_exists('currentPageURL')) {
-    function currentPageURL($page, $additionalParams = []) {
-        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? "https" : "http");
-        $host = $_SERVER['HTTP_HOST'];
-        $uri = strtok($_SERVER['REQUEST_URI'], '?'); // Fjern eksisterende query-parametre
 
-        // Opdater query-parametre
-        $queryParams = array_merge(['page' => $page], $additionalParams);
-
-        // Generér ny URL
-        return $protocol . "://" . $host . $uri . '?' . http_build_query($queryParams);
-    }
-}
 
 // Test med en dummy slug
 $generatedUrl = currentPageURL('movie_details', ['slug' => 'test-slug']);
