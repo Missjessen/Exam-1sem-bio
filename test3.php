@@ -17,16 +17,18 @@ if ($testSlug) {
 }
 
 // Test generering af en URL
-function currentPageURL($page, $additionalParams = []) {
-    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? "https" : "http");
-    $host = $_SERVER['HTTP_HOST'];
-    $uri = strtok($_SERVER['REQUEST_URI'], '?'); // Fjern eksisterende query-parametre
+if (!function_exists('currentPageURL')) {
+    function currentPageURL($page, $additionalParams = []) {
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? "https" : "http");
+        $host = $_SERVER['HTTP_HOST'];
+        $uri = strtok($_SERVER['REQUEST_URI'], '?'); // Fjern eksisterende query-parametre
 
-    // Opdater query-parametre
-    $queryParams = array_merge(['page' => $page], $additionalParams);
+        // Opdater query-parametre
+        $queryParams = array_merge(['page' => $page], $additionalParams);
 
-    // Generér ny URL
-    return $protocol . "://" . $host . $uri . '?' . http_build_query($queryParams);
+        // Generér ny URL
+        return $protocol . "://" . $host . $uri . '?' . http_build_query($queryParams);
+    }
 }
 
 // Test med en dummy slug
