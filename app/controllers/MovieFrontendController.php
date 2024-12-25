@@ -4,7 +4,7 @@ class MovieFrontendController {
     private $model;
 
     public function __construct($db) {
-        $this->model = new MovieFrontendModel($db); // Initialiser modellen her
+        $this->model = new MovieFrontendModel($db); // Sørg for at bruge den rigtige model
     }
 
     public function showMovieDetails($slug) {
@@ -37,3 +37,5 @@ class MovieFrontendController {
         require_once $viewPath;
     }
 }
+
+

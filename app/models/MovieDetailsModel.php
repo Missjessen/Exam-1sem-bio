@@ -9,40 +9,30 @@ class MovieDetailsModel {
 
     public function getMovieDetailsBySlug($slug) {
         $query = "
-            SELECT 
-                m.id, 
-                m.slug, 
-                m.title, 
-                m.description, 
-                m.poster, 
-                IFNULL(GROUP_CONCAT(DISTINCT g.name SEPARATOR ', '), '') AS genre, 
-                IFNULL(GROUP_CONCAT(DISTINCT a.name SEPARATOR ', '), '') AS actors
-            FROM 
-                movies m
-            LEFT JOIN 
-                movie_genre mg ON m.id = mg.movie_id
-            LEFT JOIN 
-                genres g ON mg.genre_id = g.id
-            LEFT JOIN 
-                movie_actor ma ON m.id = ma.movie_id
-            LEFT JOIN 
-                actors a ON ma.actor_id = a.id
-            WHERE 
-                m.slug = :slug
-            GROUP BY 
-                m.id";
-        
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':slug', $slug, PDO::PARAM_STR);
+        SELECT 
+            m.id, 
+            m.slug, 
+            m.title, 
+            m.description, 
+            m.poster
+        FROM 
+            movies m
+        WHERE 
+            m.slug = :slug
+    ";
     
-        try {
-            $stmt->execute();
-        } catch (PDOException $e) {
-            throw new Exception("Fejl ved hentning af film: " . $e->getMessage());
-        }
+    $stmt = $this->db->prepare($query);
+    $stmt->bindParam(':slug', $slug, PDO::PARAM_STR);
     
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+    try {
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        error_log("Resultat fra databasen: " . print_r($result, true)); // Debug
+        return $result;
+    } catch (PDOException $e) {
+        throw new Exception("Fejl ved hentning af film: " . $e->getMessage());
     }
+}
     
     
 
