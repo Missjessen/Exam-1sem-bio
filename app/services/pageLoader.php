@@ -41,7 +41,7 @@ class PageLoader {
         // Inkluder dynamisk CSS
         $this->includeCSS($viewName);
 
-        
+
 
         // Inkluder header
         $headerFile = $type === 'admin' ? 'header_admin.php' : 'header_user.php';
@@ -76,9 +76,7 @@ class PageLoader {
         }
     }
 
-
-    
-    public function renderErrorPage($errorCode, $errorMessage) {
+public function renderErrorPage($errorCode, $errorMessage) {
         $errorViewPath = __DIR__ . "/../../app/view/errors/{$errorCode}.php";
 
         if (file_exists($errorViewPath)) {
