@@ -31,7 +31,7 @@ class MovieFrontendController {
         if (!file_exists($viewPath)) {
             error_log("View-fil mangler: " . $viewPath);
             header("HTTP/1.0 404 Not Found");
-            require_once __DIR__ . '/../../view/Error/404.php';
+            require_once __DIR__ . '/../view/Error/404.php';
             exit();
         }
         require_once $viewPath;
