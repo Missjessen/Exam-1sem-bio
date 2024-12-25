@@ -27,7 +27,7 @@ class MovieFrontendController {
         error_log("Showtimes fundet: " . print_r($showtimes, true)); // Debug
 
         // Indlæs view
-        $viewPath = __DIR__ . '/../view/user/movieDetails.php';
+        $viewPath = __DIR__ . '/../view/user/movie_details.php';
         if (!file_exists($viewPath)) {
             error_log("View-fil mangler: " . $viewPath);
             header("HTTP/1.0 404 Not Found");
