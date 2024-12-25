@@ -85,20 +85,22 @@ class PageController {
     }
 
     // Håndter filmdetaljer
+  
     public function movie_details() {
         if (!empty($_GET['slug'])) {
             try {
-                error_log("Slug fra URL: " . $_GET['slug']); // Debug log
+                error_log("Slug fra URL: " . $_GET['slug']); // Debug
                 $this->movieFrontendController->showMovieDetails($_GET['slug']);
             } catch (Exception $e) {
                 error_log("Fejl i movie_details: " . $e->getMessage());
                 $this->pageLoader->renderErrorPage(404, "Filmen blev ikke fundet.");
             }
         } else {
-            error_log("Slug mangler i URL'en."); // Debug log
+            error_log("Slug mangler i URL'en.");
             $this->pageLoader->renderErrorPage(400, "Slug mangler i URL'en.");
         }
     }
+
 
     public function booking() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {

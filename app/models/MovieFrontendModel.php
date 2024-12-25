@@ -11,6 +11,40 @@ class MovieFrontendModel {
         return $this->db->query($query)->fetchAll(PDO::FETCH_ASSOC);
     }
     
+
+
+    public function getShowingsForMovie($movieId) {
+        error_log("Henter visninger for film med ID: $movieId"); // Debug
+    
+        $query = "
+            SELECT 
+                id AS showing_id,
+                screen,
+                show_date,
+                show_time,
+                total_spots,
+                available_spots
+            FROM 
+                showings
+            WHERE 
+                movie_id = :movie_id
+            ORDER BY 
+                show_date, show_time
+        ";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':movie_id', $movieId, PDO::PARAM_STR);
+    
+        try {
+            $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception("Fejl ved hentning af visninger: " . $e->getMessage());
+        }
+    
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        error_log("Visninger hentet: " . print_r($result, true)); // Debug
+        return $result;
+    }
+    
     public function getMoviesByGenre($genreName) {
         $query = "SELECT m.id, m.title, m.poster 
                   FROM movies m
@@ -175,4 +209,50 @@ public function getDailyShowings($filterDate = null) {
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function getMovieDetailsBySlug($slug) {
+        try {
+            $query = "
+                SELECT 
+                    m.id, 
+                    m.slug, 
+                    m.title, 
+                    m.description, 
+                    m.poster, 
+                    IFNULL(GROUP_CONCAT(DISTINCT g.name SEPARATOR ', '), '') AS genre, 
+                    IFNULL(GROUP_CONCAT(DISTINCT a.name SEPARATOR ', '), '') AS actors
+                FROM 
+                    movies m
+                LEFT JOIN 
+                    movie_genre mg ON m.id = mg.movie_id
+                LEFT JOIN 
+                    genres g ON mg.genre_id = g.id
+                LEFT JOIN 
+                    movie_actor ma ON m.id = ma.movie_id
+                LEFT JOIN 
+                    actors a ON ma.actor_id = a.id
+                WHERE 
+                    m.slug = :slug
+                GROUP BY 
+                    m.id";
+            
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':slug', $slug, PDO::PARAM_STR);
+            $stmt->execute();
+            
+            $movie = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+            if ($movie) {
+                error_log("Film fundet: " . print_r($movie, true)); // Debug-log
+            } else {
+                error_log("Ingen film fundet for slug: " . $slug); // Debug-log
+            }
+    
+            return $movie;
+        } catch (PDOException $e) {
+            error_log("Fejl i getMovieDetailsBySlug: " . $e->getMessage());
+            return null;
+        }
+    }
+    
 }
