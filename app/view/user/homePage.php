@@ -22,7 +22,7 @@ echo $hashedPassword;
         <div class="hero-grid">
             <?php foreach ($upcomingMovies as $movie): ?>
                 <div class="hero-slide">
-                <a href="?page=movie_details&slug=<?= htmlspecialchars($movie['slug'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+                <a href="/?page=movie_details&slug=<?= htmlspecialchars($movie['slug']) ?>">
                     <img src="<?= htmlspecialchars($movie['poster'] ?? '', ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($movie['title'] ?? 'Unknown Movie', ENT_QUOTES, 'UTF-8') ?>">
                     <h3><?= htmlspecialchars($movie['title'] ?? 'Unknown Title', ENT_QUOTES, 'UTF-8') ?></h3>
                     <p>Premiere: <?= htmlspecialchars($movie['release_date'] ?? 'N/A', ENT_QUOTES, 'UTF-8') ?></p>
@@ -38,7 +38,7 @@ echo $hashedPassword;
         <div class="news-grid">
             <?php foreach ($newsMovies as $movie): ?>
                 <div class="news-item">
-                <a href="<?= htmlspecialchars(BASE_URL . '?page=movie_details&slug=' . $movie['slug'], ENT_QUOTES, 'UTF-8') ?>">
+                <a href="/?page=movie_details&slug=<?= htmlspecialchars($movie['slug']) ?>">
 
 
 
