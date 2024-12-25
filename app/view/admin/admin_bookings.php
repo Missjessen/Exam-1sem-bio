@@ -1,6 +1,3 @@
-<?php
-$bookings = $adminBookingsController->getAllBookings();
-?>
 
 <h1>Admin Bookinger</h1>
 <table>
