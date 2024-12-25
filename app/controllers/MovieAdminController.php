@@ -123,6 +123,7 @@ class MovieAdminController {
             'language' => $_POST['language'] ?? '',
             'age_limit' => $_POST['age_limit'] ?? '',
             'status' => $_POST['status'] ?? '',
+            'slug' => $this->generateSlug($_POST['title'] ?? ''),
             'poster' => isset($_FILES['poster']) && $_FILES['poster']['error'] === UPLOAD_ERR_OK
                 ? $this->fileUploadService->uploadFile($_FILES['poster'])
                 : null
@@ -174,7 +175,11 @@ class MovieAdminController {
      * Genererer en slug baseret på titel.
      */
     private function generateSlug($title) {
-        return trim(strtolower(preg_replace('/[^A-Za-z0-9-]+/', '-', $title)), '-');
+        // Fjern HTML-tags, hvis de findes
+        $title = strip_tags($title);
+    
+        // Erstat mellemrum med bindestreger og fjern specialtegn
+        return trim(strtolower(preg_replace('/[^a-zA-Z0-9-]+/', '-', $title)), '-');
     }
 
     /**
