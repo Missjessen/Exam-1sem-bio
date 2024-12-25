@@ -4,20 +4,28 @@ class AdminBookingModel extends CrudBase {
     // Booking-funktioner
     public function getAllBookings() {
         $columns = "
-            b.booking_id,
-            b.booking_date,
-            b.price,
+            b.booking_id AS booking_id,
+            b.booking_date AS booking_date,
+            b.price AS price,
+            b.status AS status,
             m.title AS movie_title,
             c.name AS customer_name,
-            s.spot_number
+            s.spot_number AS spot_number
         ";
         $joins = [
             "INNER JOIN movies m ON b.movie_id = m.id",
             "INNER JOIN customers c ON b.customer_id = c.id",
-            "INNER JOIN spots s ON b.spot_id = s.spot_id"
+            "INNER JOIN spots s ON b.spot_id = s.id"
         ];
-        return $this->readWithJoin('bookings b', $columns, $joins);
+    
+        try {
+            return $this->readWithJoin('bookings b', $columns, $joins);
+        } catch (PDOException $e) {
+            error_log("Fejl i getAllBookings: " . $e->getMessage());
+            return [];
+        }
     }
+    
 
 
     public function getAllMovies() {

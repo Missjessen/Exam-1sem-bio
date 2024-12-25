@@ -175,8 +175,14 @@ class PageController {
     // Bookinger
     public function admin_bookings() {
         try {
-            $data = $this->adminBookingModel->getAllBookings();
-            $this->pageLoader->renderPage('admin_bookings', $data, 'admin');
+            // Initialiser AdminBookingController
+            $adminBookingController = new AdminBookingController($this->db);
+            
+            // Hent alle bookinger
+            $bookings = $adminBookingController->listBookings();
+    
+            // Send data til viewet
+            $this->pageLoader->renderPage('admin_bookings', ['bookings' => $bookings], 'admin');
         } catch (Exception $e) {
             $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af bookingsiden: " . $e->getMessage());
         }
