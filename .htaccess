@@ -4,7 +4,7 @@ RewriteEngine On
 # Undgå konflikter ved at ekskludere 'movie/' fra generel regel
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^movie/([a-zA-Z0-9-_]+)$ index.php?page=movieDetails&slug=$1 [L,QSA]
+RewriteRule ^movie/([a-zA-Z0-9-_]+)$ index.php?page=movie_details&slug=$1 [L,QSA]
 
 # Generel regel for alle andre sider
 RewriteCond %{REQUEST_FILENAME} !-f
