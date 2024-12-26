@@ -17,7 +17,7 @@ class ErrorController {
             'timestamp' => date('Y-m-d H:i:s'),
         ];
 
-        $errorViewPath = __DIR__ . "/../view/errors/{$errorCode}.php";
+        $errorViewPath = __DIR__ . "/../../view/Error/{$errorCode}.php";
 
         if (file_exists($errorViewPath)) {
             include $errorViewPath;
