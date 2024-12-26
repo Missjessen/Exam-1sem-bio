@@ -6,20 +6,24 @@ class Router {
     
     public static function route($page) {
         try {
-            // Opret en ny instans af PageController
+            error_log("Routing side: $page");
+    
+            // Opret PageController
             $pageController = new PageController();
-            
-            // Brug dynamisk sidehåndtering
+    
+            // Kontrollér om metode findes
+            if (!method_exists($pageController, 'showPage')) {
+                throw new Exception("showPage metoden findes ikke i PageController.");
+            }
+    
+            // Kør sidehåndtering
             $pageController->showPage($page);
         } catch (Exception $e) {
-            // Log fejl og vis en generisk fejlbesked
             error_log("Router fejl: " . $e->getMessage());
-            
-            // Fallback til en fejlside
+    
+            // Fallback til fejlside
             $errorController = new ErrorController();
             $errorController->show404("Page not found: $page");
         }
     }
-
-    
 }
