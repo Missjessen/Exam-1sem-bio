@@ -4,6 +4,9 @@ class MovieFrontendModel {
     private $db;
 
     public function __construct($db) {
+        if (!$db instanceof PDO) {
+            throw new Exception("Databaseforbindelsen er ikke en gyldig PDO-instans.");
+        }
         $this->db = $db;
     }
     public function getAllGenres() {
@@ -44,7 +47,7 @@ class MovieFrontendModel {
         error_log("Visninger hentet: " . print_r($result, true)); // Debug
         return $result;
     }
-    
+
     public function getMoviesByGenre($genreName) {
         $query = "SELECT m.id, m.title, m.poster 
                   FROM movies m
