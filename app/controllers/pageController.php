@@ -7,7 +7,7 @@ class PageController {
     private $movieAdminController;
     private $adminController;
     private $movieFrontendController;
-    private $adminBookingModel;
+    //private $adminBookingModel;
     private $bookingController;
   
     
@@ -20,7 +20,7 @@ class PageController {
         $this->movieAdminController = new MovieAdminController($this->db);
         $this->adminController = new AdminController(new AdminModel($this->db));
         $this->movieFrontendController = new MovieFrontendController(new MovieFrontendModel($this->db));
-        $this->adminBookingModel = new AdminBookingModel($this->db);
+        //$this->adminBookingModel = new AdminBookingModel($this->db);
         $this->bookingController = new BookingController($this->db);
        
        
@@ -173,20 +173,20 @@ class PageController {
     }
 
     // Bookinger
-    public function admin_bookings() {
-        try {
-            // Initialiser AdminBookingController
-            $adminBookingController = new AdminBookingController($this->db);
-            
-            // Hent alle bookinger
-            $bookings = $adminBookingController->listBookings();
-    
-            // Send data til viewet
-            $this->pageLoader->renderPage('admin_bookings', ['bookings' => $bookings], 'admin');
-        } catch (Exception $e) {
-            $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af bookingsiden: " . $e->getMessage());
-        }
+   public function admin_bookings() {
+    try {
+        // Initialiser AdminBookingController
+        $adminBookingController = new AdminBookingController($this->db);
+        
+        // Hent alle bookinger
+        $bookings = $adminBookingController->listBookings();
+
+        // Send data til viewet
+        $this->pageLoader->renderPage('admin_bookings', ['bookings' => $bookings], 'admin');
+    } catch (Exception $e) {
+        $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af bookingsiden: " . $e->getMessage());
     }
+}
 
     public function admin_ManageUsers() {
         try {
