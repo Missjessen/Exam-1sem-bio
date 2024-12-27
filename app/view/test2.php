@@ -6,7 +6,7 @@ error_reporting(E_ALL);
 
 // Test af stier og konfiguration
 $expectedPath = __DIR__ . '/config/loadPages.php';
-$calculatedPath = dirname(__DIR__, 3) . '/config/loadPages.php'; // Justér hvis nødvendigt
+$calculatedPath = dirname(__DIR__, 2) . '/config/loadPages.php'; // Justér hvis nødvendigt
 
 echo "<h1>Test af loadPages.php</h1>";
 
