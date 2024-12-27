@@ -36,6 +36,8 @@ class MovieFrontendController {
         }
         require_once $viewPath;
     } */
+    }
 }
+
 
 
