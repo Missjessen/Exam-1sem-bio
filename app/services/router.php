@@ -1,26 +1,19 @@
 <?php
 
 require_once dirname(__DIR__, 2) . '/init.php';
-
 class Router {
+    
     public static function route($page) {
         try {
-            error_log("Routing side: $page");
-    
-            // Tjek om PageController kan instantieres
+            // Opret en ny instans af PageController
             $pageController = new PageController();
-            error_log("PageController blev instantieret.");
-    
-            // Kontrollér om metode findes
-            if (!method_exists($pageController, 'showPage')) {
-                throw new Exception("Metoden showPage findes ikke i PageController.");
-            }
-    
-            // Kør sidehåndtering
+            
+            // Brug dynamisk sidehåndtering
             $pageController->showPage($page);
         } catch (Exception $e) {
+            // Log fejl og vis en generisk fejlbesked
             error_log("Router fejl: " . $e->getMessage());
-    
+            
             // Fallback til fejlside
             try {
                 $errorController = new ErrorController();

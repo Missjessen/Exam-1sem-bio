@@ -36,73 +36,66 @@ class PageLoader {
 
         // Sikrer, at $data altid er et array
         if (!is_array($data)) {
-            error_log("Data er ikke et array, konverterer til tomt array.");
             $data = [];
         }
-
-        // Gør data tilgængelige som variabler i views
+    
+        // Tilføj $page til data
         $data['page'] = $viewName;
+    
+        // Gør data tilgængelige som variabler
         extract($data);
-
+    
         // Inkluder dynamisk CSS
         $this->includeCSS($viewName);
-
+    
         // Inkluder header
         $headerFile = $type === 'admin' ? 'header_admin.php' : 'header_user.php';
         $this->includeLayout($headerFile, compact('current_page'));
-
-        // Indlæs det specificerede view
-        $viewPath = __DIR__ . "/../../app/view/$type/$viewName.php";
+    
+        // Tilpas stien baseret på viewets placering
+        if ($type === 'auth') {
+            $viewPath = __DIR__ . "/../../auth/view/$viewName.php";
+        } else {
+            $viewPath = __DIR__ . "/../../app/view/$type/$viewName.php";
+        }
+    
         if (file_exists($viewPath)) {
-            error_log("Indlæser view-fil: $viewPath");
             require $viewPath;
         } else {
-            throw new Exception("View-filen $viewName for $type kunne ikke indlæses. Sti: $viewPath");
+            throw new Exception("View-filen $viewName for $type kunne ikke indlæses.");
         }
-
+    
         // Inkluder footer
         $footerFile = 'footer.php';
         $this->includeLayout($footerFile, compact('current_page'));
     }
-
+    
     private function includeCSS($page) {
         $cssPath = "/assets/css/$page.css";
-        error_log("Indlæser CSS: $cssPath");
-        echo "<link rel='stylesheet' href='$cssPath'>";
+        if (file_exists(__DIR__ . "/../../" . $cssPath)) {
+            echo "<link rel='stylesheet' href='" . BASE_URL . $cssPath . "'>";
+        } else {
+            error_log("CSS-fil $cssPath ikke fundet.");
+        }
     }
-
     private function includeLayout($layout, $data = []) {
-        extract($data);
+        extract($data); 
         $layoutPath = __DIR__ . "/../../app/layout/$layout";
-
         if (file_exists($layoutPath)) {
-            error_log("Indlæser layout-fil: $layoutPath");
             require $layoutPath;
         } else {
-            throw new Exception("Layout-fil $layout ikke fundet. Sti: $layoutPath");
+            throw new Exception("Layout-fil $layout ikke fundet.");
         }
     }
-
     public function renderErrorPage($errorCode, $errorMessage) {
-        error_log("RenderErrorPage kaldt med kode: $errorCode og besked: $errorMessage");
-
-        $additionalData = [
-            'error_code' => $errorCode,
-            'message' => $errorMessage,
-            'timestamp' => date('Y-m-d H:i:s'),
-        ];
-
-        $errorViewPath = __DIR__ . "/../../view/Error/{$errorCode}.php";
-
+        http_response_code($errorCode);
+        $errorViewPath = __DIR__ . "/../../app/view/errors/{$errorCode}.php";
         if (file_exists($errorViewPath)) {
-            error_log("Indlæser fejl-view: $errorViewPath");
             include $errorViewPath;
         } else {
-            error_log("Fejl-view mangler: $errorViewPath");
-            echo "<h1>Error $errorCode</h1>";
+            echo "<h1>Fejl $errorCode</h1>";
             echo "<p>$errorMessage</p>";
         }
-
-        exit; // Sørg for at afslutte scriptet efter en fejl
+        exit;
     }
 }
