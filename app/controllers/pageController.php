@@ -29,12 +29,16 @@ class PageController {
     // Håndter en given side baseret på page-parametret
     public function showPage($page) {
         try {
+            error_log("Forsøger at vise side: $page");
+    
             if (method_exists($this, $page)) {
                 $this->$page(); // Kald den relevante metode
             } else {
+                error_log("Metode for $page findes ikke, prøver at loade som bruger-side.");
                 $this->pageLoader->loadUserPage($page); // Standard user page
             }
         } catch (Exception $e) {
+            error_log("Fejl i showPage: " . $e->getMessage());
             $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af siden: " . $e->getMessage());
         }
     }
