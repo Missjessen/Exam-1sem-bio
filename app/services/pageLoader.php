@@ -1,4 +1,5 @@
 <?php
+
 require_once dirname(__DIR__, 2) . '/init.php';
 
 class PageLoader {
@@ -7,6 +8,7 @@ class PageLoader {
 
     public function __construct($db) {
         $this->db = $db; 
+        // Opdateret sti til loadPages.php
         $this->config = require __DIR__ . '/../../config/loadPages.php';
         if (!is_array($this->config)) {
             throw new Exception("Konfigurationsfilen returnerede ikke et array.");
@@ -21,33 +23,21 @@ class PageLoader {
         $this->renderPage($viewName, $data, 'user');
     }
 
-    /**
-     * Generisk metode til at håndtere både user og admin views.
-     */
     public function renderPage($viewName, $data = [], $type = 'user') {
         $current_page = $viewName;
 
-        // Sikrer, at $data altid er et array
         if (!is_array($data)) {
             $data = [];
         }
 
-        // Tilføj $page til data
         $data['page'] = $viewName;
-
-        // Gør data tilgængelige som variabler
         extract($data);
 
-        // Inkluder dynamisk CSS
         $this->includeCSS($viewName);
 
-
-
-        // Inkluder header
         $headerFile = $type === 'admin' ? 'header_admin.php' : 'header_user.php';
         $this->includeLayout($headerFile, compact('current_page'));
 
-        // Indlæs view baseret på type
         $viewPath = __DIR__ . "/../../app/view/$type/$viewName.php";
 
         if (file_exists($viewPath)) {
@@ -56,7 +46,6 @@ class PageLoader {
             throw new Exception("View-filen $viewName for $type kunne ikke indlæses.");
         }
 
-        // Inkluder footer
         $footerFile = 'footer.php';
         $this->includeLayout($footerFile, compact('current_page'));
     }
@@ -90,11 +79,11 @@ class PageLoader {
         if (file_exists($errorViewPath)) {
             include $errorViewPath;
         } else {
-            // Hvis fejlsiden ikke findes, fallback til en generisk fejlmeddelelse
             echo "<h1>Error $errorCode</h1>";
             echo "<p>$errorMessage</p>";
         }
     
-        exit; // Sørg for at afslutte scriptet efter en fejl
+        exit;
     }
-}    
+}
+   
