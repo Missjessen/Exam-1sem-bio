@@ -1,5 +1,5 @@
 <?php
-require_once 'init.php';
+require_once dirname(__DIR__, 3) . '/init.php';
 class MovieAdminModel extends CrudBase {
     public function __construct() {
         parent::__construct(Database::getInstance()->getConnection());
