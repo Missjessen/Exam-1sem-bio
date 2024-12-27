@@ -76,16 +76,25 @@ class PageLoader {
         }
     }
 
-public function renderErrorPage($errorCode, $errorMessage) {
-        $errorViewPath = __DIR__ . "/../../app/view/errors/{$errorCode}.php";
-
+    public function renderErrorPage($errorCode, $errorMessage) {
+        error_log("RenderErrorPage kaldt med kode: $errorCode og besked: $errorMessage");
+    
+        $additionalData = [
+            'error_code' => $errorCode,
+            'message' => $errorMessage,
+            'timestamp' => date('Y-m-d H:i:s'),
+        ];
+    
+        $errorViewPath = __DIR__ . "/../../view/Error/{$errorCode}.php";
+    
         if (file_exists($errorViewPath)) {
             include $errorViewPath;
         } else {
+            // Hvis fejlsiden ikke findes, fallback til en generisk fejlmeddelelse
             echo "<h1>Error $errorCode</h1>";
             echo "<p>$errorMessage</p>";
         }
-
-        exit;
+    
+        exit; // Sørg for at afslutte scriptet efter en fejl
     }
-}
+}    
