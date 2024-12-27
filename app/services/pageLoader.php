@@ -7,8 +7,7 @@ class PageLoader {
 
     public function __construct($db) {
         $this->db = $db; 
-        $this->config = require dirname(__DIR__, 3) . '/config/loadPages.php';
-
+        $this->config = require __DIR__ . '/../../config/loadPages.php';
         if (!is_array($this->config)) {
             throw new Exception("Konfigurationsfilen returnerede ikke et array.");
         }
