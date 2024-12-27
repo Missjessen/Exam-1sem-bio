@@ -10,29 +10,21 @@ define('BASE_URL', rtrim((isset($_SERVER['HTTPS']) ? 'https://' : 'http://') . $
 
 
 function currentPageURL($page, $additionalParams = []) {
+    // Bestem protokol (http eller https)
     $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? "https" : "http");
+
+    // Brug HTTP_HOST for at finde domænet
     $host = $_SERVER['HTTP_HOST'];
-    $uri = $_SERVER['REQUEST_URI'];
 
-    // Parsér eksisterende query-parametre
-    $queryParams = [];
-    parse_str(parse_url($uri, PHP_URL_QUERY), $queryParams);
+    // Angiv base-URI for applikationen
+    $baseUri = '/'; // Ret til din base-URI, f.eks. '/' hvis applikationen er i roden
 
-    // Opdater eller tilføj page-parametret
-    $queryParams['page'] = $page;
+    // Byg query-parametre
+    $queryParams = array_merge(['page' => $page], $additionalParams);
 
-    // Tilføj evt. ekstra parametre som slug
-    foreach ($additionalParams as $key => $value) {
-        $queryParams[$key] = $value;
-    }
-
-    // Generér ny URL med de opdaterede parametre
-    $baseUri = strtok($uri, '?'); // Fjern eksisterende query-parametre fra URI
-    $queryString = http_build_query($queryParams);
-
-    return $protocol . "://" . $host . $baseUri . '?' . $queryString;
+    // Generér og returnér URL
+    return $protocol . "://" . $host . $baseUri . '?' . http_build_query($queryParams);
 }
-
 
 
 
