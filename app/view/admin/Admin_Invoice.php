@@ -1,5 +1,5 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Exam-1sem-bio/init.php';
+require_once '/init.php';
 
 if (!isset($_GET['booking_id'])) {
     echo 'Booking ID mangler.';

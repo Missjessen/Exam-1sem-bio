@@ -28,8 +28,6 @@ class PageController {
 
    
     // Håndter en given side baseret på page-parametret
-  
-    // Håndter en given side baseret på page-parametret
     public function showPage($page) {
         try {
             if (method_exists($this, $page)) {
@@ -41,7 +39,6 @@ class PageController {
             $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af siden: " . $e->getMessage());
         }
     }
-    
 
     
 
