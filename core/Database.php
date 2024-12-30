@@ -1,4 +1,5 @@
-<?class Database {
+<?php 
+class Database {
     private static $instance = null; // Singleton instans
     private $connection; // PDO-forbindelsen
 
