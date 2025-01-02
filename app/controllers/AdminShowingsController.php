@@ -34,7 +34,7 @@ class AdminShowingsController {
 
             // Validering kan tilføjes her
             if ($this->model->create('showings', $data)) {
-                header("Location: index.php?page=admin_showings");
+                header("Location: index.php?page=admin_daily_showings");
                 exit();
             } else {
                 throw new Exception("Kunne ikke oprette filmvisning.");
@@ -56,7 +56,7 @@ class AdminShowingsController {
 
             // Validering kan tilføjes her
             if ($this->model->update('showings', $data, ['id' => $id])) {
-                header("Location: index.php?page=admin_showings");
+                header("Location: index.php?page=admin_daily_showings");
                 exit();
             } else {
                 throw new Exception("Kunne ikke opdatere filmvisning.");
@@ -75,7 +75,7 @@ class AdminShowingsController {
         }
 
         if ($this->model->delete('showings', ['id' => $id])) {
-            header("Location: index.php?page=admin_showings");
+            header("Location: index.php?page=admin_daily_showings");
             exit();
         } else {
             throw new Exception("Kunne ikke slette filmvisning.");
