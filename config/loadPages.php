@@ -26,8 +26,8 @@ return [
           'admin_dashboard' => ['view' => '/app/view/admin/admin_dashboard.php', 
           'css' => '/assets/css/admin_styles.css'],
 
-          'admin_daily_showings' => ['view' => '/app/view/admin/admin_daily_showings.php', 
-          'css' => '/assets/css/admin_daily_showings.css'],
+          'admin_showings' => ['view' => '/app/view/admin/admin_showings.php', 
+          'css' => '/assets/css/admin_showings.css'],
 
           'admin_movie' => ['view' => '/app/view/admin/admin_movie.php', 
           'css' => '/assets/css/admin_movie.css'],
