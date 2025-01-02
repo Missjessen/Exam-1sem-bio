@@ -193,7 +193,7 @@ public function movie_details() {
     }
 }
 
-public function admin_showings() {
+public function admin_daily_showings() {
     try {
         // Initialiser AdminShowingsController
         $adminShowingsController = new AdminShowingsController($this->db);

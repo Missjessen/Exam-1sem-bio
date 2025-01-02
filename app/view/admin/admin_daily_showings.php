@@ -24,10 +24,10 @@
                     <td><?= htmlspecialchars($showing['total_spots'], ENT_QUOTES) ?></td>
                     <td><?= htmlspecialchars($showing['available_spots'], ENT_QUOTES) ?></td>
                     <td>
-                        <form action="index.php?page=admin_showings&action=update&id=<?= $showing['id'] ?>" method="post">
+                        <form action="index.php?page=admin_daily_showings&action=update&id=<?= $showing['id'] ?>" method="post">
                             <button type="submit">Rediger</button>
                         </form>
-                        <form action="index.php?page=admin_showings&action=delete&id=<?= $showing['id'] ?>" method="post" onsubmit="return confirm('Er du sikker?')">
+                        <form action="index.php?page=admin_daily_showings&action=delete&id=<?= $showing['id'] ?>" method="post" onsubmit="return confirm('Er du sikker?')">
                             <button type="submit">Slet</button>
                         </form>
                     </td>
@@ -38,7 +38,7 @@
 
     <!-- Formular til at tilføje ny visning -->
     <h2>Tilføj Ny Visning</h2>
-    <form action="index.php?page=admin_showings&action=create" method="post">
+    <form action="index.php?page=admin_daily_showings&action=create" method="post">
         <label for="movie_id">Film ID:</label>
         <input type="text" id="movie_id" name="movie_id" required>
 
@@ -64,7 +64,7 @@
     </form>
 
     <h2>Opret Ny Filmvisning</h2>
-<form action="index.php?page=admin_showings&action=create" method="post">
+<form action="index.php?page=admin_daily_showings&action=create" method="post">
     <label for="movie_id">Film ID:</label>
     <input type="text" id="movie_id" name="movie_id" required>
 
@@ -90,7 +90,7 @@
 </form>
 
 <h2>Opdater Filmvisning</h2>
-<form action="index.php?page=admin_showings&action=update&id=<?= $showing['id'] ?>" method="post">
+<form action="index.php?page=admin_daily_showings&action=update&id=<?= $showing['id'] ?>" method="post">
     <label for="movie_id">Film ID:</label>
     <input type="text" id="movie_id" name="movie_id" value="<?= htmlspecialchars($showing['movie_id'], ENT_QUOTES) ?>" required>
 
@@ -115,8 +115,3 @@
     <button type="submit">Opdater</button>
 </form>
 
-<h2>Slet Filmvisning</h2>
-<form action="index.php?page=admin_showings&action=delete&id=<?= $showing['id'] ?>" method="post" onsubmit="return confirm('Er du sikker?')">
-    <button type="submit">Slet</button>
-</form>
-</body>
