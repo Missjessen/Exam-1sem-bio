@@ -7,7 +7,7 @@ class MovieFrontendController {
         $this->model = new MovieFrontendModel($db); // Sørg for at bruge den rigtige model
     }
 
-    public function showMovieDetails($slug) {
+   /*  public function showMovieDetails($slug) {
         error_log("Slug modtaget: $slug"); // Debug
 
         // Tjek om modellen er korrekt initialiseret
@@ -35,7 +35,7 @@ class MovieFrontendController {
             exit();
         }
         require_once $viewPath;
-    } 
+    }  */
     }
 
 

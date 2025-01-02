@@ -9,3 +9,5 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^([a-zA-Z0-9-_]+)$ index.php?page=$1 [L,QSA]
 RewriteRule ^movie/([a-zA-Z0-9-_]+)$ index.php?page=movieDetails&slug=$1 [L,QSA]
+# Omskriv URL for movie_details
+RewriteRule ^movie_details/([a-zA-Z0-9_-]+)$ index.php?page=movie_details&slug=$1 [L,QSA]

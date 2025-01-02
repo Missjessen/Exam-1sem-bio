@@ -5,11 +5,11 @@ class MovieDetailsController {
     private $pageLoader;
 
     public function __construct($db) {
-        $this->movieModel = new MovieDetailsModel($db);
-        $this->pageLoader = new PageLoader($db);
+        $this->movieModel = new MovieFrontendModel($db); // Genbrug MovieFrontendModel
+        $this->pageLoader = new PageLoader($db); // Genbrug PageLoader
     }
 
-    public function showMovieDetailsBySlug($slug) {
+    public function showMovieDetails($slug) {
         try {
             if (empty($slug)) {
                 throw new Exception("Slug mangler i URL'en.");
@@ -17,12 +17,16 @@ class MovieDetailsController {
     
             error_log("Slug modtaget: " . $slug); // Debug
     
+            // Hent filmoplysninger baseret på slug
             $movie = $this->movieModel->getMovieDetailsBySlug($slug);
             if (!$movie) {
                 throw new Exception("Filmen blev ikke fundet for slug: $slug");
             }
     
+            // Hent visningstider baseret på movie_id
             $showtimes = $this->movieModel->getShowingsForMovie($movie['id']);
+    
+            // Render siden med data
             $this->pageLoader->loadUserPage('movie_details', [
                 'movie' => $movie,
                 'showtimes' => $showtimes
@@ -38,5 +42,3 @@ class MovieDetailsController {
         $errorController->showErrorPage($message);
     }
 }
-
-

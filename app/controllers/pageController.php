@@ -6,9 +6,10 @@ class PageController {
     private $pageLoader;
     private $movieAdminController;
     private $adminController;
-    private $movieFrontendController;
+    //private $movieFrontendController;
     //private $adminBookingModel;
     private $bookingController;
+    private $moviedetailsController;
   
     
 
@@ -19,9 +20,10 @@ class PageController {
         $this->pageLoader = new PageLoader($this->db);
         $this->movieAdminController = new MovieAdminController($this->db);
         $this->adminController = new AdminController(new AdminModel($this->db));
-        $this->movieFrontendController = new MovieFrontendController(new MovieFrontendModel($this->db));
+        //$this->movieFrontendController = new MovieFrontendController(new MovieFrontendModel($this->db));
         //$this->adminBookingModel = new AdminBookingModel($this->db);
         $this->bookingController = new BookingController($this->db);
+        $this->moviedetailsController = new MovieDetailsController($this->db);
        
        
     }
@@ -86,21 +88,23 @@ class PageController {
     }
 
     // Håndter filmdetaljer
-  
-    public function movie_details() {
+public function movie_details() {
+    try {
         if (!empty($_GET['slug'])) {
-            try {
-                error_log("Slug fra URL: " . $_GET['slug']); // Debug
-                $this->movieFrontendController->showMovieDetails($_GET['slug']);
-            } catch (Exception $e) {
-                error_log("Fejl i movie_details: " . $e->getMessage());
-                $this->pageLoader->renderErrorPage(404, "Filmen blev ikke fundet.");
-            }
+            $slug = htmlspecialchars($_GET['slug'], ENT_QUOTES, 'UTF-8');
+            error_log("Slug fra URL: $slug"); // Debug
+    
+            $movieDetailsController = new MovieDetailsController($this->db);
+            $movieDetailsController->showMovieDetails($slug);
         } else {
-            error_log("Slug mangler i URL'en.");
-            $this->pageLoader->renderErrorPage(400, "Slug mangler i URL'en.");
+            throw new Exception("Slug mangler i URL'en.");
         }
+    } catch (Exception $e) {
+        error_log("Fejl i movie_details: " . $e->getMessage());
+        $this->pageLoader->renderErrorPage(400, $e->getMessage());
     }
+}
+
 
 
     public function booking() {
@@ -188,6 +192,19 @@ class PageController {
         $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af bookingsiden: " . $e->getMessage());
     }
 }
+
+public function admin_showings() {
+    try {
+        // Initialiser AdminShowingsController
+        $adminShowingsController = new AdminShowingsController($this->db);
+
+        // Kald controllerens main-metode til at håndtere handlingen
+        $adminShowingsController->handleAction();
+    } catch (Exception $e) {
+        $this->pageLoader->renderErrorPage(500, "Fejl under håndtering af filmvisninger: " . $e->getMessage());
+    }
+}
+
 
     public function admin_ManageUsers() {
         try {

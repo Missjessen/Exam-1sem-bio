@@ -1,94 +1,89 @@
 <?php 
+
 class AdminShowingsController {
     private $model;
+    private $pageLoader;
 
     public function __construct($db) {
-        $this->model = new AdminShowingsModel($db);
+        $this->model = new CrudBase($db);
+        $this->pageLoader = new PageLoader($db);
     }
 
-    public function handleRequest($action) {
+    public function handleAction() {
+        $action = $_GET['action'] ?? null;
+
         switch ($action) {
-            case 'add':
-                return $this->add();
-            case 'edit':
-                return $this->edit();
+            case 'create':
+                $this->handleCreate();
+                break;
+            case 'update':
+                $this->handleUpdate();
+                break;
             case 'delete':
-                return $this->delete();
+                $this->handleDelete();
+                break;
             default:
-                return $this->index();
+                $this->handleIndex();
+                break;
         }
     }
 
-    public function index() {
-        $showings = $this->model->getAllShowings();
-        $movies = $this->model->getAllMovies();
-        return ['showings' => $showings, 'movies' => $movies];
-    }
-
-    public function add() {
+    private function handleCreate() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $data = [
-                'movie_id' => $_POST['movie_id'] ?? null,
-                'screen' => $_POST['screen'] ?? null,
-                'show_date' => $_POST['show_date'] ?? null,
-                'show_time' => $_POST['show_time'] ?? null,
-                'total_spots' => $_POST['total_spots'] ?? null,
-                'available_spots' => $_POST['available_spots'] ?? null,
-                'repeat_pattern' => $_POST['repeat_pattern'] ?? 'none',
-                'repeat_until' => $_POST['repeat_until'] ?? null,
-            ];
-            $data = array_filter($data, fn($value) => !is_null($value));
-    
-            if ($this->model->addShowing($data)) {
-                header('Location: ?page=admin_daily_showings&success=true');
-                exit;
-            }
-        }
-    
-        // Returner nødvendige data for at genindlæse siden
-        return $this->index();
-    }
-    
-    
+            $data = $_POST;
 
-    public function edit() {
-        $id = $_GET['showing_id'] ?? null;
-    
+            // Validering kan tilføjes her
+            if ($this->model->create('showings', $data)) {
+                header("Location: index.php?page=admin_showings");
+                exit();
+            } else {
+                throw new Exception("Kunne ikke oprette filmvisning.");
+            }
+        } else {
+            $this->pageLoader->renderPage('admin_showings_create', [], 'admin');
+        }
+    }
+
+    private function handleUpdate() {
+        $id = $_GET['id'] ?? null;
+
+        if (!$id) {
+            throw new Exception("ID mangler for opdatering.");
+        }
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $data = [
-                'movie_id' => $_POST['movie_id'] ?? null,
-                'screen' => $_POST['screen'] ?? null,
-                'show_date' => $_POST['show_date'] ?? null,
-                'show_time' => $_POST['show_time'] ?? null,
-                'total_spots' => $_POST['total_spots'] ?? null,
-                'available_spots' => $_POST['available_spots'] ?? null,
-                'repeat_pattern' => $_POST['repeat_pattern'] ?? 'none',
-                'repeat_until' => $_POST['repeat_until'] ?? null,
-            ];
-            $data = array_filter($data, fn($value) => !is_null($value));
-    
-            if ($this->model->updateShowing($id, $data)) {
-                header('Location: ?page=admin_daily_showings&success=true');
-                exit;
-            }
-        }
-    
-        // Returner nødvendige data for at genindlæse siden
-        $showing = $this->model->getShowingById($id);
-        $data = $this->index();
-        $data['showing'] = $showing;
-    
-        return $data;
-    }
-    
-    
+            $data = $_POST;
 
-    public function delete() {
-        $id = $_GET['showing_id'] ?? null;
+            // Validering kan tilføjes her
+            if ($this->model->update('showings', $data, ['id' => $id])) {
+                header("Location: index.php?page=admin_showings");
+                exit();
+            } else {
+                throw new Exception("Kunne ikke opdatere filmvisning.");
+            }
+        } else {
+            $showing = $this->model->getItem('showings', ['id' => $id]);
+            $this->pageLoader->renderPage('admin_showings_update', ['showing' => $showing], 'admin');
+        }
+    }
+
+    private function handleDelete() {
+        $id = $_GET['id'] ?? null;
+
+        if (!$id) {
+            throw new Exception("ID mangler for sletning.");
+        }
+
         if ($this->model->delete('showings', ['id' => $id])) {
-            header('Location: ?page=admin_daily_showings&deleted=true');
-            exit;
+            header("Location: index.php?page=admin_showings");
+            exit();
+        } else {
+            throw new Exception("Kunne ikke slette filmvisning.");
         }
+    }
+
+    private function handleIndex() {
+        $showings = $this->model->getAllItems('showings');
+        $this->pageLoader->renderPage('admin_showings', ['showings' => $showings], 'admin');
     }
 }
-

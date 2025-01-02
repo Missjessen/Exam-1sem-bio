@@ -1,33 +1,26 @@
-<?php 
+<?php
+
 class AdminShowingsModel extends CrudBase {
-    public function __construct($db) {
-        parent::__construct($db);
-    }
+    private $table = 'showings';
 
-    public function addShowing($data) {
-        return $this->create('showings', $data);
-    }
-
-    public function updateShowing($id, $data) {
-        $where = ['id' => $id];
-        return $this->update('showings', $data, $where);
-    }
-    
-
-    public function getShowingById($id) {
-        return $this->getItem('showings', ['id' => $id]);
-    }
-
-    public function getAllShowings() {
-        $joins = ["JOIN movies m ON showings.movie_id = m.id"];
+    public function getAllShowingsWithMovies() {
+        // Brug readWithJoin til at hente showings sammen med filmdata
         return $this->readWithJoin(
-            'showings', 
-            'showings.*, m.title AS movie_title', 
-            $joins
+            $this->table,
+            "showings.*, movies.title AS movie_title",
+            ["INNER JOIN movies ON showings.movie_id = movies.id"]
         );
     }
 
-    public function getAllMovies() {
-        return $this->getAllItems('movies');
+    public function createShowing($data) {
+        return $this->create($this->table, $data);
+    }
+
+    public function updateShowing($id, $data) {
+        return $this->update($this->table, $data, ['id' => $id]);
+    }
+
+    public function deleteShowing($id) {
+        return $this->delete($this->table, ['id' => $id]);
     }
 }
