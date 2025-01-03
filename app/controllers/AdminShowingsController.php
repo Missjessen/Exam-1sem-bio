@@ -68,7 +68,7 @@ class AdminShowingsController {
     }
     
     private function redirectToShowings() {
-        header("Location: ?page=admin_showings");
+        header("Location: " . BASE_URL . "index.php?page=admin_showings");
         exit;
     }
     
