@@ -39,7 +39,7 @@
 </table>
 
 <h2><?= isset($editingShowing) ? "Rediger Visning" : "Tilføj Ny Visning" ?></h2>
-<form method="post" action="">
+<form method="post" action="<?= htmlspecialchars(BASE_URL . 'index.php?page=admin_showings') ?>">
     <label for="movie_id">Film:</label>
     <select name="movie_id" id="movie_id" required>
         <option value="">Vælg en film</option>
