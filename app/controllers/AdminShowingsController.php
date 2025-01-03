@@ -1,89 +1,67 @@
 <?php 
-
 class AdminShowingsController {
-    private $model;
+    private $crudBase;
     private $pageLoader;
 
     public function __construct($db) {
-        $this->model = new CrudBase($db);
+        $this->crudBase = new CrudBase($db);
         $this->pageLoader = new PageLoader($db);
     }
 
     public function handleAction() {
-        $action = $_GET['action'] ?? null;
+        $action = $_POST['action'] ?? $_GET['action'] ?? null;
+        $showingId = $_POST['id'] ?? $_GET['showing_id'] ?? null;
 
-        switch ($action) {
-            case 'create':
-                $this->handleCreate();
-                break;
-            case 'update':
-                $this->handleUpdate();
-                break;
-            case 'delete':
-                $this->handleDelete();
-                break;
-            default:
-                $this->handleIndex();
-                break;
+        if ($action === 'create') {
+            $this->createShowing($_POST);
+        } elseif ($action === 'update') {
+            $this->updateShowing($_POST);
+        } elseif ($action === 'delete') {
+            $this->deleteShowing($showingId);
         }
+
+        $this->showAdminShowings();
     }
 
-    private function handleCreate() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $data = $_POST;
+    private function showAdminShowings() {
+        $showings = $this->crudBase->readWithJoin(
+            'showings',
+            'showings.*, movies.title AS movie_title',
+            ['INNER JOIN movies ON showings.movie_id = movies.id']
+        );
+        $movies = $this->crudBase->getAllItems('movies');
+        $editingShowing = isset($_GET['action']) && $_GET['action'] === 'edit'
+            ? $this->crudBase->getItem('showings', ['id' => $_GET['showing_id']])
+            : null;
 
-            // Validering kan tilføjes her
-            if ($this->model->create('showings', $data)) {
-                header("Location: index.php?page=admin_daily_showings");
-                exit();
-            } else {
-                throw new Exception("Kunne ikke oprette filmvisning.");
-            }
-        } else {
-            $this->pageLoader->renderPage('admin_showings_create', [], 'admin');
-        }
+        $this->pageLoader->renderPage('admin_showings', [
+            'showings' => $showings,
+            'movies' => $movies,
+            'editingShowing' => $editingShowing
+        ], 'admin');
     }
 
-    private function handleUpdate() {
-        $id = $_GET['id'] ?? null;
-
-        if (!$id) {
-            throw new Exception("ID mangler for opdatering.");
-        }
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $data = $_POST;
-
-            // Validering kan tilføjes her
-            if ($this->model->update('showings', $data, ['id' => $id])) {
-                header("Location: index.php?page=admin_daily_showings");
-                exit();
-            } else {
-                throw new Exception("Kunne ikke opdatere filmvisning.");
-            }
-        } else {
-            $showing = $this->model->getItem('showings', ['id' => $id]);
-            $this->pageLoader->renderPage('admin_showings_update', ['showing' => $showing], 'admin');
-        }
+    private function createShowing($data) {
+        $this->crudBase->create('showings', [
+            'movie_id' => $data['movie_id'],
+            'screen' => $data['screen'],
+            'show_date' => $data['show_date'],
+            'show_time' => $data['show_time'],
+            'total_spots' => 50,
+            'available_spots' => 50
+        ]);
     }
 
-    private function handleDelete() {
-        $id = $_GET['id'] ?? null;
-
-        if (!$id) {
-            throw new Exception("ID mangler for sletning.");
-        }
-
-        if ($this->model->delete('showings', ['id' => $id])) {
-            header("Location: index.php?page=admin_daily_showings");
-            exit();
-        } else {
-            throw new Exception("Kunne ikke slette filmvisning.");
-        }
+    private function updateShowing($data) {
+        $this->crudBase->update('showings', [
+            'movie_id' => $data['movie_id'],
+            'screen' => $data['screen'],
+            'show_date' => $data['show_date'],
+            'show_time' => $data['show_time']
+        ], ['id' => $data['id']]);
     }
 
-    private function handleIndex() {
-        $showings = $this->model->getAllItems('showings');
-        $this->pageLoader->renderPage('admin_showings', ['showings' => $showings], 'admin');
+    private function deleteShowing($showingId) {
+        $this->crudBase->delete('showings', ['id' => $showingId]);
     }
 }
