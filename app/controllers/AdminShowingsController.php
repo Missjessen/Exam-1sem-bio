@@ -21,10 +21,12 @@ class AdminShowingsController {
         } elseif ($action === 'delete') {
             $this->deleteShowing($showingId);
         } elseif ($action === 'edit') {
-            // Hent visningen for redigering
             $editingShowing = $this->crudBase->getItem('showings', ['id' => $showingId]);
+            if (!$editingShowing) {
+                throw new Exception("Visningen blev ikke fundet for ID: $showingId");
+            }
             $this->showAdminShowings($editingShowing);
-            return; // Sørg for, at vi ikke fortsætter til standardvisning
+            return;
         }
     
         $this->showAdminShowings();
@@ -68,9 +70,10 @@ class AdminShowingsController {
     }
     
     private function redirectToShowings() {
-        header("Location: " . BASE_URL . "index.php?page=admin_showings");
+        header("Location: index.php?page=admin_showings");
         exit;
     }
+    
     
     
 
@@ -81,7 +84,9 @@ class AdminShowingsController {
             'show_date' => $data['show_date'],
             'show_time' => $data['show_time']
         ], ['id' => $data['id']]);
+        $this->redirectToShowings();
     }
+    
 
    
     

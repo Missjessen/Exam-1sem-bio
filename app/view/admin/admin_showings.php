@@ -22,16 +22,19 @@
             <td><?= htmlspecialchars($showing['total_spots'], ENT_QUOTES, 'UTF-8') ?></td>
             <td><?= htmlspecialchars($showing['available_spots'], ENT_QUOTES, 'UTF-8') ?></td>
             <td>
-                <form method="get" action="">
-                    <input type="hidden" name="action" value="edit">
-                    <input type="hidden" name="showing_id" value="<?= $showing['id'] ?>">
-                    <button type="submit">Rediger</button>
-                </form>
-                <form method="get" action="">
-                    <input type="hidden" name="action" value="delete">
-                    <input type="hidden" name="showing_id" value="<?= $showing['id'] ?>">
-                    <button type="submit">Slet</button>
-                </form>
+            <form method="get" action="index.php">
+    <input type="hidden" name="page" value="admin_showings">
+    <input type="hidden" name="action" value="edit">
+    <input type="hidden" name="showing_id" value="<?= $showing['id'] ?>">
+    <button type="submit">Rediger</button>
+</form>
+<form method="get" action="index.php">
+    <input type="hidden" name="page" value="admin_showings">
+    <input type="hidden" name="action" value="delete">
+    <input type="hidden" name="showing_id" value="<?= $showing['id'] ?>">
+    <button type="submit">Slet</button>
+</form>
+
             </td>
         </tr>
         <?php endforeach; ?>
@@ -39,7 +42,10 @@
 </table>
 
 <h2><?= isset($editingShowing) ? "Rediger Visning" : "Tilføj Ny Visning" ?></h2>
-<form method="post" action="<?= htmlspecialchars(BASE_URL . 'index.php?page=admin_showings') ?>">
+<form method="post" action="index.php?page=admin_showings">
+    <input type="hidden" name="action" value="<?= isset($editingShowing) ? 'update' : 'create' ?>">
+    <input type="hidden" name="id" value="<?= $editingShowing['id'] ?? '' ?>">
+
     <label for="movie_id">Film:</label>
     <select name="movie_id" id="movie_id" required>
         <option value="">Vælg en film</option>
@@ -61,6 +67,9 @@
 
     <label for="show_time">Tid:</label>
     <input type="time" name="show_time" id="show_time" value="<?= $editingShowing['show_time'] ?? '' ?>" required>
+
+    <button type="submit"><?= isset($editingShowing) ? 'Opdater' : 'Tilføj' ?></button>
+
 
     <input type="hidden" name="action" value="<?= isset($editingShowing) ? 'update' : 'create' ?>">
     <input type="hidden" name="id" value="<?= $editingShowing['id'] ?? '' ?>">
