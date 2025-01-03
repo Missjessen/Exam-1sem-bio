@@ -71,8 +71,5 @@
     <button type="submit"><?= isset($editingShowing) ? 'Opdater' : 'Tilføj' ?></button>
 
 
-    <input type="hidden" name="action" value="<?= isset($editingShowing) ? 'update' : 'create' ?>">
-    <input type="hidden" name="id" value="<?= $editingShowing['id'] ?? '' ?>">
-    <button type="submit"><?= isset($editingShowing) ? 'Opdater' : 'Tilføj' ?></button>
 </form>
 
