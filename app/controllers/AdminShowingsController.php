@@ -12,7 +12,6 @@ class AdminShowingsController {
         $action = $_POST['action'] ?? $_GET['action'] ?? null;
         $showingId = $_POST['id'] ?? $_GET['showing_id'] ?? null;
     
-        // Håndter kun POST-anmodninger
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($action === 'create') {
                 $this->createShowing($_POST);
@@ -21,33 +20,37 @@ class AdminShowingsController {
             }
         } elseif ($action === 'delete') {
             $this->deleteShowing($showingId);
+        } elseif ($action === 'edit') {
+            // Hent visningen for redigering
+            $editingShowing = $this->crudBase->getItem('showings', ['id' => $showingId]);
+            $this->showAdminShowings($editingShowing);
+            return; // Sørg for, at vi ikke fortsætter til standardvisning
         }
     
         $this->showAdminShowings();
     }
     
+    
 
-    private function showAdminShowings() {
+    public function showAdminShowings($editingShowing = null) {
         $showings = $this->crudBase->readWithJoin(
             'showings',
             'showings.*, movies.title AS movie_title',
-            ['INNER JOIN movies ON showings.movie_id = movies.id']
+            ['JOIN movies ON showings.movie_id = movies.id']
         );
+    
         $movies = $this->crudBase->getAllItems('movies');
-        $editingShowing = isset($_GET['action']) && $_GET['action'] === 'edit'
-            ? $this->crudBase->getItem('showings', ['id' => $_GET['showing_id']])
-            : null;
-
-        $this->pageLoader->renderPage('admin_showings', [
+    
+        $data = [
             'showings' => $showings,
             'movies' => $movies,
             'editingShowing' => $editingShowing
-        ], 'admin');
-    }
-
-    private function createShowing($data) {
-        error_log("Opretter visning med data: " . print_r($data, true)); // Debug-log
+        ];
     
+        $this->pageLoader->renderPage('admin_showings', $data, 'admin');
+    }
+    
+    private function createShowing($data) {
         $this->crudBase->create('showings', [
             'movie_id' => $data['movie_id'],
             'screen' => $data['screen'],
@@ -56,7 +59,19 @@ class AdminShowingsController {
             'total_spots' => 50,
             'available_spots' => 50
         ]);
+        $this->redirectToShowings();
     }
+    
+    private function deleteShowing($showingId) {
+        $this->crudBase->delete('showings', ['id' => $showingId]);
+        $this->redirectToShowings();
+    }
+    
+    private function redirectToShowings() {
+        header("Location: ?page=admin_showings");
+        exit;
+    }
+    
     
 
     private function updateShowing($data) {
@@ -68,12 +83,6 @@ class AdminShowingsController {
         ], ['id' => $data['id']]);
     }
 
-    private function deleteShowing($showingId) {
-        if ($this->crudBase->delete('showings', ['id' => $showingId])) {
-            error_log("Visning med ID $showingId blev slettet.");
-        } else {
-            error_log("Fejl ved sletning af visning med ID $showingId.");
-        }
-    }
+   
     
 }

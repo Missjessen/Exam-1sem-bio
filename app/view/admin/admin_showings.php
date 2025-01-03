@@ -1,6 +1,5 @@
 <h1>Administrer Filmvisninger</h1>
 
-<!-- Liste over eksisterende visninger -->
 <table>
     <thead>
         <tr>
@@ -8,7 +7,9 @@
             <th>Skærm</th>
             <th>Dato</th>
             <th>Tid</th>
-            <th>Handlinger</th>
+            <th>Pladser (i alt)</th>
+            <th>Ledige Pladser</th>
+            <th>Handling</th>
         </tr>
     </thead>
     <tbody>
@@ -18,9 +19,19 @@
             <td><?= htmlspecialchars($showing['screen'], ENT_QUOTES, 'UTF-8') ?></td>
             <td><?= htmlspecialchars($showing['show_date'], ENT_QUOTES, 'UTF-8') ?></td>
             <td><?= htmlspecialchars($showing['show_time'], ENT_QUOTES, 'UTF-8') ?></td>
+            <td><?= htmlspecialchars($showing['total_spots'], ENT_QUOTES, 'UTF-8') ?></td>
+            <td><?= htmlspecialchars($showing['available_spots'], ENT_QUOTES, 'UTF-8') ?></td>
             <td>
-                <a href="?action=edit&showing_id=<?= $showing['id'] ?>">Rediger</a>
-                <a href="?action=delete&showing_id=<?= $showing['id'] ?>" onclick="return confirm('Er du sikker?')">Slet</a>
+                <form method="get" action="">
+                    <input type="hidden" name="action" value="edit">
+                    <input type="hidden" name="showing_id" value="<?= $showing['id'] ?>">
+                    <button type="submit">Rediger</button>
+                </form>
+                <form method="get" action="">
+                    <input type="hidden" name="action" value="delete">
+                    <input type="hidden" name="showing_id" value="<?= $showing['id'] ?>">
+                    <button type="submit">Slet</button>
+                </form>
             </td>
         </tr>
         <?php endforeach; ?>
