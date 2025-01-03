@@ -69,6 +69,11 @@ class AdminShowingsController {
     }
 
     private function deleteShowing($showingId) {
-        $this->crudBase->delete('showings', ['id' => $showingId]);
+        if ($this->crudBase->delete('showings', ['id' => $showingId])) {
+            error_log("Visning med ID $showingId blev slettet.");
+        } else {
+            error_log("Fejl ved sletning af visning med ID $showingId.");
+        }
     }
+    
 }
