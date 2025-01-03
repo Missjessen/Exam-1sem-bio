@@ -27,7 +27,6 @@
     </tbody>
 </table>
 
-<!-- Form til at tilføje/redigere visninger -->
 <h2><?= isset($editingShowing) ? "Rediger Visning" : "Tilføj Ny Visning" ?></h2>
 <form method="post" action="">
     <label for="movie_id">Film:</label>
@@ -56,3 +55,4 @@
     <input type="hidden" name="id" value="<?= $editingShowing['id'] ?? '' ?>">
     <button type="submit"><?= isset($editingShowing) ? 'Opdater' : 'Tilføj' ?></button>
 </form>
+

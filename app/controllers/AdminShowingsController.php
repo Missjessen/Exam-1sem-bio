@@ -11,17 +11,21 @@ class AdminShowingsController {
     public function handleAction() {
         $action = $_POST['action'] ?? $_GET['action'] ?? null;
         $showingId = $_POST['id'] ?? $_GET['showing_id'] ?? null;
-
-        if ($action === 'create') {
-            $this->createShowing($_POST);
-        } elseif ($action === 'update') {
-            $this->updateShowing($_POST);
+    
+        // Håndter kun POST-anmodninger
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if ($action === 'create') {
+                $this->createShowing($_POST);
+            } elseif ($action === 'update') {
+                $this->updateShowing($_POST);
+            }
         } elseif ($action === 'delete') {
             $this->deleteShowing($showingId);
         }
-
+    
         $this->showAdminShowings();
     }
+    
 
     private function showAdminShowings() {
         $showings = $this->crudBase->readWithJoin(
@@ -42,6 +46,8 @@ class AdminShowingsController {
     }
 
     private function createShowing($data) {
+        error_log("Opretter visning med data: " . print_r($data, true)); // Debug-log
+    
         $this->crudBase->create('showings', [
             'movie_id' => $data['movie_id'],
             'screen' => $data['screen'],
@@ -51,6 +57,7 @@ class AdminShowingsController {
             'available_spots' => 50
         ]);
     }
+    
 
     private function updateShowing($data) {
         $this->crudBase->update('showings', [
