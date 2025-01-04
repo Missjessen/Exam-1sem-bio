@@ -13,32 +13,27 @@ class BookingController {
 
     public function handleBooking() {
         try {
-            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-                $this->pageLoader->renderErrorPage(400, "Ugyldig anmodning til booking.");
-                return;
-            }
-
-            // Håndter input fra formularen
+            // Håndter input fra movie details
             $showingId = $_POST['showing_id'] ?? null;
             $spots = $_POST['spots'] ?? null;
-
+    
             if (empty($showingId) || empty($spots)) {
                 $this->pageLoader->renderErrorPage(400, "Ugyldig bookingforespørgsel. Vælg venligst en visning og antal pladser.");
                 return;
             }
-
+    
             // Hent detaljer for visningen
             $showingDetails = $this->bookingModel->getShowingDetails($showingId);
-
+    
             if (!$showingDetails) {
                 $this->pageLoader->renderErrorPage(404, "Den valgte visning blev ikke fundet.");
                 return;
             }
-
-            // Beregn totalpris
+    
+            // Beregn den samlede pris
             $totalPrice = $showingDetails['price_per_ticket'] * $spots;
-
-            // Gem midlertidig booking i session
+    
+            // Gem bookingdata midlertidigt i session
             $_SESSION['pending_booking'] = [
                 'showing_id' => $showingId,
                 'spots' => $spots,
@@ -46,15 +41,17 @@ class BookingController {
                 'movie_title' => $showingDetails['movie_title'],
                 'show_date' => $showingDetails['show_date'],
                 'show_time' => $showingDetails['show_time'],
-                'price_per_ticket' => $showingDetails['price_per_ticket']
+                'price_per_ticket' => $showingDetails['price_per_ticket'],
             ];
-
-            // Send brugeren til oversigtssiden
-            $this->pageLoader->renderPage('bookingSummary', $_SESSION['pending_booking'], 'user');
+    
+            // Videresend til bookingSummary view
+            header("Location: index.php?page=bookingSummary");
+            exit;
         } catch (Exception $e) {
             $this->pageLoader->renderErrorPage(500, "Fejl under håndtering af booking: " . $e->getMessage());
         }
     }
+    
 
     public function confirmBooking() {
         try {
