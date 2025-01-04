@@ -107,47 +107,61 @@ public function movie_details() {
 
 
 
-    public function booking() {
+public function handle_booking() {
+    try {
+        $bookingController = new BookingController($this->db);
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            try {
-                $this->bookingController->handleBooking($_POST); // Behandl booking POST-anmodning
-            } catch (Exception $e) {
-                $this->pageLoader->renderErrorPage(500, "Fejl under booking: " . $e->getMessage());
-            }
+            // Håndter bookingdata fra formularen
+            $bookingController->handleBooking($_POST);
         } else {
             $this->pageLoader->renderErrorPage(400, "Ugyldig anmodning til booking.");
         }
-    }
-
-   public function bookingAndReceipt() {
-    try {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Håndter booking POST-anmodning
-            $this->bookingController->handleBooking($_POST);
-        } elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
-            // Håndter kvittering GET-anmodning
-            $bookingId = $_GET['booking_id'] ?? null;
-
-            if (!$bookingId) {
-                throw new Exception("Booking ID mangler i URL'en.");
-            }
-
-            $receiptData = $this->bookingController->getBookingDetails($bookingId);
-
-            if (!$receiptData) {
-                throw new Exception("Booking med ID '$bookingId' blev ikke fundet.");
-            }
-
-            // Render kvitteringssiden
-            $this->pageLoader->renderPage('receipt', ['receiptData' => $receiptData], 'user');
-        } else {
-            // Hvis anmodningen hverken er POST eller GET
-            throw new Exception("Ugyldig anmodningstype.");
-        }
     } catch (Exception $e) {
-        $this->pageLoader->renderErrorPage(500, "Fejl: " . $e->getMessage());
+        $this->pageLoader->renderErrorPage(500, "Fejl under håndtering af booking: " . $e->getMessage());
     }
 }
+
+public function confirm_booking() {
+    try {
+        $bookingController = new BookingController($this->db);
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Bekræft booking og gem den i databasen
+            $bookingController->confirmBooking($_POST);
+        } else {
+            $this->pageLoader->renderErrorPage(400, "Ugyldig anmodning til bekræftelse.");
+        }
+    } catch (Exception $e) {
+        $this->pageLoader->renderErrorPage(500, "Fejl under bekræftelse af booking: " . $e->getMessage());
+    }
+}
+
+public function cancel_booking() {
+    try {
+        $bookingController = new BookingController($this->db);
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Annuller booking baseret på data
+            $bookingController->cancelBooking($_POST);
+        } else {
+            $this->pageLoader->renderErrorPage(400, "Ugyldig anmodning til annullering.");
+        }
+    } catch (Exception $e) {
+        $this->pageLoader->renderErrorPage(500, "Fejl under annullering af booking: " . $e->getMessage());
+    }
+}
+
+
+public function booking_Receipt() {
+    try {
+        $bookingController = new BookingController($this->db);
+        $bookingController->showReceipt();
+    } catch (Exception $e) {
+        $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af kvitteringssiden: " . $e->getMessage());
+    }
+}
+
 
 
     // Admin dashboard

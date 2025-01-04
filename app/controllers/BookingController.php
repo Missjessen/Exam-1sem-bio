@@ -1,109 +1,98 @@
 <?php
+
 class BookingController {
+    private $db;
     private $bookingModel;
+    private $pageLoader;
 
-    public function __construct($bookingModel) {
-        $this->bookingModel = $bookingModel;
+    public function __construct($db) {
+        $this->db = $db;
+        $this->bookingModel = new BookingModel($db);
+        $this->pageLoader = new PageLoader($db);
     }
 
-   /*  public function handleBooking($postData) {
-        $customerId = $_SESSION['user_id'];
-        $movieId = $postData['movie_id'];
-        $spotId = $postData['spot_id'];
-        $showtimeId = $postData['showtime_id'];
-        $price = $postData['price'];
+    public function handleBooking() {
+        // Håndter input fra movie details
+        $showingId = $_POST['showing_id'] ?? null;
+        $spots = $_POST['spots'] ?? null;
 
-        return $this->bookingModel->createBooking($movieId, $spotId, $customerId, $showtimeId, $price);
+        if (empty($showingId) || empty($spots)) {
+            $this->pageLoader->renderErrorPage(400, "Ugyldig bookingforespørgsel.");
+            return;
+        }
+
+        // Hent detaljer for visningen
+        $showingDetails = $this->bookingModel->getShowingDetails($showingId);
+
+        if (!$showingDetails) {
+            $this->pageLoader->renderErrorPage(404, "Den valgte visning blev ikke fundet.");
+            return;
+        }
+
+        // Beregn den samlede pris
+        $totalPrice = $showingDetails['price_per_ticket'] * $spots;
+
+        // Gem bookingdata midlertidigt i session
+        $_SESSION['pending_booking'] = [
+            'showing_id' => $showingId,
+            'spots' => $spots,
+            'total_price' => $totalPrice,
+            'movie_title' => $showingDetails['movie_title'],
+            'show_date' => $showingDetails['show_date'],
+            'show_time' => $showingDetails['show_time'],
+        ];
+
+        // Send til oversigtsside
+        $this->pageLoader->renderPage('booking_summary', $_SESSION['pending_booking'], 'user');
     }
 
-    public function getCustomerBookings($customerId) {
-        return $this->bookingModel->getCustomerBookings($customerId);
-    }
+    public function confirmBooking() {
+        if (!isset($_SESSION['user_id'])) {
+            $this->pageLoader->renderErrorPage(401, "Du skal være logget ind for at bekræfte en booking.");
+            return;
+        }
 
- */
-    // Handle creating a booking
-    public function handleBooking($postData) {
-        try {
-            // Validate input data
-            if (empty($postData['showing_id']) || empty($postData['spots']) || empty($postData['customer_id'])) {
-                throw new Exception('Ugyldige data. Vælg venligst en visning og antal pladser.');
-            }
+        // Hent data fra session
+        $bookingData = $_SESSION['pending_booking'] ?? null;
 
-            $showingId = (int)$postData['showing_id'];
-            $spots = (int)$postData['spots'];
-            $customerId = (int)$postData['customer_id'];
+        if (!$bookingData) {
+            $this->pageLoader->renderErrorPage(400, "Ingen bookingdata fundet.");
+            return;
+        }
 
-            // Get showing details
-            $showing = $this->bookingModel->getShowingDetails($showingId);
-            if (!$showing) {
-                throw new Exception('Visning ikke fundet.');
-            }
+        // Opret booking
+        $isBooked = $this->bookingModel->createBooking($_SESSION['user_id'], $bookingData);
 
-            // Calculate price
-            $price = $this->bookingModel->calculatePrice($showing['screen'], $postData['row_type'], $spots);
-
-            // Book spots
-            $success = $this->bookingModel->bookSpot($showingId, $spots);
-            if (!$success) {
-                throw new Exception('Kunne ikke booke pladser. Ikke nok ledige pladser.');
-            }
-
-            // Create booking
-            $bookingId = $this->bookingModel->createBooking($customerId, $showing['movie_id'], $showingId, $price, $spots);
-
-            // Redirect to receipt with booking ID
-            header('Location: /?page=bookingAndReceipt&action=receipt&booking_id=' . $bookingId);
-            exit;
-
-        } catch (Exception $e) {
-            $this->handleError($e->getMessage());
+        if ($isBooked) {
+            unset($_SESSION['pending_booking']); // Fjern midlertidige bookingdata
+            $this->pageLoader->renderPage('booking_success', [], 'user');
+        } else {
+            $this->pageLoader->renderErrorPage(500, "Kunne ikke gennemføre bookingen. Prøv igen.");
         }
     }
 
-    // Get bookings for a specific customer (e.g., for their profile)
-    public function getCustomerBookings($customerId) {
-        try {
-            return $this->bookingModel->getBookingsByCustomer($customerId);
-        } catch (Exception $e) {
-            $this->handleError($e->getMessage());
+    public function showReceipt() {
+        if (!isset($_SESSION['user_id'])) {
+            $this->pageLoader->renderErrorPage(401, "Du skal være logget ind for at se din kvittering.");
+            return;
         }
-    }
-
-    // Delete a booking (admin functionality)
-    public function deleteBooking($bookingId) {
-        try {
-            $this->bookingModel->deleteBooking($bookingId);
-            header('Location: /?page=admin_bookings&action=delete&status=success');
-            exit;
-        } catch (Exception $e) {
-            $this->handleError($e->getMessage());
+    
+        // Hent bookingdata fra session
+        $bookingData = $_SESSION['pending_booking'] ?? null;
+    
+        if (!$bookingData) {
+            $this->pageLoader->renderErrorPage(400, "Ingen bookingdata fundet.");
+            return;
         }
+    
+        // Send data til kvitteringsvisning
+        $this->pageLoader->renderPage('booking_receipt', $bookingData, 'user');
     }
+    
 
-    // Update a booking (admin functionality)
-    public function updateBooking($bookingId, $postData) {
-        try {
-            $spots = (int)$postData['spots'];
-            $price = (float)$postData['price'];
-            $this->bookingModel->updateBooking($bookingId, $spots, $price);
-            header('Location: /?page=admin_bookings&action=update&status=success');
-            exit;
-        } catch (Exception $e) {
-            $this->handleError($e->getMessage());
-        }
-    }
-
-    private function handleError($message) {
-        $errorController = new ErrorController();
-        $errorController->showErrorPage($message);
-    }
-
-    // Get booking details for receipt
-    public function getBookingDetails($bookingId) {
-        try {
-            return $this->bookingModel->getBookingDetails($bookingId);
-        } catch (Exception $e) {
-            throw new Exception("Fejl ved hentning af bookingdetaljer: " . $e->getMessage());
-        }
+    public function cancelBooking() {
+        unset($_SESSION['pending_booking']);
+        header("Location: index.php");
+        exit;
     }
 }
