@@ -133,6 +133,22 @@ public function cancel_booking() {
     }
 }
 
+public function bookingSummary() {
+    try {
+        // Sørg for, at session er startet
+        if (!isset($_SESSION['pending_booking'])) {
+            $this->pageLoader->renderErrorPage(400, "Ingen booking fundet. Start en ny booking.");
+            return;
+        }
+
+        // Send bookingdata til viewet
+        $this->pageLoader->renderPage('bookingSummary', $_SESSION['pending_booking'], 'user');
+    } catch (Exception $e) {
+        $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af booking oversigt: " . $e->getMessage());
+    }
+}
+
+
 
 
 public function booking_Receipt() {
