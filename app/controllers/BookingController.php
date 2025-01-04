@@ -13,6 +13,9 @@ class BookingController {
 
     public function handleBooking() {
         try {
+            // Debug POST-data
+            error_log("POST data: " . print_r($_POST, true));
+    
             // Håndter input fra movie details
             $showingId = $_POST['showing_id'] ?? null;
             $spots = $_POST['spots'] ?? null;
@@ -26,6 +29,7 @@ class BookingController {
             $showingDetails = $this->bookingModel->getShowingDetails($showingId);
     
             if (!$showingDetails) {
+                error_log("Showing details not found for ID: $showingId");
                 $this->pageLoader->renderErrorPage(404, "Den valgte visning blev ikke fundet.");
                 return;
             }
@@ -44,13 +48,13 @@ class BookingController {
                 'price_per_ticket' => $showingDetails['price_per_ticket'],
             ];
     
-            // Videresend til bookingSummary view
-            header("Location: index.php?page=bookingSummary");
-            exit;
+            // Send til oversigtsside
+            $this->pageLoader->renderPage('bookingSummary', $_SESSION['pending_booking'], 'user');
         } catch (Exception $e) {
             $this->pageLoader->renderErrorPage(500, "Fejl under håndtering af booking: " . $e->getMessage());
         }
     }
+    
     
 
     public function confirmBooking() {

@@ -26,20 +26,20 @@ $current_slug = 'test-slug';
 
   <!-- I MovieDetails View -->
 <h2>Bookingformular</h2>
-<form method="POST" action="<?= BASE_URL ?>index.php?page=handle_booking">
-
+<form method="POST" action="index.php?page=handle_booking">
     <label for="showtime">Vælg spilletid:</label>
     <select name="showing_id" id="showtime" required>
         <?php foreach ($showtimes as $showing): ?>
             <option value="<?= htmlspecialchars($showing['showing_id']) ?>">
                 <?= htmlspecialchars($showing['show_date']) ?> kl. <?= htmlspecialchars($showing['show_time']) ?>
-                (Skærm: <?= htmlspecialchars($showing['screen']) ?>, Ledige pladser: <?= htmlspecialchars($showing['available_spots']) ?>)
+                (Skærm: <?= htmlspecialchars($showing['screen'] ?? 'Ukendt skærm') ?>, Ledige pladser: <?= htmlspecialchars($showing['available_spots']) ?>)
             </option>
         <?php endforeach; ?>
     </select>
 
     <label for="spots">Antal pladser:</label>
     <input type="number" id="spots" name="spots" min="1" max="10" required>
+
     <button type="submit">Book nu</button>
 </form>
 
