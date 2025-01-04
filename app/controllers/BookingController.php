@@ -11,33 +11,47 @@ class BookingController {
         $this->pageLoader = new PageLoader($db);
     }
 
-    public function handleBooking() {
+     // Håndter forskellige handlinger
+     public function handleAction($action) {
         try {
-            // Debug POST-data
-            error_log("POST data: " . print_r($_POST, true));
-    
-            // Håndter input fra movie details
+            switch ($action) {
+                case 'handle_booking':
+                    $this->handleBooking();
+                    break;
+                case 'confirm_booking':
+                    $this->confirmBooking();
+                    break;
+                case 'cancel_booking':
+                    $this->cancelBooking();
+                    break;
+                default:
+                    throw new Exception("Ugyldig handling: $action");
+            }
+        } catch (Exception $e) {
+            $this->pageLoader->renderErrorPage(500, "Fejl under håndtering af booking: " . $e->getMessage());
+        }
+    }
+
+     // Håndter booking
+     private function handleBooking() {
+        try {
             $showingId = $_POST['showing_id'] ?? null;
             $spots = $_POST['spots'] ?? null;
-    
+
             if (empty($showingId) || empty($spots)) {
                 $this->pageLoader->renderErrorPage(400, "Ugyldig bookingforespørgsel. Vælg venligst en visning og antal pladser.");
                 return;
             }
-    
-            // Hent detaljer for visningen
+
             $showingDetails = $this->bookingModel->getShowingDetails($showingId);
-    
+
             if (!$showingDetails) {
-                error_log("Showing details not found for ID: $showingId");
                 $this->pageLoader->renderErrorPage(404, "Den valgte visning blev ikke fundet.");
                 return;
             }
-    
-            // Beregn den samlede pris
+
             $totalPrice = $showingDetails['price_per_ticket'] * $spots;
-    
-            // Gem bookingdata midlertidigt i session
+
             $_SESSION['pending_booking'] = [
                 'showing_id' => $showingId,
                 'spots' => $spots,
@@ -47,8 +61,7 @@ class BookingController {
                 'show_time' => $showingDetails['show_time'],
                 'price_per_ticket' => $showingDetails['price_per_ticket'],
             ];
-    
-            // Send til oversigtsside
+
             $this->pageLoader->renderPage('bookingSummary', $_SESSION['pending_booking'], 'user');
         } catch (Exception $e) {
             $this->pageLoader->renderErrorPage(500, "Fejl under håndtering af booking: " . $e->getMessage());
@@ -57,14 +70,14 @@ class BookingController {
     
     
 
-    public function confirmBooking() {
+    // Bekræft booking
+    private function confirmBooking() {
         try {
             if (!isset($_SESSION['user_id'])) {
                 $this->pageLoader->renderErrorPage(401, "Du skal være logget ind for at bekræfte en booking.");
                 return;
             }
 
-            // Hent data fra session
             $bookingData = $_SESSION['pending_booking'] ?? null;
 
             if (!$bookingData) {
@@ -72,7 +85,6 @@ class BookingController {
                 return;
             }
 
-            // Opret booking
             $isBooked = $this->bookingModel->createBooking($_SESSION['user_id'], $bookingData);
 
             if ($isBooked) {
@@ -85,8 +97,8 @@ class BookingController {
             $this->pageLoader->renderErrorPage(500, "Fejl under bekræftelse af booking: " . $e->getMessage());
         }
     }
-
-    public function cancelBooking() {
+       // Annuller booking
+       private function cancelBooking() {
         try {
             unset($_SESSION['pending_booking']);
             header("Location: index.php?page=homePage");
@@ -95,6 +107,7 @@ class BookingController {
             $this->pageLoader->renderErrorPage(500, "Fejl under annullering af booking: " . $e->getMessage());
         }
     }
+
 
     public function showReceipt() {
         try {

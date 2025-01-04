@@ -109,7 +109,7 @@ public function movie_details() {
 public function handle_booking() {
     try {
         $bookingController = new BookingController($this->db);
-        $bookingController->handleBooking();
+        $bookingController->handleAction('handle_booking');
     } catch (Exception $e) {
         $this->pageLoader->renderErrorPage(500, "Fejl under håndtering af booking: " . $e->getMessage());
     }
@@ -118,7 +118,7 @@ public function handle_booking() {
 public function confirm_booking() {
     try {
         $bookingController = new BookingController($this->db);
-        $bookingController->confirmBooking();
+        $bookingController->handleAction('confirm_booking');
     } catch (Exception $e) {
         $this->pageLoader->renderErrorPage(500, "Fejl under bekræftelse af booking: " . $e->getMessage());
     }
@@ -127,11 +127,12 @@ public function confirm_booking() {
 public function cancel_booking() {
     try {
         $bookingController = new BookingController($this->db);
-        $bookingController->cancelBooking();
+        $bookingController->handleAction('cancel_booking');
     } catch (Exception $e) {
         $this->pageLoader->renderErrorPage(500, "Fejl under annullering af booking: " . $e->getMessage());
     }
 }
+
 
 public function bookingSummary() {
     try {
