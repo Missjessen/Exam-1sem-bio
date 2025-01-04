@@ -43,7 +43,7 @@ class BookingController {
         ];
 
         // Send til oversigtsside
-        $this->pageLoader->renderPage('booking_summary', $_SESSION['pending_booking'], 'user');
+        $this->pageLoader->renderPage('bookingSummary', $_SESSION['pending_booking'], 'user');
     }
 
     public function confirmBooking() {
@@ -86,7 +86,7 @@ class BookingController {
         }
     
         // Send data til kvitteringsvisning
-        $this->pageLoader->renderPage('booking_receipt', $bookingData, 'user');
+        $this->pageLoader->renderPage('booking_Receipt', $bookingData, 'user');
     }
     
 
