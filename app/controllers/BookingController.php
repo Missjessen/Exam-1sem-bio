@@ -33,7 +33,7 @@ class BookingController {
     }
 
      // Håndter booking
-     private function handleBooking() {
+    public function handleBooking() {
         try {
             $showingId = $_POST['showing_id'] ?? null;
             $spots = $_POST['spots'] ?? null;
@@ -71,7 +71,7 @@ class BookingController {
     
 
     // Bekræft booking
-    private function confirmBooking() {
+    public function confirmBooking() {
         try {
             if (!isset($_SESSION['user_id'])) {
                 $this->pageLoader->renderErrorPage(401, "Du skal være logget ind for at bekræfte en booking.");
@@ -98,7 +98,7 @@ class BookingController {
         }
     }
        // Annuller booking
-       private function cancelBooking() {
+      public function cancelBooking() {
         try {
             unset($_SESSION['pending_booking']);
             header("Location: index.php?page=homePage");
