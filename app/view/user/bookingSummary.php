@@ -1,28 +1,52 @@
-<?php if (!isset($_SESSION)) { session_start(); } ?>
-
 <div class="booking-summary">
-    <h1>Booking Oversigt</h1>
+    <h1>Din Booking Oversigt</h1>
+    <p><strong>Film:</strong> <?= htmlspecialchars($movie_title) ?></p>
+    <p><strong>Dato:</strong> <?= htmlspecialchars($show_date) ?></p>
+    <p><strong>Tid:</strong> <?= htmlspecialchars($show_time) ?></p>
+    <p><strong>Antal pladser:</strong> <?= htmlspecialchars($spots) ?></p>
+    <p><strong>Total Pris:</strong> <?= htmlspecialchars($total_price) ?> DKK</p>
 
-    <?php if (!empty($_SESSION['pending_booking'])): ?>
-        <?php $booking = $_SESSION['pending_booking']; ?>
+    <?php if (!isset($_SESSION['user_id'])): ?>
+        <div class="login-register">
+            <h2>Log ind eller registrer for at bekræfte din booking</h2>
 
-        <p><strong>Film:</strong> <?= htmlspecialchars($booking['movie_title'], ENT_QUOTES, 'UTF-8') ?></p>
-        <p><strong>Dato:</strong> <?= htmlspecialchars($booking['show_date'], ENT_QUOTES, 'UTF-8') ?></p>
-        <p><strong>Tid:</strong> <?= htmlspecialchars($booking['show_time'], ENT_QUOTES, 'UTF-8') ?></p>
-        <p><strong>Antal pladser:</strong> <?= htmlspecialchars($booking['spots'], ENT_QUOTES, 'UTF-8') ?></p>
-        <p><strong>Pris per billet:</strong> <?= htmlspecialchars($booking['price_per_ticket'], ENT_QUOTES, 'UTF-8') ?> DKK</p>
-        <p><strong>Samlet pris:</strong> <?= htmlspecialchars($booking['total_price'], ENT_QUOTES, 'UTF-8') ?> DKK</p>
+            <!-- Login Form -->
+            <div class="login-form">
+                <h3>Log ind</h3>
+                <form method="POST" action="index.php?page=login">
+                    <label for="email">Email:</label>
+                    <input type="email" name="email" id="email" required>
+                    
+                    <label for="password">Adgangskode:</label>
+                    <input type="password" name="password" id="password" required>
+                    
+                    <button type="submit">Log ind</button>
+                </form>
+            </div>
 
-        <!-- Handlinger -->
+            <!-- Registration Form -->
+            <div class="register-form">
+                <h3>Registrer</h3>
+                <form method="POST" action="index.php?page=register">
+                    <label for="name">Navn:</label>
+                    <input type="text" name="name" id="name" required>
+                    
+                    <label for="email">Email:</label>
+                    <input type="email" name="email" id="email" required>
+                    
+                    <label for="password">Adgangskode:</label>
+                    <input type="password" name="password" id="password" required>
+                    
+                    <button type="submit">Registrer</button>
+                </form>
+            </div>
+        </div>
+    <?php else: ?>
         <form method="POST" action="index.php?page=confirm_booking">
             <button type="submit">Bekræft Booking</button>
         </form>
-
         <form method="POST" action="index.php?page=cancel_booking">
             <button type="submit">Annuller Booking</button>
         </form>
-
-    <?php else: ?>
-        <p>Ingen aktiv booking fundet.</p>
     <?php endif; ?>
 </div>
