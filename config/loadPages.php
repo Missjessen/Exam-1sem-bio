@@ -12,8 +12,11 @@ return [
         'movie' => ['view' => '/app/view/user/movie.php', 
         'css' => '/assets/css/movie.css'],
 
-        'bookingAndReceipt' => ['view' => '/app/view/user/bookingAndReceipt.php', 
-        'css' => '/assets/css/tickets.css'],
+        'bookingSummary' => ['view' => '/app/view/user/bookingSummary.php',
+        'css' => '/assets/css/bookingSummary.css'],
+
+        'booking_Receipt' => ['view' => '/app/view/user/booking_Receipt.php', 
+        'css' => '/assets/css/booking_Receipt.css'],
 
     
 

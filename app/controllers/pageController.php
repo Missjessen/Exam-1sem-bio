@@ -106,14 +106,10 @@ public function movie_details() {
 }
 
 
-
 public function handle_booking() {
     try {
-        $bookingController = new BookingController($this->db);
-
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Håndter bookingdata fra formularen
-            $bookingController->handleBooking($_POST);
+            $this->bookingController->handleBooking();
         } else {
             $this->pageLoader->renderErrorPage(400, "Ugyldig anmodning til booking.");
         }
@@ -122,13 +118,11 @@ public function handle_booking() {
     }
 }
 
+
 public function confirm_booking() {
     try {
-        $bookingController = new BookingController($this->db);
-
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Bekræft booking og gem den i databasen
-            $bookingController->confirmBooking($_POST);
+            $this->bookingController->confirmBooking();
         } else {
             $this->pageLoader->renderErrorPage(400, "Ugyldig anmodning til bekræftelse.");
         }
@@ -136,6 +130,7 @@ public function confirm_booking() {
         $this->pageLoader->renderErrorPage(500, "Fejl under bekræftelse af booking: " . $e->getMessage());
     }
 }
+
 
 public function cancel_booking() {
     try {
