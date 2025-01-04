@@ -26,7 +26,7 @@ $current_slug = 'test-slug';
 
   <!-- I MovieDetails View -->
 <h2>Bookingformular</h2>
-<form method="POST" action="?page=handle_booking">
+<form method="POST" action="index.php?page=handle_booking">
     <label for="showtime">Vælg spilletid:</label>
     <select name="showing_id" id="showtime" required>
         <?php foreach ($showtimes as $showing): ?>

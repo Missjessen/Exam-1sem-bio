@@ -108,8 +108,11 @@ public function movie_details() {
 
 public function handle_booking() {
     try {
+        $bookingController = new BookingController($this->db);
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->bookingController->handleBooking();
+            // Håndter bookingdata fra formularen
+            $bookingController->handleBooking();
         } else {
             $this->pageLoader->renderErrorPage(400, "Ugyldig anmodning til booking.");
         }
