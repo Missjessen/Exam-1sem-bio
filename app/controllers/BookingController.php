@@ -13,7 +13,12 @@ class BookingController {
 
     public function handleBooking() {
         try {
-            // Håndter input fra movie details
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                $this->pageLoader->renderErrorPage(400, "Ugyldig anmodning til booking.");
+                return;
+            }
+
+            // Håndter input fra formularen
             $showingId = $_POST['showing_id'] ?? null;
             $spots = $_POST['spots'] ?? null;
 
@@ -30,10 +35,10 @@ class BookingController {
                 return;
             }
 
-            // Beregn den samlede pris
+            // Beregn totalpris
             $totalPrice = $showingDetails['price_per_ticket'] * $spots;
 
-            // Gem bookingdata midlertidigt i session
+            // Gem midlertidig booking i session
             $_SESSION['pending_booking'] = [
                 'showing_id' => $showingId,
                 'spots' => $spots,
@@ -41,10 +46,10 @@ class BookingController {
                 'movie_title' => $showingDetails['movie_title'],
                 'show_date' => $showingDetails['show_date'],
                 'show_time' => $showingDetails['show_time'],
-                'price_per_ticket' => $showingDetails['price_per_ticket'],
+                'price_per_ticket' => $showingDetails['price_per_ticket']
             ];
 
-            // Send til oversigtsside (bookingSummary.php skal eksistere i views/user)
+            // Send brugeren til oversigtssiden
             $this->pageLoader->renderPage('bookingSummary', $_SESSION['pending_booking'], 'user');
         } catch (Exception $e) {
             $this->pageLoader->renderErrorPage(500, "Fejl under håndtering af booking: " . $e->getMessage());
@@ -70,13 +75,23 @@ class BookingController {
             $isBooked = $this->bookingModel->createBooking($_SESSION['user_id'], $bookingData);
 
             if ($isBooked) {
-                unset($_SESSION['pending_booking']); // Fjern midlertidige bookingdata
-                $this->pageLoader->renderPage('booking_success', [], 'user'); // Success view
+                unset($_SESSION['pending_booking']);
+                $this->pageLoader->renderPage('booking_success', [], 'user');
             } else {
                 $this->pageLoader->renderErrorPage(500, "Kunne ikke gennemføre bookingen. Prøv igen.");
             }
         } catch (Exception $e) {
             $this->pageLoader->renderErrorPage(500, "Fejl under bekræftelse af booking: " . $e->getMessage());
+        }
+    }
+
+    public function cancelBooking() {
+        try {
+            unset($_SESSION['pending_booking']);
+            header("Location: index.php?page=homePage");
+            exit;
+        } catch (Exception $e) {
+            $this->pageLoader->renderErrorPage(500, "Fejl under annullering af booking: " . $e->getMessage());
         }
     }
 
@@ -95,24 +110,12 @@ class BookingController {
                 return;
             }
 
-            // Send data til kvitteringsvisning
-            $this->pageLoader->renderPage('booking_Receipt', $bookingData, 'user'); // Kvitteringsvisning
+            // Render kvitteringsside
+            $this->pageLoader->renderPage('booking_receipt', $bookingData, 'user');
         } catch (Exception $e) {
             $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af kvitteringssiden: " . $e->getMessage());
         }
     }
-
-    public function cancelBooking() {
-        try {
-            unset($_SESSION['pending_booking']);
-            header("Location: index.php?page=homePage"); // Tilbage til forsiden
-            exit;
-        } catch (Exception $e) {
-            $this->pageLoader->renderErrorPage(500, "Fejl under annullering af booking: " . $e->getMessage());
-        }
-    }
-
-
     
     public function getTemporaryBooking() {
         return $_SESSION['temporary_booking'] ?? null;

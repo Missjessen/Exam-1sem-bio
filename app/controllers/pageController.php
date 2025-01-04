@@ -109,46 +109,30 @@ public function movie_details() {
 public function handle_booking() {
     try {
         $bookingController = new BookingController($this->db);
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Håndter bookingdata fra formularen
-            $bookingController->handleBooking();
-        } else {
-            $this->pageLoader->renderErrorPage(400, "Ugyldig anmodning til booking.");
-        }
+        $bookingController->handleBooking();
     } catch (Exception $e) {
         $this->pageLoader->renderErrorPage(500, "Fejl under håndtering af booking: " . $e->getMessage());
     }
 }
 
-
 public function confirm_booking() {
     try {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->bookingController->confirmBooking();
-        } else {
-            $this->pageLoader->renderErrorPage(400, "Ugyldig anmodning til bekræftelse.");
-        }
+        $bookingController = new BookingController($this->db);
+        $bookingController->confirmBooking();
     } catch (Exception $e) {
         $this->pageLoader->renderErrorPage(500, "Fejl under bekræftelse af booking: " . $e->getMessage());
     }
 }
 
-
 public function cancel_booking() {
     try {
         $bookingController = new BookingController($this->db);
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Annuller booking baseret på data
-            $bookingController->cancelBooking($_POST);
-        } else {
-            $this->pageLoader->renderErrorPage(400, "Ugyldig anmodning til annullering.");
-        }
+        $bookingController->cancelBooking();
     } catch (Exception $e) {
         $this->pageLoader->renderErrorPage(500, "Fejl under annullering af booking: " . $e->getMessage());
     }
 }
+
 
 
 public function booking_Receipt() {
