@@ -2,14 +2,16 @@
     <!-- Booking Card -->
     <div class="booking-card">
         <h2>Din Booking Oversigt</h2>
-        <?php if (!empty($booking)): ?>
+        <?php if (!isset($_SESSION['pending_booking'])): ?>
+            <p>Ingen bookingdata fundet. Start en ny booking.</p>
+            <a href="index.php?page=program" class="btn-go-to-program">Se Program</a>
+        <?php else: ?>
+            <?php $booking = $_SESSION['pending_booking']; ?>
             <p><strong>Film:</strong> <?= htmlspecialchars($booking['movie_title']) ?></p>
             <p><strong>Dato:</strong> <?= htmlspecialchars($booking['show_date']) ?></p>
             <p><strong>Tid:</strong> <?= htmlspecialchars($booking['show_time']) ?></p>
             <p><strong>Antal pladser:</strong> <?= htmlspecialchars($booking['spots']) ?></p>
             <p><strong>Total Pris:</strong> <?= htmlspecialchars($booking['total_price']) ?> DKK</p>
-        <?php else: ?>
-            <p>Ingen bookingdata fundet.</p>
         <?php endif; ?>
     </div>
 
@@ -60,6 +62,71 @@
         <?php endif; ?>
     </div>
 </div>
+<div class="booking-summary-container">
+    <!-- Booking Card -->
+    <div class="booking-card">
+        <h2>Din Booking Oversigt</h2>
+        <?php if (!isset($_SESSION['pending_booking'])): ?>
+            <p>Ingen bookingdata fundet. Start en ny booking.</p>
+            <a href="index.php?page=program" class="btn-go-to-program">Se Program</a>
+        <?php else: ?>
+            <?php $booking = $_SESSION['pending_booking']; ?>
+            <p><strong>Film:</strong> <?= htmlspecialchars($booking['movie_title']) ?></p>
+            <p><strong>Dato:</strong> <?= htmlspecialchars($booking['show_date']) ?></p>
+            <p><strong>Tid:</strong> <?= htmlspecialchars($booking['show_time']) ?></p>
+            <p><strong>Antal pladser:</strong> <?= htmlspecialchars($booking['spots']) ?></p>
+            <p><strong>Total Pris:</strong> <?= htmlspecialchars($booking['total_price']) ?> DKK</p>
+        <?php endif; ?>
+    </div>
+
+    <!-- Login/Register Section -->
+    <div class="user-auth-card">
+        <?php if (!isset($_SESSION['user_id'])): ?>
+            <h3>Log ind eller registrer for at bekræfte din booking</h3>
+
+            <!-- Login Form -->
+            <div class="login-form">
+                <h4>Log ind</h4>
+                <form method="POST" action="index.php?page=login">
+                    <label for="email-login">Email:</label>
+                    <input type="email" name="email" id="email-login" required>
+                    
+                    <label for="password-login">Adgangskode:</label>
+                    <input type="password" name="password" id="password-login" required>
+                    
+                    <button type="submit" class="btn-login">Log ind</button>
+                </form>
+            </div>
+
+            <!-- Registration Form -->
+            <div class="register-form">
+                <h4>Registrer</h4>
+                <form method="POST" action="index.php?page=register">
+                    <label for="name-register">Navn:</label>
+                    <input type="text" name="name" id="name-register" required>
+                    
+                    <label for="email-register">Email:</label>
+                    <input type="email" name="email" id="email-register" required>
+                    
+                    <label for="password-register">Adgangskode:</label>
+                    <input type="password" name="password" id="password-register" required>
+                    
+                    <button type="submit" class="btn-register">Registrer</button>
+                </form>
+            </div>
+        <?php else: ?>
+            <!-- Logged-In Section -->
+            <div class="logged-in-message">
+                <h3>Du er logget ind som: <?= htmlspecialchars($_SESSION['user_name']) ?></h3>
+                <p>Klik på knappen nedenfor for at bekræfte din booking.</p>
+                <form method="POST" action="index.php?page=confirm_booking">
+                    <button type="submit" class="btn-confirm">Bekræft Booking</button>
+                </form>
+            </div>
+        <?php endif; ?>
+    </div>
+</div>
+
  <style>.booking-summary-container {
     display: flex;
     justify-content: space-between;

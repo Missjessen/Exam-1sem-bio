@@ -35,44 +35,62 @@ class BookingController {
     // Håndter booking
     public function handleBooking() {
         try {
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $showingId = $_POST['showing_id'] ?? null;
-                $spots = $_POST['spots'] ?? null;
+            // Tjek om request er en POST-anmodning
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                throw new Exception("Ugyldig anmodning. Kun POST er tilladt.");
+            }
     
-                if (empty($showingId) || empty($spots)) {
-                    throw new Exception("Ugyldige data til booking.");
-                }
-    
-                // Eksempel på hentning af data for visningen fra databasen
-                $showingDetails = $this->bookingModel->getShowingDetails($showingId);
-                if (!$showingDetails) {
-                    throw new Exception("Visningen kunne ikke findes.");
-                }
-    
-                // Beregn den samlede pris
-                $totalPrice = $showingDetails['price_per_ticket'] * $spots;
-    
-                // Gem data i sessionen
+            // Tjek om brugeren er logget ind
+            if (!isset($_SESSION['user_id'])) {
+                // Hvis brugeren ikke er logget ind, gem bookingdata i sessionen
                 $_SESSION['pending_booking'] = [
-                    'showing_id' => $showingId,
-                    'spots' => $spots,
-                    'total_price' => $totalPrice,
-                    'movie_title' => $showingDetails['movie_title'],
-                    'show_date' => $showingDetails['show_date'],
-                    'show_time' => $showingDetails['show_time'],
-                    'price_per_ticket' => $showingDetails['price_per_ticket'],
+                    'showing_id' => $_POST['showing_id'] ?? null,
+                    'spots' => $_POST['spots'] ?? null,
                 ];
     
-                // Redirect til booking oversigt
-                header("Location: index.php?page=handle_booking");
+                // Redirect til login-siden med en redirect-url
+                $_SESSION['redirect_url'] = "index.php?page=handle_booking";
+                header("Location: index.php?page=login");
                 exit;
-            } else {
-                throw new Exception("Ugyldig anmodning.");
             }
+    
+            // Hent bookingdata fra POST
+            $showingId = $_POST['showing_id'] ?? null;
+            $spots = $_POST['spots'] ?? null;
+    
+            if (empty($showingId) || empty($spots)) {
+                throw new Exception("Ugyldige data til booking.");
+            }
+    
+            // Hent detaljer for visningen fra databasen
+            $showingDetails = $this->bookingModel->getShowingDetails($showingId);
+            if (!$showingDetails) {
+                throw new Exception("Visningen kunne ikke findes.");
+            }
+    
+            // Beregn den samlede pris
+            $totalPrice = $showingDetails['price_per_ticket'] * $spots;
+    
+            // Gem bookingdata i sessionen
+            $_SESSION['pending_booking'] = [
+                'showing_id' => $showingId,
+                'spots' => $spots,
+                'total_price' => $totalPrice,
+                'movie_title' => $showingDetails['movie_title'],
+                'show_date' => $showingDetails['show_date'],
+                'show_time' => $showingDetails['show_time'],
+                'price_per_ticket' => $showingDetails['price_per_ticket'],
+            ];
+    
+            // Redirect til booking oversigt
+            header("Location: index.php?page=bookingSummary");
+            exit;
         } catch (Exception $e) {
+            // Hvis en fejl opstår, vis en fejlside
             $this->pageLoader->renderErrorPage(500, "Fejl under håndtering af booking: " . $e->getMessage());
         }
     }
+    
     
     
 

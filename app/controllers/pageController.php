@@ -328,18 +328,22 @@ public function admin_showings() {
     
                 $authController = new AuthController($this->db);
                 if ($authController->loginUser($email, $password)) {
-                    header("Location: index.php?page=profile");
+                    // Tjek om der er en redirect URL
+                    $redirectUrl = $_SESSION['redirect_url'] ?? 'index.php?page=homePage';
+                    unset($_SESSION['redirect_url']); // Fjern redirect URL efter login
+                    header("Location: $redirectUrl");
                     exit;
                 } else {
-                    $this->pageLoader->renderPage('login', ['error' => 'Forkert email eller adgangskode.'], 'auth');
+                    $this->pageLoader->renderPage('login', ['error' => 'Forkert email eller adgangskode.'], 'user');
                 }
             } else {
-                $this->pageLoader->renderPage('login', [], 'auth');
+                $this->pageLoader->renderErrorPage(400, "Ugyldig anmodning til login.");
             }
         } catch (Exception $e) {
-            $this->pageLoader->renderPage('login', ['error' => $e->getMessage()], 'auth');
+            $this->pageLoader->renderErrorPage(500, "Fejl under login: " . $e->getMessage());
         }
     }
+    
     
     public function requireLogin() {
         if (!isset($_SESSION['user_id'])) {
