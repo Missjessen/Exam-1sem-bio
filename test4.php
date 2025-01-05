@@ -16,13 +16,13 @@ $pageLoader = new PageLoader($db);
 
 // Test cases
 echo "<h2>Test 1: Registrering</h2>";
-$authController->registerUser("Test Bruger", "testuser39005@example.com", "password123");
+$authController->registerUser("Test Bruger", "testuser390j05@example.com", "password123");
 
 echo "<h2>Test 2: Login med korrekt data</h2>";
-$authController->loginUser("testuser20905@example.com", "password1234");
+$authController->loginUser("testuser209905@example.com", "password1234");
 
 echo "<h2>Test 3: Login med forkert data</h2>";
-$authController->loginUser("testuser10050@example.com", "wrongpassword");
+$authController->loginUser("testuser10j050@example.com", "wrongpassword");
 
 echo "<h2>Test 4: Start en booking</h2>";
 $_POST['showing_id'] = 1; // Testvisning
