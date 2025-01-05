@@ -35,12 +35,10 @@ class BookingController {
     // Håndter booking
     public function handleBooking() {
         try {
-            // Tjek om anmodningen er en POST
             if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
                 throw new Exception("Ugyldig anmodning. Kun POST er tilladt.");
             }
     
-            // Hent data fra POST
             $showingId = $_POST['showing_id'] ?? null;
             $spots = $_POST['spots'] ?? null;
     
@@ -48,16 +46,16 @@ class BookingController {
                 throw new Exception("Ugyldige data til booking.");
             }
     
-            // Hent visningsdetaljer fra modellen
+            // Hent visningsdetaljer
             $showingDetails = $this->bookingModel->getShowingDetails($showingId);
             if (!$showingDetails) {
                 throw new Exception("Visningen kunne ikke findes.");
             }
     
-            // Beregn den samlede pris
+            // Beregn totalpris
             $totalPrice = $showingDetails['price_per_ticket'] * $spots;
     
-            // Gem data i sessionen
+            // Gem bookingdata i sessionen
             $_SESSION['pending_booking'] = [
                 'showing_id' => $showingId,
                 'spots' => $spots,
@@ -72,9 +70,11 @@ class BookingController {
             header("Location: index.php?page=bookingSummary");
             exit;
         } catch (Exception $e) {
+            error_log("Fejl under håndtering af booking: " . $e->getMessage());
             $this->pageLoader->renderErrorPage(500, "Fejl under håndtering af booking: " . $e->getMessage());
         }
     }
+    
     
     
     
