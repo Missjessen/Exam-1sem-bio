@@ -34,16 +34,18 @@ class BookingModel extends CrudBase {
     // Opret en ny booking
     public function createBooking($customerId, $bookingData) {
         $query = "
-            INSERT INTO bookings (customer_id, showing_id, spots_reserved, total_price, status)
-            VALUES (:customer_id, :showing_id, :spots_reserved, :total_price, 'confirmed')
+            INSERT INTO bookings (customer_id, showing_id, spots_reserved, total_price, price_per_ticket, status)
+            VALUES (:customer_id, :showing_id, :spots_reserved, :total_price, :price_per_ticket, 'confirmed')
         ";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':customer_id', $customerId, PDO::PARAM_INT);
         $stmt->bindParam(':showing_id', $bookingData['showing_id'], PDO::PARAM_INT);
         $stmt->bindParam(':spots_reserved', $bookingData['spots'], PDO::PARAM_INT);
         $stmt->bindParam(':total_price', $bookingData['total_price'], PDO::PARAM_STR);
+        $stmt->bindParam(':price_per_ticket', $bookingData['price_per_ticket'], PDO::PARAM_STR);
         return $stmt->execute();
     }
+    
 
     // Hent bookinger for en specifik bruger
     public function getBookingsByUser($userId) {

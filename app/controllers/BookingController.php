@@ -102,16 +102,17 @@ public function handleBooking() {
                 $this->pageLoader->renderErrorPage(401, "Du skal være logget ind for at bekræfte en booking.");
                 return;
             }
-
+    
             $bookingData = $_SESSION['pending_booking'] ?? null;
-
+    
             if (!$bookingData) {
                 $this->pageLoader->renderErrorPage(400, "Ingen bookingdata fundet.");
                 return;
             }
-
+    
+            // Send data til modellen for at oprette bookingen
             $isBooked = $this->bookingModel->createBooking($_SESSION['user_id'], $bookingData);
-
+    
             if ($isBooked) {
                 unset($_SESSION['pending_booking']);
                 $this->pageLoader->renderPage('booking_success', [], 'user');
@@ -122,6 +123,7 @@ public function handleBooking() {
             $this->pageLoader->renderErrorPage(500, "Fejl under bekræftelse af booking: " . $e->getMessage());
         }
     }
+    
        // Annuller booking
       public function cancelBooking() {
         try {
