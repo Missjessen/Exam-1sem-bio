@@ -41,7 +41,7 @@ $bookingController->confirmBooking();
 
 echo "<h2>Test 7: Se profil</h2>";
 $pageLoader->renderPage('profile', [
-    'bookings' => $bookingController->bookingModel->getBookingsByUser($_SESSION['user_id'] ?? 0)
+    'bookings' => $BookingController->bookingModel->getBookingsByUser($_SESSION['user_id'] ?? 0)
 ]);
 
 echo "<h2>Test 8: Logout</h2>";
