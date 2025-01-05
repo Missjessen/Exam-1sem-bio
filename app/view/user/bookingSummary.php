@@ -2,11 +2,15 @@
     <!-- Booking Card -->
     <div class="booking-card">
         <h2>Din Booking Oversigt</h2>
-        <p><strong>Film:</strong> <?= htmlspecialchars($booking['movie_title']) ?></p>
-        <p><strong>Dato:</strong> <?= htmlspecialchars($booking['show_date']) ?></p>
-        <p><strong>Tid:</strong> <?= htmlspecialchars($booking['show_time']) ?></p>
-        <p><strong>Antal pladser:</strong> <?= htmlspecialchars($booking['spots']) ?></p>
-        <p><strong>Total Pris:</strong> <?= htmlspecialchars($booking['total_price']) ?> DKK</p>
+        <?php if (!empty($booking)): ?>
+            <p><strong>Film:</strong> <?= htmlspecialchars($booking['movie_title']) ?></p>
+            <p><strong>Dato:</strong> <?= htmlspecialchars($booking['show_date']) ?></p>
+            <p><strong>Tid:</strong> <?= htmlspecialchars($booking['show_time']) ?></p>
+            <p><strong>Antal pladser:</strong> <?= htmlspecialchars($booking['spots']) ?></p>
+            <p><strong>Total Pris:</strong> <?= htmlspecialchars($booking['total_price']) ?> DKK</p>
+        <?php else: ?>
+            <p>Ingen bookingdata fundet.</p>
+        <?php endif; ?>
     </div>
 
     <!-- Login/Register Section -->
@@ -56,9 +60,7 @@
         <?php endif; ?>
     </div>
 </div>
-
-
-<style>.booking-summary-container {
+ <style>.booking-summary-container {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;

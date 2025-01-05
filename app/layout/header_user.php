@@ -40,12 +40,13 @@ $current_slug = $_REQUEST['slug'] ?? '';
             <li class="<?= $current_page === 'program' ? 'active' : '' ?>"><a href="?page=program">Program</a></li>
             <li class="<?= $current_page === 'admin_dashboard' ? 'active' : '' ?>"><a href="?page=admin_dashboard">Admin</a></li>
             <?php if (isset($_SESSION['user_id'])): ?>
-        <a href="index.php?page=profile">Min Profil</a>
-        <a href="index.php?page=logout">Log ud</a>
-    <?php else: ?>
-        <a href="index.php?page=login">Log ind</a>
-        <a href="index.php?page=register">Registrer</a>
-    <?php endif; ?>
+    <p>Velkommen, <?= htmlspecialchars($_SESSION['user_name']); ?>!</p>
+    <a href="index.php?page=profile">Min Profil</a>
+    <a href="index.php?page=logout">Log ud</a>
+<?php else: ?>
+    <a href="index.php?page=login">Log ind</a>
+    <a href="index.php?page=register">Registrer</a>
+<?php endif; ?>
         </ul>
 
    
