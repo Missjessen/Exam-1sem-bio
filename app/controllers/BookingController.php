@@ -83,11 +83,21 @@ class BookingController {
     // Bekræft booking
     public function confirmBooking() {
         try {
+            // Kontrollér, om brugeren er logget ind
             if (!isset($_SESSION['user_id'])) {
-                $this->pageLoader->renderErrorPage(401, "Du skal være logget ind for at bekræfte en booking.");
-                return;
+                // Hvis brugeren ikke er logget ind, gem redirect URL og bookingdata midlertidigt
+                $_SESSION['redirect_url'] = "index.php?page=confirm_booking";
+                $_SESSION['pending_booking'] = $_SESSION['pending_booking'] ?? null;
+    
+                // Omdiriger til login-siden
+                header("Location: index.php?page=login");
+                exit;
             }
     
+            // Hent bruger-ID fra sessionen
+            $customerId = $_SESSION['user_id'];
+    
+            // Hent bookingdata fra sessionen
             $bookingData = $_SESSION['pending_booking'] ?? null;
     
             if (!$bookingData) {
@@ -95,12 +105,15 @@ class BookingController {
                 return;
             }
     
-            // Bekræft booking i databasen
-            $isBooked = $this->bookingModel->createBooking($_SESSION['user_id'], $bookingData);
+            // Gem bookingdata i databasen
+            $isBooked = $this->bookingModel->createBooking($customerId, $bookingData);
     
             if ($isBooked) {
-                // Fjern den midlertidige booking og overfør data til success-siden
-                $this->pageLoader->renderPage('booking_success', ['booking' => $bookingData], 'user');
+                // Fjern midlertidige bookingdata fra sessionen
+                unset($_SESSION['pending_booking']);
+    
+                // Vis en succes-side
+                $this->pageLoader->renderPage('booking_success', $bookingData, 'user');
             } else {
                 $this->pageLoader->renderErrorPage(500, "Kunne ikke gennemføre bookingen. Prøv igen.");
             }
@@ -108,6 +121,7 @@ class BookingController {
             $this->pageLoader->renderErrorPage(500, "Fejl under bekræftelse af booking: " . $e->getMessage());
         }
     }
+    
     
     
        // Annuller booking

@@ -13,35 +13,51 @@ class AuthController {
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':email', $email, PDO::PARAM_STR);
             $stmt->execute();
-
+    
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
+    
             if ($user && password_verify($password, $user['password'])) {
-                // Gem brugeroplysninger i session
+                // Gem brugerdata i session
                 $_SESSION['user_id'] = $user['id'];
-                $_SESSION['user_role'] = 'customer';
                 return true;
+            } else {
+                return false;
             }
-
-            return false;
-        } catch (PDOException $e) {
+        } catch (Exception $e) {
             throw new Exception("Fejl ved login: " . $e->getMessage());
         }
     }
+    
+    
 
     public function registerUser($name, $email, $password) {
         try {
+            // Tjek for eksisterende bruger
+            $query = "SELECT id FROM customers WHERE email = :email";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+            $stmt->execute();
+    
+            if ($stmt->fetch(PDO::FETCH_ASSOC)) {
+                throw new Exception("En bruger med denne e-mail eksisterer allerede.");
+            }
+    
+            // Hash adgangskode og indsæt ny bruger
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
             $query = "INSERT INTO customers (name, email, password) VALUES (:name, :email, :password)";
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':name', $name, PDO::PARAM_STR);
             $stmt->bindParam(':email', $email, PDO::PARAM_STR);
             $stmt->bindParam(':password', $hashedPassword, PDO::PARAM_STR);
-            return $stmt->execute();
-        } catch (PDOException $e) {
+            $stmt->execute();
+    
+            return true;
+        } catch (Exception $e) {
             throw new Exception("Fejl ved registrering: " . $e->getMessage());
         }
     }
+    
+    
 
     public function emailExists($email) {
         $query = "SELECT COUNT(*) FROM customers WHERE email = :email";

@@ -299,31 +299,6 @@ public function admin_showings() {
     
     
     
-    public function login() {
-        try {
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $email = trim($_POST['email']);
-                $password = trim($_POST['password']);
-    
-                $authController = new AuthController($this->db);
-                if ($authController->loginUser($email, $password)) {
-                    // Tjek, om der er en redirect URL gemt i sessionen
-                    $redirectUrl = $_SESSION['redirect_url'] ?? 'index.php?page=homePage';
-                    unset($_SESSION['redirect_url']); // Fjern redirect URL efter login
-                    header("Location: $redirectUrl");
-                    exit;
-                } else {
-                    $this->pageLoader->renderPage('login', ['error' => 'Forkert email eller adgangskode.'], 'user');
-                }
-            } else {
-                $this->pageLoader->renderErrorPage(400, "Ugyldig anmodning til login.");
-            }
-        } catch (Exception $e) {
-            $this->pageLoader->renderErrorPage(500, "Fejl under login: " . $e->getMessage());
-        }
-    }
-    
-    
     public function register() {
         try {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -332,26 +307,49 @@ public function admin_showings() {
                 $password = trim($_POST['password']);
     
                 $authController = new AuthController($this->db);
-                if ($authController->registerUser($name, $email, $password)) {
-                    // Log brugeren ind efter registrering
-                    $authController->loginUser($email, $password);
+                $authController->registerUser($name, $email, $password);
     
-                    // Tjek redirect URL
-                    $redirectUrl = $_SESSION['redirect_url'] ?? 'index.php?page=homePage';
-                    unset($_SESSION['redirect_url']); // Fjern redirect URL efter login
-                    header("Location: $redirectUrl");
-                    exit;
-                } else {
-                    $this->pageLoader->renderPage('register', ['error' => 'Registreringen mislykkedes. Prøv igen.'], 'user');
-                }
+                // Automatisk login efter registrering
+                $authController->loginUser($email, $password);
+    
+                header("Location: index.php?page=profile");
+                exit;
             } else {
-                $this->pageLoader->renderErrorPage(400, "Ugyldig anmodning til registrering.");
+                $this->pageLoader->renderPage('register', [], 'auth');
             }
         } catch (Exception $e) {
-            $this->pageLoader->renderErrorPage(500, "Fejl under registrering: " . $e->getMessage());
+            $this->pageLoader->renderPage('register', ['error' => $e->getMessage()], 'auth');
         }
     }
     
+    public function login() {
+        try {
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $email = trim($_POST['email']);
+                $password = trim($_POST['password']);
+    
+                $authController = new AuthController($this->db);
+                if ($authController->loginUser($email, $password)) {
+                    header("Location: index.php?page=profile");
+                    exit;
+                } else {
+                    $this->pageLoader->renderPage('login', ['error' => 'Forkert email eller adgangskode.'], 'auth');
+                }
+            } else {
+                $this->pageLoader->renderPage('login', [], 'auth');
+            }
+        } catch (Exception $e) {
+            $this->pageLoader->renderPage('login', ['error' => $e->getMessage()], 'auth');
+        }
+    }
+    
+    public function requireLogin() {
+        if (!isset($_SESSION['user_id'])) {
+            // Hvis brugeren ikke er logget ind, omdiriger dem til login-siden
+            header("Location: index.php?page=login");
+            exit;
+        }
+    }
     
     
     public function logout() {
