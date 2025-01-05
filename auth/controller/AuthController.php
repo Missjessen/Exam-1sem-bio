@@ -17,9 +17,9 @@ class AuthController {
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
     
             if ($user && password_verify($password, $user['password'])) {
-                // Sæt session med brugeroplysninger
+                // Sæt brugeroplysninger i sessionen
                 $_SESSION['user_id'] = $user['id'];
-                $_SESSION['user_name'] = $user['name'];
+                $_SESSION['user_name'] = $user['name']; // Gem brugerens navn
                 return true;
             }
     
@@ -28,6 +28,7 @@ class AuthController {
             throw new Exception("Fejl ved login: " . $e->getMessage());
         }
     }
+    
     
     
     
