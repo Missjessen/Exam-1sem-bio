@@ -52,12 +52,45 @@ class BookingModel extends CrudBase {
         $query = "
             SELECT 
                 b.id AS booking_id,
+                b.spots_reserved,
+                b.total_price,
+                b.status,
+                b.created_at,
+                s.show_date,
+                s.show_time,
+                m.title AS movie_title,
+                c.name AS customer_name,
+                c.email AS customer_email
+            FROM 
+                bookings b
+            JOIN 
+                showings s ON b.showing_id = s.id
+            JOIN 
+                movies m ON s.movie_id = m.id
+            JOIN 
+                customers c ON b.customer_id = c.id
+            WHERE 
+                b.customer_id = :customer_id
+            ORDER BY 
+                b.created_at DESC
+        ";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':customer_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+    public function getUserBookings($userId) {
+        $query = "
+            SELECT 
+                b.id AS booking_id,
                 m.title AS movie_title,
                 s.show_date,
                 s.show_time,
                 b.spots_reserved,
                 b.total_price,
-                b.status
+                b.status,
+                b.created_at
             FROM 
                 bookings b
             JOIN 
@@ -69,10 +102,12 @@ class BookingModel extends CrudBase {
             ORDER BY 
                 s.show_date DESC, s.show_time DESC
         ";
+    
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':customer_id', $userId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    
 }
 

@@ -264,13 +264,39 @@ public function admin_showings() {
             }
     
             $userId = $_SESSION['user_id'];
-            $bookings = $this->bookingModel->getBookingsByUser($userId);
     
-            $this->pageLoader->renderPage('profile', ['bookings' => $bookings], 'user');
+            // Hent brugerdata (fra AuthController eller UserModel)
+            $authController = new AuthController($this->db);
+            $user = $authController->getUserById($userId);
+    
+            // Hent bookinger
+            $bookings = $this->bookingModel->getUserBookings($userId);
+    
+            // Opdel bookinger i aktuelle og tidligere
+            $currentDate = date('Y-m-d H:i:s');
+            $currentBookings = [];
+            $pastBookings = [];
+    
+            foreach ($bookings as $booking) {
+                $showDateTime = $booking['show_date'] . ' ' . $booking['show_time'];
+                if ($showDateTime >= $currentDate) {
+                    $currentBookings[] = $booking;
+                } else {
+                    $pastBookings[] = $booking;
+                }
+            }
+    
+            // Render profilen med data
+            $this->pageLoader->renderPage('profile', [
+                'user' => $user,
+                'currentBookings' => $currentBookings,
+                'pastBookings' => $pastBookings
+            ], 'user');
         } catch (Exception $e) {
             $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af profil: " . $e->getMessage());
         }
     }
+    
     
     
     public function login() {

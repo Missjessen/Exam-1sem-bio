@@ -65,4 +65,13 @@ class AuthController {
     public function getCurrentUserId() {
         return $_SESSION['user_id'] ?? null;
     }
+
+    public function getUserById($userId) {
+        $query = "SELECT id, name, email, created_at FROM customers WHERE id = :id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    
 }
