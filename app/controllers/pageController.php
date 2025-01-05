@@ -256,58 +256,28 @@ public function admin_showings() {
         $this->pageLoader->renderErrorPage(500, $message);
     }
 
-    public function admin_login() {
-        try {
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $email = trim($_POST['email']);
-                $password = trim($_POST['password']);
-    
-                $authController = new AuthController($this->db);
-    
-                if ($authController->loginAdmin($email, $password)) {
-                    // Brug BASE_URL til omdirigering
-                    header("Location: " . BASE_URL . "/index.php?page=admin_dashboard");
-                    exit;
-                } else {
-                    $data = ['error' => 'Forkert email eller adgangskode.'];
-                    // Render siden med fejl
-                    $this->pageLoader->renderPage('admin_login', $data, 'admin');
-                }
-            } else {
-                // Hvis GET, vis login-siden
-                $this->pageLoader->renderPage('admin_login', [], 'admin');
-            }
-        } catch (Exception $e) {
-            $this->pageLoader->renderErrorPage(500, "Fejl under admin-login: " . $e->getMessage());
-        }
-    }
-    
-    
     public function login() {
         try {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $email = trim($_POST['email']);
                 $password = trim($_POST['password']);
-        
+            
                 $authController = new AuthController($this->db);
                 if ($authController->loginUser($email, $password)) {
-                    header("Location: index.php?page=profile");
+                    // Hvis login er succesfuldt, send brugeren tilbage til booking oversigten
+                    header("Location: index.php?page=handle_booking");
                     exit;
                 } else {
-                    $data = ['error' => 'Forkert email eller adgangskode.'];
-                    $this->pageLoader->renderPage('login', $data, 'user');
+                    $this->pageLoader->renderPage('bookingSummary', ['error' => 'Forkert email eller adgangskode.'], 'user');
                 }
             } else {
-                $this->pageLoader->renderPage('login', [], 'user');
+                $this->pageLoader->renderErrorPage(400, "Ugyldig anmodning til login.");
             }
         } catch (Exception $e) {
             $this->pageLoader->renderErrorPage(500, "Fejl under login: " . $e->getMessage());
         }
     }
     
-
-    
-
     public function register() {
         try {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -315,27 +285,22 @@ public function admin_showings() {
                 $email = trim($_POST['email']);
                 $password = trim($_POST['password']);
     
-                // Validering
-                if (empty($name) || empty($email) || empty($password)) {
-                    $data = ['error' => 'Alle felter skal udfyldes.'];
-                    $this->pageLoader->renderPage('register', $data, 'auth');
-                    return;
-                }
-    
-                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                    $data = ['error' => 'Indtast en gyldig email-adresse.'];
-                    $this->pageLoader->renderPage('register', $data, 'auth');
-                    return;
-                }
-    
                 $authController = new AuthController($this->db);
-                $authController->registerUser($name, $email, $password);
+                if ($authController->registerUser($name, $email, $password)) {
+                    // Log automatisk brugeren ind efter registrering
+                    $authController->loginUser($email, $password);
+                    header("Location: index.php?page=handle_booking");
+                    exit;
+                } else {
+                    $this->pageLoader->renderPage('bookingSummary', ['error' => 'Registreringen mislykkedes. Prøv igen.'], 'user');
+                }
             } else {
-                $this->pageLoader->renderPage('register', [], 'auth');
+                $this->pageLoader->renderErrorPage(400, "Ugyldig anmodning til registrering.");
             }
         } catch (Exception $e) {
-            $this->pageLoader->renderPage('register', ['error' => $e->getMessage()], 'auth');
+            $this->pageLoader->renderErrorPage(500, "Fejl under registrering: " . $e->getMessage());
         }
     }
+    
 
 }

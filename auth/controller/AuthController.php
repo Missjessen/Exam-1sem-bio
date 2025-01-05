@@ -1,63 +1,37 @@
 <?php 
 
 class AuthController {
-    private $userModel;
-    private $adminModel;
-   
+    private $db;
 
     public function __construct($db) {
-        $this->userModel = new UserModel($db);
-        $this->adminModel = new AdminModel($db);
-       
+        $this->db = $db;
     }
 
     public function loginUser($email, $password) {
-        session_start();
-        $user = $this->userModel->getUserByEmail($email);
+        $query = "SELECT id, password FROM customers WHERE email = :email";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+
+        $stmt->execute();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user && password_verify($password, $user['password'])) {
             $_SESSION['user_id'] = $user['id'];
-            $_SESSION['username'] = $user['name'];
             return true;
         }
-        throw new Exception("Forkert email eller adgangskode.");
-    }
 
-     // Admin login-metode
-     public function loginAdmin($email, $password) {
-        session_start();
-
-        $admin = $this->adminModel->getAdminByEmail($email);
-        if ($admin && password_verify($password, $admin['password'])) {
-            $_SESSION['admin_id'] = $admin['id'];
-            $_SESSION['username'] = $admin['name'];
-            $_SESSION['role'] = 'admin';
-            return true;
-        }
-        throw new Exception("Forkert email eller adgangskode.");
-    }
-
-
-    public function logout() {
-        session_start();
-        session_unset();
-        session_destroy();
-        header("Location: " . BASE_URL . "index.php?page=homePage");
-        exit;
+        return false;
     }
 
     public function registerUser($name, $email, $password) {
-        if ($this->userModel->emailExists($email)) {
-            throw new Exception("Emailen er allerede registreret.");
-        }
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-        // Opret brugeren
-        $this->userModel->createUser($name, $email, $password);
+        $query = "INSERT INTO customers (name, email, password) VALUES (:name, :email, :password)";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':name', $name, PDO::PARAM_STR);
+        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+        $stmt->bindParam(':password', $hashedPassword, PDO::PARAM_STR);
 
-        // Sæt en besked og omdiriger til login-siden
-        $_SESSION['message'] = "Din profil er oprettet. Du kan nu logge ind.";
-        header("Location: index.php?page=login");
-        exit;
+        return $stmt->execute();
     }
-
 }
