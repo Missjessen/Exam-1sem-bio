@@ -35,45 +35,45 @@ class BookingController {
     // Håndter booking
     public function handleBooking() {
         try {
-            // Kontrollér, om POST-data er sendt korrekt
-            $showingId = $_POST['showing_id'] ?? null;
-            $spots = $_POST['spots'] ?? null;
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $showingId = $_POST['showing_id'] ?? null;
+                $spots = $_POST['spots'] ?? null;
     
-            if (empty($showingId) || empty($spots)) {
-                throw new Exception("Ugyldig bookingforespørgsel. Mangler showing_id eller spots.");
+                if (empty($showingId) || empty($spots)) {
+                    throw new Exception("Ugyldige data til booking.");
+                }
+    
+                // Eksempel på hentning af data for visningen fra databasen
+                $showingDetails = $this->bookingModel->getShowingDetails($showingId);
+                if (!$showingDetails) {
+                    throw new Exception("Visningen kunne ikke findes.");
+                }
+    
+                // Beregn den samlede pris
+                $totalPrice = $showingDetails['price_per_ticket'] * $spots;
+    
+                // Gem data i sessionen
+                $_SESSION['pending_booking'] = [
+                    'showing_id' => $showingId,
+                    'spots' => $spots,
+                    'total_price' => $totalPrice,
+                    'movie_title' => $showingDetails['movie_title'],
+                    'show_date' => $showingDetails['show_date'],
+                    'show_time' => $showingDetails['show_time'],
+                    'price_per_ticket' => $showingDetails['price_per_ticket'],
+                ];
+    
+                // Redirect til booking oversigt
+                header("Location: index.php?page=handle_booking");
+                exit;
+            } else {
+                throw new Exception("Ugyldig anmodning.");
             }
-    
-            // Hent detaljer for visningen
-            $showingDetails = $this->bookingModel->getShowingDetails($showingId);
-    
-            if (!$showingDetails) {
-                throw new Exception("Den valgte visning blev ikke fundet.");
-            }
-    
-            // Beregn totalpris
-            $totalPrice = $showingDetails['price_per_ticket'] * $spots;
-    
-            // Gem data i sessionen
-            $_SESSION['pending_booking'] = [
-                'showing_id' => $showingId,              // ID for den valgte visning
-                'spots' => $spots,                      // Antal reserverede pladser
-                'total_price' => $totalPrice,           // Samlet pris for bookingen
-                'movie_title' => $showingDetails['movie_title'],  // Filmtitel
-                'show_date' => $showingDetails['show_date'],      // Visningsdato
-                'show_time' => $showingDetails['show_time'],      // Visningstidspunkt
-                'price_per_ticket' => $showingDetails['price_per_ticket'],  // Pris pr. billet
-            ];
-            
-    
-            // Debug: Log session-data
-            error_log("Session data: " . print_r($_SESSION['pending_booking'], true));
-    
-            // Send til oversigtssiden
-            $this->pageLoader->renderPage('bookingSummary', $_SESSION['pending_booking'], 'user');
         } catch (Exception $e) {
-            $this->pageLoader->renderErrorPage(400, $e->getMessage());
+            $this->pageLoader->renderErrorPage(500, "Fejl under håndtering af booking: " . $e->getMessage());
         }
     }
+    
     
 
     

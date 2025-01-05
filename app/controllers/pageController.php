@@ -106,20 +106,19 @@ public function movie_details() {
 }
 
 
-public function handleBooking() {
+public function handle_booking() {
     try {
         if (!isset($_SESSION['pending_booking'])) {
             throw new Exception("Ingen bookingdata fundet.");
         }
 
         $booking = $_SESSION['pending_booking'];
-
-        // Send bookingdata til viewet
         $this->pageLoader->renderPage('bookingSummary', ['booking' => $booking], 'user');
     } catch (Exception $e) {
         $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af booking oversigt: " . $e->getMessage());
     }
 }
+
 
 
 public function confirm_booking() {
