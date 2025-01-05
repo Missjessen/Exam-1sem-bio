@@ -54,7 +54,7 @@ return [
        'admin-login' => ['view' => '/auth/view/admin_login.php', 'css' => 'assets/css/admin_login.css'],
        'logout' => ['view' => '/auth/logout.php'],
         'register' => ['view' => '/app/view/user/register.php', 'css' => 'assets/css/register.css'],
-        'profile' => ['view' => '/auth/view/profile.php', 'css' => 'assets/css/profile.css'],
+        'profile' => ['view' => '/app/view/user/profile.php', 'css' => 'assets/css/profile.css'],
 
        '404' => [ 'view' => '/app/view/errors/404.php', 'css' => '/assets/css/errors.css'],
        '500' => ['view' => '/app/view/errors/500.php', 'css' => '/assets/css/errors.css'],
