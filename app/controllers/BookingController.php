@@ -100,9 +100,10 @@ class BookingController {
             }
     
             $query = "
-                INSERT INTO bookings (customer_id, showing_id, spots_reserved, price_per_ticket, total_price, status)
-                VALUES (:customer_id, :showing_id, :spots_reserved, :price_per_ticket, :total_price, 'confirmed')
-            ";
+            INSERT INTO bookings (customer_id, showing_id, spots_reserved, price_per_ticket, total_price, status)
+            VALUES (:customer_id, :showing_id, :spots_reserved, :price_per_ticket, :total_price, 'confirmed')
+        ";
+        
     
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':customer_id', $_SESSION['user_id'], PDO::PARAM_INT);
