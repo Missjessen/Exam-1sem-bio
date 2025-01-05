@@ -24,7 +24,7 @@ $authController = new AuthController($db);
 // Test 1: Registrering
 try {
     $name = "Test User";
-    $email = "testuser123j99jj4@example.com";
+    $email = "testuser1jj23j99jj4@example.com";
     $password = "password123";
     $result = $authController->registerUser($name, $email, $password);
     printTestResult("Test 1: Registrering", $result);
@@ -35,7 +35,7 @@ try {
 
 // Test 2: Login med korrekt data
 try {
-    $email = "testuser@example.com";
+    $email = "testushher@example.com";
     $password = "password123";
     $result = $authController->loginUser($email, $password);
     printTestResult("Test 2: Login med korrekt data", $result);
@@ -46,7 +46,7 @@ try {
 
 // Test 3: Login med forkert data
 try {
-    $email = "wronguser@example.com";
+    $email = "wrongusehhr@example.com";
     $password = "wrongpassword";
     $result = $authController->loginUser($email, $password);
     printTestResult("Test 3: Login med forkert data", !$result);
