@@ -257,45 +257,37 @@ public function admin_showings() {
     }
 
     public function profile() {
-        try {
-            if (!isset($_SESSION['user_id'])) {
-                header("Location: index.php?page=login");
-                exit;
-            }
+        $this->requireLogin(); // Beskyt profilen, så kun loggede brugere kan få adgang
     
+        try {
             $userId = $_SESSION['user_id'];
     
-            // Hent brugerdata (fra AuthController eller UserModel)
+            // Hent brugerdata fra databasen
             $authController = new AuthController($this->db);
             $user = $authController->getUserById($userId);
     
-            // Hent bookinger
-            $bookings = $this->bookingModel->getUserBookings($userId);
+            // Hent brugerens bookinger
+            $bookings = $this->bookingModel->getBookingsByUser($userId);
     
-            // Opdel bookinger i aktuelle og tidligere
-            $currentDate = date('Y-m-d H:i:s');
-            $currentBookings = [];
-            $pastBookings = [];
+            // Del bookinger i aktuelle og tidligere
+            $currentBookings = array_filter($bookings, function ($booking) {
+                return strtotime($booking['show_date']) >= time();
+            });
+            $pastBookings = array_filter($bookings, function ($booking) {
+                return strtotime($booking['show_date']) < time();
+            });
     
-            foreach ($bookings as $booking) {
-                $showDateTime = $booking['show_date'] . ' ' . $booking['show_time'];
-                if ($showDateTime >= $currentDate) {
-                    $currentBookings[] = $booking;
-                } else {
-                    $pastBookings[] = $booking;
-                }
-            }
-    
-            // Render profilen med data
+            // Vis profil-siden
             $this->pageLoader->renderPage('profile', [
                 'user' => $user,
                 'currentBookings' => $currentBookings,
-                'pastBookings' => $pastBookings
+                'pastBookings' => $pastBookings,
             ], 'user');
         } catch (Exception $e) {
             $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af profil: " . $e->getMessage());
         }
     }
+    
     
     
     
