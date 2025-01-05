@@ -66,6 +66,9 @@ class BookingController {
                 'price_per_ticket' => $showingDetails['price_per_ticket'],
             ];
     
+            // Debugging
+            error_log("Booking data gemt i session: " . print_r($_SESSION['pending_booking'], true));
+    
             // Redirect til booking oversigt
             header("Location: index.php?page=bookingSummary");
             exit;
@@ -74,14 +77,6 @@ class BookingController {
             $this->pageLoader->renderErrorPage(500, "Fejl under håndtering af booking: " . $e->getMessage());
         }
     }
-    
-    
-    
-    
-    
-
-    
-    
     
 
     // Bekræft booking

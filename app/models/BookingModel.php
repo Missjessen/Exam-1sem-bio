@@ -22,11 +22,14 @@ class BookingModel extends CrudBase {
     
         try {
             $stmt->execute();
-            return $stmt->fetch(PDO::FETCH_ASSOC);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            error_log("Hentede visningsdetaljer: " . print_r($result, true)); // Debugging
+            return $result;
         } catch (PDOException $e) {
             throw new Exception("Fejl ved hentning af visning: " . $e->getMessage());
         }
     }
+    
     
     
 
