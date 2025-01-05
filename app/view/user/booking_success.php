@@ -1,14 +1,17 @@
 <div class="booking-success">
     <h1>Din Booking Oversigt</h1>
-    <p><strong>Film:</strong> <?= htmlspecialchars($booking['movie_title']) ?></p>
-    <p><strong>Dato:</strong> <?= htmlspecialchars($booking['show_date']) ?></p>
-    <p><strong>Tid:</strong> <?= htmlspecialchars($booking['show_time']) ?></p>
-    <p><strong>Antal pladser:</strong> <?= htmlspecialchars($booking['spots']) ?></p>
-    <p><strong>Total Pris:</strong> <?= htmlspecialchars($booking['total_price']) ?> DKK</p>
-
-    <p>Tak for din booking. Vi glæder os til at se dig!</p>
-
-    <a href="index.php?page=homePage" class="btn">Tilbage til forsiden</a>
+    <?php if (isset($booking)): ?>
+        <p><strong>Film:</strong> <?= htmlspecialchars($booking['movie_title']) ?></p>
+        <p><strong>Dato:</strong> <?= htmlspecialchars($booking['show_date']) ?></p>
+        <p><strong>Tid:</strong> <?= htmlspecialchars($booking['show_time']) ?></p>
+        <p><strong>Antal pladser:</strong> <?= htmlspecialchars($booking['spots']) ?></p>
+        <p><strong>Total Pris:</strong> <?= htmlspecialchars($booking['total_price']) ?> DKK</p>
+        <p>Tak for din booking. Vi glæder os til at se dig!</p>
+        <a href="index.php?page=homePage" class="btn">Tilbage til forsiden</a>
+    <?php else: ?>
+        <p>Fejl: Ingen bookingdata fundet.</p>
+        <a href="index.php?page=homePage" class="btn">Tilbage til forsiden</a>
+    <?php endif; ?>
 </div>
 
 <style>

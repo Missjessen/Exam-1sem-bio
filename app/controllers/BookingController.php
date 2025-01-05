@@ -95,12 +95,12 @@ class BookingController {
                 return;
             }
     
-            // Send data til modellen for at oprette bookingen
+            // Bekræft booking i databasen
             $isBooked = $this->bookingModel->createBooking($_SESSION['user_id'], $bookingData);
     
             if ($isBooked) {
-                unset($_SESSION['pending_booking']);
-                $this->pageLoader->renderPage('booking_success', [], 'user');
+                // Fjern den midlertidige booking og overfør data til success-siden
+                $this->pageLoader->renderPage('booking_success', ['booking' => $bookingData], 'user');
             } else {
                 $this->pageLoader->renderErrorPage(500, "Kunne ikke gennemføre bookingen. Prøv igen.");
             }
@@ -108,6 +108,7 @@ class BookingController {
             $this->pageLoader->renderErrorPage(500, "Fejl under bekræftelse af booking: " . $e->getMessage());
         }
     }
+    
     
        // Annuller booking
       public function cancelBooking() {
