@@ -1,38 +1,112 @@
 <?php
-// Kræv nødvendige filer
-require_once 'init.php';
+session_start();
 
+// Dummy database simulation
+class TestDatabase {
+    private $users = [];
 
-// Simuler databaseforbindelse
-$db = Database::getInstance()->getConnection();
+    public function registerUser($name, $email, $password) {
+        foreach ($this->users as $user) {
+            if ($user['email'] === $email) {
+                return false; // Email already exists
+            }
+        }
+        $this->users[] = [
+            'name' => $name,
+            'email' => $email,
+            'password' => password_hash($password, PASSWORD_DEFAULT)
+        ];
+        return true;
+    }
 
-// Simuler en test-router
-$page = $_GET['page'] ?? 'homePage';
-
-try {
-    // Router logik
-    Router::route($page);
-} catch (Exception $e) {
-    echo "Fejl: " . $e->getMessage();
+    public function loginUser($email, $password) {
+        foreach ($this->users as $user) {
+            if ($user['email'] === $email && password_verify($password, $user['password'])) {
+                return $user; // Login successful
+            }
+        }
+        return null; // Login failed
+    }
 }
 
-// Testdata til mock af bookingen
-if ($page === 'handle_booking') {
-    $_POST = [
-        'showing_id' => 1, // En eksisterende showing_id fra din database
-        'spots' => 2       // Antal pladser at booke
-    ];
+// Dummy PageLoader
+class TestPageLoader {
+    public function renderPage($viewName, $data = [], $type = 'auth') {
+        echo "Rendering view: $viewName<br>";
+        if (!empty($data)) {
+            echo "Data passed to view:<br>";
+            print_r($data);
+        }
+    }
+
+    public function renderErrorPage($code, $message) {
+        echo "Error $code: $message<br>";
+    }
 }
 
-if ($page === 'confirm_booking') {
-    $_SESSION['user_id'] = 1; // Mock en bruger, der er logget ind
-    $_SESSION['pending_booking'] = [
-        'showing_id' => 1,
-        'spots' => 2,
-        'total_price' => 200,
-        'movie_title' => 'Pulp Fiction',
-        'show_date' => '2023-12-05',
-        'show_time' => '19:00:00',
-        'price_per_ticket' => 100
-    ];
+// Auth Controller for testing
+class TestAuthController {
+    private $db;
+    private $pageLoader;
+
+    public function __construct($db) {
+        $this->db = $db;
+        $this->pageLoader = new TestPageLoader();
+    }
+
+    public function registerUser($name, $email, $password) {
+        if (empty($name) || empty($email) || empty($password)) {
+            $this->pageLoader->renderPage('register', ['error' => 'Alle felter skal udfyldes.']);
+            return;
+        }
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $this->pageLoader->renderPage('register', ['error' => 'Ugyldig email-adresse.']);
+            return;
+        }
+        $registered = $this->db->registerUser($name, $email, $password);
+        if ($registered) {
+            $_SESSION['user_id'] = $email; // Simulate user ID
+            echo "User successfully registered and logged in.<br>";
+        } else {
+            $this->pageLoader->renderPage('register', ['error' => 'Email allerede i brug.']);
+        }
+    }
+
+    public function loginUser($email, $password) {
+        if (empty($email) || empty($password)) {
+            $this->pageLoader->renderPage('login', ['error' => 'Alle felter skal udfyldes.']);
+            return;
+        }
+        $user = $this->db->loginUser($email, $password);
+        if ($user) {
+            $_SESSION['user_id'] = $email; // Simulate user ID
+            echo "User successfully logged in.<br>";
+        } else {
+            $this->pageLoader->renderPage('login', ['error' => 'Forkert email eller adgangskode.']);
+        }
+    }
 }
+
+// Test scenarios
+$testDb = new TestDatabase();
+$authController = new TestAuthController($testDb);
+
+// Test: Registrer ny bruger
+echo "<h2>Test: Registrer ny bruger</h2>";
+$authController->registerUser("John Doe", "john@example.com", "password123");
+
+// Test: Forsøg registrering med samme email
+echo "<h2>Test: Registrer med samme email</h2>";
+$authController->registerUser("Jane Doe", "john@example.com", "password456");
+
+// Test: Login med korrekt information
+echo "<h2>Test: Login med korrekt information</h2>";
+$authController->loginUser("john@example.com", "password123");
+
+// Test: Login med forkert adgangskode
+echo "<h2>Test: Login med forkert adgangskode</h2>";
+$authController->loginUser("john@example.com", "wrongpassword");
+
+// Test: Login med email, der ikke eksisterer
+echo "<h2>Test: Login med ikke-eksisterende email</h2>";
+$authController->loginUser("jane@example.com", "password456");
