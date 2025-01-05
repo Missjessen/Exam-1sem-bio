@@ -24,7 +24,7 @@ $authController = new AuthController($db);
 // Test 1: Registrering
 try {
     $name = "Test User";
-    $email = "testuser@example.com";
+    $email = "testuser1234@example.com";
     $password = "password123";
     $result = $authController->registerUser($name, $email, $password);
     printTestResult("Test 1: Registrering", $result);
