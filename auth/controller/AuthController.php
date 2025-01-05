@@ -9,7 +9,7 @@ class AuthController {
 
     public function loginUser($email, $password) {
         try {
-            $query = "SELECT id, password FROM customers WHERE email = :email";
+            $query = "SELECT id, name, password FROM customers WHERE email = :email";
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':email', $email, PDO::PARAM_STR);
             $stmt->execute();
@@ -17,45 +17,48 @@ class AuthController {
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
     
             if ($user && password_verify($password, $user['password'])) {
-                // Gem brugerdata i session
+                // Sæt session med brugeroplysninger
                 $_SESSION['user_id'] = $user['id'];
+                $_SESSION['user_name'] = $user['name'];
                 return true;
-            } else {
-                return false;
             }
-        } catch (Exception $e) {
+    
+            return false;
+        } catch (PDOException $e) {
             throw new Exception("Fejl ved login: " . $e->getMessage());
         }
     }
     
     
+    
 
     public function registerUser($name, $email, $password) {
         try {
-            // Tjek for eksisterende bruger
-            $query = "SELECT id FROM customers WHERE email = :email";
-            $stmt = $this->db->prepare($query);
-            $stmt->bindParam(':email', $email, PDO::PARAM_STR);
-            $stmt->execute();
-    
-            if ($stmt->fetch(PDO::FETCH_ASSOC)) {
-                throw new Exception("En bruger med denne e-mail eksisterer allerede.");
-            }
-    
-            // Hash adgangskode og indsæt ny bruger
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-            $query = "INSERT INTO customers (name, email, password) VALUES (:name, :email, :password)";
+    
+            $query = "
+                INSERT INTO customers (name, email, password)
+                VALUES (:name, :email, :password)
+            ";
+    
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':name', $name, PDO::PARAM_STR);
             $stmt->bindParam(':email', $email, PDO::PARAM_STR);
             $stmt->bindParam(':password', $hashedPassword, PDO::PARAM_STR);
-            $stmt->execute();
     
-            return true;
-        } catch (Exception $e) {
+            if ($stmt->execute()) {
+                // Sæt brugeroplysninger i session
+                $_SESSION['user_id'] = $this->db->lastInsertId();
+                $_SESSION['user_name'] = $name; // Gem brugerens navn i sessionen
+                return true;
+            }
+    
+            return false;
+        } catch (PDOException $e) {
             throw new Exception("Fejl ved registrering: " . $e->getMessage());
         }
     }
+    
     
     
 

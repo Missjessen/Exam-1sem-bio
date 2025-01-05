@@ -39,6 +39,7 @@ $current_slug = $_REQUEST['slug'] ?? '';
             <li class="<?= $current_page === 'homePage' ? 'active' : '' ?>"><a href="?page=homePage">Hjem</a></li>
             <li class="<?= $current_page === 'program' ? 'active' : '' ?>"><a href="?page=program">Program</a></li>
             <li class="<?= $current_page === 'admin_dashboard' ? 'active' : '' ?>"><a href="?page=admin_dashboard">Admin</a></li>
+            
             <?php if (isset($_SESSION['user_id'])): ?>
     <p>Velkommen, <?= htmlspecialchars($_SESSION['user_name']); ?>!</p>
     <a href="index.php?page=profile">Min Profil</a>

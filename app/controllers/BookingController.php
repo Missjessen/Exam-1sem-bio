@@ -83,21 +83,11 @@ class BookingController {
     // Bekræft booking
     public function confirmBooking() {
         try {
-            // Kontrollér, om brugeren er logget ind
             if (!isset($_SESSION['user_id'])) {
-                // Hvis brugeren ikke er logget ind, gem redirect URL og bookingdata midlertidigt
-                $_SESSION['redirect_url'] = "index.php?page=confirm_booking";
-                $_SESSION['pending_booking'] = $_SESSION['pending_booking'] ?? null;
-    
-                // Omdiriger til login-siden
-                header("Location: index.php?page=login");
-                exit;
+                $this->pageLoader->renderErrorPage(401, "Du skal være logget ind for at bekræfte en booking.");
+                return;
             }
     
-            // Hent bruger-ID fra sessionen
-            $customerId = $_SESSION['user_id'];
-    
-            // Hent bookingdata fra sessionen
             $bookingData = $_SESSION['pending_booking'] ?? null;
     
             if (!$bookingData) {
@@ -105,22 +95,29 @@ class BookingController {
                 return;
             }
     
-            // Gem bookingdata i databasen
-            $isBooked = $this->bookingModel->createBooking($customerId, $bookingData);
+            $query = "
+                INSERT INTO bookings (customer_id, showing_id, spots_reserved, price_per_ticket, total_price, status)
+                VALUES (:customer_id, :showing_id, :spots_reserved, :price_per_ticket, :total_price, 'confirmed')
+            ";
     
-            if ($isBooked) {
-                // Fjern midlertidige bookingdata fra sessionen
-                unset($_SESSION['pending_booking']);
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':customer_id', $_SESSION['user_id'], PDO::PARAM_INT);
+            $stmt->bindParam(':showing_id', $bookingData['showing_id'], PDO::PARAM_INT);
+            $stmt->bindParam(':spots_reserved', $bookingData['spots'], PDO::PARAM_INT);
+            $stmt->bindParam(':price_per_ticket', $bookingData['price_per_ticket'], PDO::PARAM_STR);
+            $stmt->bindParam(':total_price', $bookingData['total_price'], PDO::PARAM_STR);
     
-                // Vis en succes-side
-                $this->pageLoader->renderPage('booking_success', $bookingData, 'user');
+            if ($stmt->execute()) {
+                unset($_SESSION['pending_booking']); // Ryd midlertidige bookingdata
+                $this->pageLoader->renderPage('booking_success', [], 'user');
             } else {
                 $this->pageLoader->renderErrorPage(500, "Kunne ikke gennemføre bookingen. Prøv igen.");
             }
-        } catch (Exception $e) {
+        } catch (PDOException $e) {
             $this->pageLoader->renderErrorPage(500, "Fejl under bekræftelse af booking: " . $e->getMessage());
         }
     }
+    
     
     
     
