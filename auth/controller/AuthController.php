@@ -43,6 +43,15 @@ class AuthController {
         }
     }
 
+    public function emailExists($email) {
+        $query = "SELECT COUNT(*) FROM customers WHERE email = :email";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetchColumn() > 0;
+    }
+    
+
     public function logoutUser() {
         // Slet session og log brugeren ud
         session_unset();
