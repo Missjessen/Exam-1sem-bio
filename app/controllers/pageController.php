@@ -7,7 +7,7 @@ class PageController {
     private $movieAdminController;
     private $adminController;
     //private $movieFrontendController;
-    //private $adminBookingModel;
+    private $bookingModel;
     private $bookingController;
     private $moviedetailsController;
   
@@ -21,7 +21,7 @@ class PageController {
         $this->movieAdminController = new MovieAdminController($this->db);
         $this->adminController = new AdminController(new AdminModel($this->db));
         //$this->movieFrontendController = new MovieFrontendController(new MovieFrontendModel($this->db));
-        //$this->adminBookingModel = new AdminBookingModel($this->db);
+        $this->bookingModel = new BookingModel($this->db);
         $this->bookingController = new BookingController($this->db);
         $this->moviedetailsController = new MovieDetailsController($this->db);
        
@@ -256,19 +256,38 @@ public function admin_showings() {
         $this->pageLoader->renderErrorPage(500, $message);
     }
 
+    public function profile() {
+        try {
+            if (!isset($_SESSION['user_id'])) {
+                header("Location: index.php?page=login");
+                exit;
+            }
+    
+            $userId = $_SESSION['user_id'];
+            $bookings = $this->bookingModel->getBookingsByUser($userId);
+    
+            $this->pageLoader->renderPage('profile', ['bookings' => $bookings], 'user');
+        } catch (Exception $e) {
+            $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af profil: " . $e->getMessage());
+        }
+    }
+    
+    
     public function login() {
         try {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $email = trim($_POST['email']);
                 $password = trim($_POST['password']);
-            
+    
                 $authController = new AuthController($this->db);
                 if ($authController->loginUser($email, $password)) {
-                    // Hvis login er succesfuldt, send brugeren tilbage til booking oversigten
-                    header("Location: index.php?page=handle_booking");
+                    // Tjek, om der er en redirect URL gemt i sessionen
+                    $redirectUrl = $_SESSION['redirect_url'] ?? 'index.php?page=homePage';
+                    unset($_SESSION['redirect_url']); // Fjern redirect URL efter login
+                    header("Location: $redirectUrl");
                     exit;
                 } else {
-                    $this->pageLoader->renderPage('bookingSummary', ['error' => 'Forkert email eller adgangskode.'], 'user');
+                    $this->pageLoader->renderPage('login', ['error' => 'Forkert email eller adgangskode.'], 'user');
                 }
             } else {
                 $this->pageLoader->renderErrorPage(400, "Ugyldig anmodning til login.");
@@ -277,6 +296,7 @@ public function admin_showings() {
             $this->pageLoader->renderErrorPage(500, "Fejl under login: " . $e->getMessage());
         }
     }
+    
     
     public function register() {
         try {
@@ -287,12 +307,16 @@ public function admin_showings() {
     
                 $authController = new AuthController($this->db);
                 if ($authController->registerUser($name, $email, $password)) {
-                    // Log automatisk brugeren ind efter registrering
+                    // Log brugeren ind efter registrering
                     $authController->loginUser($email, $password);
-                    header("Location: index.php?page=handle_booking");
+    
+                    // Tjek redirect URL
+                    $redirectUrl = $_SESSION['redirect_url'] ?? 'index.php?page=homePage';
+                    unset($_SESSION['redirect_url']); // Fjern redirect URL efter login
+                    header("Location: $redirectUrl");
                     exit;
                 } else {
-                    $this->pageLoader->renderPage('bookingSummary', ['error' => 'Registreringen mislykkedes. Prøv igen.'], 'user');
+                    $this->pageLoader->renderPage('register', ['error' => 'Registreringen mislykkedes. Prøv igen.'], 'user');
                 }
             } else {
                 $this->pageLoader->renderErrorPage(400, "Ugyldig anmodning til registrering.");
@@ -302,5 +326,14 @@ public function admin_showings() {
         }
     }
     
-
+    
+    
+    public function logout() {
+        session_start();
+        session_unset();
+        session_destroy();
+        header("Location: index.php?page=homePage");
+        exit;
+    }
+    
 }

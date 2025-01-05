@@ -31,14 +31,46 @@ class BookingModel extends CrudBase {
     }
     
 
-    public function createBooking($customerId, $data) {
-        return $this->create('bookings', [
-            'customer_id' => $customerId,
-            'showing_id' => $data['showing_id'],
-            'spots_reserved' => $data['spots'],
-            'price_per_ticket' => $data['price_per_ticket'],
-            'total_price' => $data['total_price'],
-            'status' => 'confirmed'
-        ]);
+    // Opret en ny booking
+    public function createBooking($customerId, $bookingData) {
+        $query = "
+            INSERT INTO bookings (customer_id, showing_id, spots_reserved, total_price, status)
+            VALUES (:customer_id, :showing_id, :spots_reserved, :total_price, 'confirmed')
+        ";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':customer_id', $customerId, PDO::PARAM_INT);
+        $stmt->bindParam(':showing_id', $bookingData['showing_id'], PDO::PARAM_INT);
+        $stmt->bindParam(':spots_reserved', $bookingData['spots'], PDO::PARAM_INT);
+        $stmt->bindParam(':total_price', $bookingData['total_price'], PDO::PARAM_STR);
+        return $stmt->execute();
+    }
+
+    // Hent bookinger for en specifik bruger
+    public function getBookingsByUser($userId) {
+        $query = "
+            SELECT 
+                b.id AS booking_id,
+                m.title AS movie_title,
+                s.show_date,
+                s.show_time,
+                b.spots_reserved,
+                b.total_price,
+                b.status
+            FROM 
+                bookings b
+            JOIN 
+                showings s ON b.showing_id = s.id
+            JOIN 
+                movies m ON s.movie_id = m.id
+            WHERE 
+                b.customer_id = :customer_id
+            ORDER BY 
+                s.show_date DESC, s.show_time DESC
+        ";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':customer_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
+

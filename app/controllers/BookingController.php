@@ -32,46 +32,65 @@ class BookingController {
         }
     }
 
-     // Håndter booking
-     public function handleBooking() {
-        try {
-            // Håndter input fra movie details
-            $showingId = $_POST['showing_id'] ?? null;
-            $spots = $_POST['spots'] ?? null;
-    
-            if (empty($showingId) || empty($spots)) {
-                $this->pageLoader->renderErrorPage(400, "Ugyldig bookingforespørgsel. Vælg venligst en visning og antal pladser.");
-                return;
+    // Håndter booking
+public function handleBooking() {
+    try {
+        // Kontrollér, om brugeren er logget ind
+        if (!isset($_SESSION['user_id'])) {
+            // Gem redirect URL i sessionen, så brugeren kan vende tilbage
+            $_SESSION['redirect_url'] = "index.php?page=handle_booking";
+
+            // Gem midlertidig bookingdata, hvis POST-data er tilgængelige
+            if (!empty($_POST['showing_id']) && !empty($_POST['spots'])) {
+                $_SESSION['pending_booking'] = [
+                    'showing_id' => $_POST['showing_id'],
+                    'spots' => $_POST['spots']
+                ];
             }
-    
-            // Hent detaljer for visningen
-            $showingDetails = $this->bookingModel->getShowingDetails($showingId);
-    
-            if (!$showingDetails) {
-                $this->pageLoader->renderErrorPage(404, "Den valgte visning blev ikke fundet.");
-                return;
-            }
-    
-            // Beregn den samlede pris
-            $totalPrice = $showingDetails['price_per_ticket'] * $spots;
-    
-            // Gem bookingdata midlertidigt i session
-            $_SESSION['pending_booking'] = [
-                'showing_id' => $showingId,
-                'spots' => $spots,
-                'total_price' => $totalPrice,
-                'movie_title' => $showingDetails['movie_title'],
-                'show_date' => $showingDetails['show_date'],
-                'show_time' => $showingDetails['show_time'],
-                'price_per_ticket' => $showingDetails['price_per_ticket'],
-            ];
-    
-            // Send til oversigtsside
-            $this->pageLoader->renderPage('bookingSummary', $_SESSION['pending_booking'], 'user');
-        } catch (Exception $e) {
-            $this->pageLoader->renderErrorPage(500, "Fejl under håndtering af booking: " . $e->getMessage());
+
+            // Omdirigér til login-siden
+            header("Location: index.php?page=login");
+            exit;
         }
+
+        // Hent data fra sessionen, hvis de findes
+        $pendingBooking = $_SESSION['pending_booking'] ?? null;
+
+        // Hvis der ikke er bookingdata, vis fejl
+        if (empty($pendingBooking)) {
+            $this->pageLoader->renderErrorPage(400, "Ingen bookingdata fundet.");
+            return;
+        }
+
+        // Hent detaljer for visningen
+        $showingDetails = $this->bookingModel->getShowingDetails($pendingBooking['showing_id']);
+
+        if (!$showingDetails) {
+            $this->pageLoader->renderErrorPage(404, "Den valgte visning blev ikke fundet.");
+            return;
+        }
+
+        // Beregn den samlede pris
+        $totalPrice = $showingDetails['price_per_ticket'] * $pendingBooking['spots'];
+
+        // Opdater sessionen med alle bookingdetaljer
+        $_SESSION['pending_booking'] = [
+            'showing_id' => $pendingBooking['showing_id'],
+            'spots' => $pendingBooking['spots'],
+            'total_price' => $totalPrice,
+            'movie_title' => $showingDetails['movie_title'],
+            'show_date' => $showingDetails['show_date'],
+            'show_time' => $showingDetails['show_time'],
+            'price_per_ticket' => $showingDetails['price_per_ticket'],
+        ];
+
+        // Send til oversigtssiden
+        $this->pageLoader->renderPage('bookingSummary', $_SESSION['pending_booking'], 'user');
+    } catch (Exception $e) {
+        $this->pageLoader->renderErrorPage(500, "Fejl under håndtering af booking: " . $e->getMessage());
     }
+}
+
     
     
     
