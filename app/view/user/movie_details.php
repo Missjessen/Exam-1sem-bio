@@ -44,7 +44,7 @@ $current_slug = 'test-slug';
     <button type="submit">Book nu</button>
 </form>
 
-<script>
+<!-- <script>
     // Dynamisk prisberegning
     const spotsInput = document.getElementById('spots');
     const totalPriceElement = document.getElementById('totalPrice');
@@ -58,7 +58,7 @@ $current_slug = 'test-slug';
     // Initial opdatering af pris
     const initialSpots = parseInt(spotsInput.value, 10) || 0;
     totalPriceElement.textContent = (initialSpots * pricePerSpot) + ' DKK';
-</script>
+</script> -->
 
 
 <style>body {

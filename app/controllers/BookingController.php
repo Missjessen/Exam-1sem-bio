@@ -35,26 +35,12 @@ class BookingController {
     // Håndter booking
     public function handleBooking() {
         try {
-            // Tjek om request er en POST-anmodning
+            // Tjek om anmodningen er en POST
             if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
                 throw new Exception("Ugyldig anmodning. Kun POST er tilladt.");
             }
     
-            // Tjek om brugeren er logget ind
-            if (!isset($_SESSION['user_id'])) {
-                // Hvis brugeren ikke er logget ind, gem bookingdata i sessionen
-                $_SESSION['pending_booking'] = [
-                    'showing_id' => $_POST['showing_id'] ?? null,
-                    'spots' => $_POST['spots'] ?? null,
-                ];
-    
-                // Redirect til login-siden med en redirect-url
-                $_SESSION['redirect_url'] = "index.php?page=handle_booking";
-                header("Location: index.php?page=login");
-                exit;
-            }
-    
-            // Hent bookingdata fra POST
+            // Hent data fra POST
             $showingId = $_POST['showing_id'] ?? null;
             $spots = $_POST['spots'] ?? null;
     
@@ -62,7 +48,7 @@ class BookingController {
                 throw new Exception("Ugyldige data til booking.");
             }
     
-            // Hent detaljer for visningen fra databasen
+            // Hent visningsdetaljer fra modellen
             $showingDetails = $this->bookingModel->getShowingDetails($showingId);
             if (!$showingDetails) {
                 throw new Exception("Visningen kunne ikke findes.");
@@ -71,7 +57,7 @@ class BookingController {
             // Beregn den samlede pris
             $totalPrice = $showingDetails['price_per_ticket'] * $spots;
     
-            // Gem bookingdata i sessionen
+            // Gem data i sessionen
             $_SESSION['pending_booking'] = [
                 'showing_id' => $showingId,
                 'spots' => $spots,
@@ -86,10 +72,10 @@ class BookingController {
             header("Location: index.php?page=bookingSummary");
             exit;
         } catch (Exception $e) {
-            // Hvis en fejl opstår, vis en fejlside
             $this->pageLoader->renderErrorPage(500, "Fejl under håndtering af booking: " . $e->getMessage());
         }
     }
+    
     
     
     
