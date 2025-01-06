@@ -6,6 +6,7 @@
         <p><strong>Tid:</strong> <?= htmlspecialchars($booking['show_time']) ?></p>
         <p><strong>Antal pladser:</strong> <?= htmlspecialchars($booking['spots']) ?></p>
         <p><strong>Total Pris:</strong> <?= htmlspecialchars($booking['total_price']) ?> DKK</p>
+        <p><strong>Ordrenummer:</strong> <?= htmlspecialchars($booking['order_number']) ?></p>
         <p>Tak for din booking. Vi glæder os til at se dig!</p>
         <a href="index.php?page=homePage" class="btn">Tilbage til forsiden</a>
     <?php else: ?>

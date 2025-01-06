@@ -158,14 +158,19 @@ public function bookingSummary() {
 
 
 
-public function booking_Receipt() {
+public function booking_receipt() {
     try {
-        $bookingController = new BookingController($this->db);
-        $bookingController->showReceipt();
+        $orderNumber = $_GET['order_number'] ?? null;
+        if (!$orderNumber) {
+            throw new Exception("Ordrenummer mangler.");
+        }
+
+        $this->bookingController->showReceipt($orderNumber);
     } catch (Exception $e) {
-        $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af kvitteringssiden: " . $e->getMessage());
+        $this->pageLoader->renderErrorPage(400, "Fejl under indlæsning af kvittering: " . $e->getMessage());
     }
 }
+
 
 
 

@@ -94,11 +94,13 @@ class BookingController {
                 return;
             }
     
+            // Generer et unikt order_number
+            $orderNumber = 'ORDER-' . strtoupper(uniqid());
+    
             $query = "
-            INSERT INTO bookings (customer_id, showing_id, spots_reserved, price_per_ticket, total_price, status)
-            VALUES (:customer_id, :showing_id, :spots_reserved, :price_per_ticket, :total_price, 'confirmed')
-        ";
-        
+                INSERT INTO bookings (customer_id, showing_id, spots_reserved, price_per_ticket, total_price, status, order_number)
+                VALUES (:customer_id, :showing_id, :spots_reserved, :price_per_ticket, :total_price, 'confirmed', :order_number)
+            ";
     
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':customer_id', $_SESSION['user_id'], PDO::PARAM_INT);
@@ -106,10 +108,11 @@ class BookingController {
             $stmt->bindParam(':spots_reserved', $bookingData['spots'], PDO::PARAM_INT);
             $stmt->bindParam(':price_per_ticket', $bookingData['price_per_ticket'], PDO::PARAM_STR);
             $stmt->bindParam(':total_price', $bookingData['total_price'], PDO::PARAM_STR);
+            $stmt->bindParam(':order_number', $orderNumber, PDO::PARAM_STR);
     
             if ($stmt->execute()) {
                 unset($_SESSION['pending_booking']); // Ryd midlertidige bookingdata
-                $this->pageLoader->renderPage('booking_success', [], 'user');
+                $this->pageLoader->renderPage('booking_success', ['order_number' => $orderNumber], 'user');
             } else {
                 $this->pageLoader->renderErrorPage(500, "Kunne ikke gennemføre bookingen. Prøv igen.");
             }
@@ -117,6 +120,7 @@ class BookingController {
             $this->pageLoader->renderErrorPage(500, "Fejl under bekræftelse af booking: " . $e->getMessage());
         }
     }
+    
     
     
     
@@ -133,29 +137,41 @@ class BookingController {
     }
 
 
-    public function showReceipt() {
+    public function showReceipt($orderNumber) {
         try {
             if (!isset($_SESSION['user_id'])) {
                 $this->pageLoader->renderErrorPage(401, "Du skal være logget ind for at se din kvittering.");
                 return;
             }
-
-            // Hent bookingdata fra session
-            $bookingData = $_SESSION['pending_booking'] ?? null;
-
+    
+            // Hent bookingdata fra databasen
+            $query = "
+                SELECT 
+                    b.order_number, b.total_price, b.status, b.spots_reserved, 
+                    s.show_date, s.show_time, m.title AS movie_title
+                FROM bookings b
+                JOIN showings s ON b.showing_id = s.id
+                JOIN movies m ON s.movie_id = m.id
+                WHERE b.order_number = :order_number AND b.customer_id = :customer_id
+            ";
+    
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':order_number', $orderNumber, PDO::PARAM_STR);
+            $stmt->bindParam(':customer_id', $_SESSION['user_id'], PDO::PARAM_INT);
+            $stmt->execute();
+    
+            $bookingData = $stmt->fetch(PDO::FETCH_ASSOC);
+    
             if (!$bookingData) {
-                $this->pageLoader->renderErrorPage(400, "Ingen bookingdata fundet.");
+                $this->pageLoader->renderErrorPage(404, "Ingen kvittering fundet for ordrenummer: $orderNumber.");
                 return;
             }
-
+    
             // Render kvitteringsside
             $this->pageLoader->renderPage('booking_receipt', $bookingData, 'user');
-        } catch (Exception $e) {
+        } catch (PDOException $e) {
             $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af kvitteringssiden: " . $e->getMessage());
         }
     }
     
-    public function getTemporaryBooking() {
-        return $_SESSION['temporary_booking'] ?? null;
-    }
 }
