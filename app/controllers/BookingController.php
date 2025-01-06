@@ -75,13 +75,7 @@ class BookingController {
             // Redirect til booking oversigt
             header("Location: index.php?page=bookingSummary");
             exit;
-            if (!headers_sent()) {
-                header("Location: index.php?page=bookingSummary");
-                exit;
-            } else {
-                error_log("Headers allerede sendt, omdirigering mislykkedes.");
-                throw new Exception("Kunne ikke omdirigere til bookingsiden.");
-            }
+            
         } catch (Exception $e) {
             error_log("Fejl under håndtering af booking: " . $e->getMessage());
             $this->pageLoader->renderErrorPage(500, "Fejl under håndtering af booking: " . $e->getMessage());
