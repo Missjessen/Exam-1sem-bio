@@ -167,7 +167,7 @@ public function booking_receipt() {
 
         $this->bookingController->showReceipt($orderNumber);
     } catch (Exception $e) {
-        $this->pageLoader->renderErrorPage(400, "Fejl under indlæsning af kvittering: " . $e->getMessage());
+        $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af kvittering: " . $e->getMessage());
     }
 }
 
