@@ -13,16 +13,21 @@ class AuthController {
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':email', $email, PDO::PARAM_STR);
             $stmt->execute();
-    
+        
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
-    
+        
             if ($user && password_verify($password, $user['password'])) {
+                // Debugging
+                error_log("Bruger fundet og verificeret: " . print_r($user, true));
+                
                 // Sæt brugeroplysninger i sessionen
                 $_SESSION['user_id'] = $user['id'];
-                $_SESSION['user_name'] = $user['name']; // Gem brugerens navn
+                $_SESSION['user_name'] = $user['name'];
                 return true;
+            } else {
+                error_log("Forkert adgangskode eller bruger ikke fundet: $email");
             }
-    
+        
             return false;
         } catch (PDOException $e) {
             throw new Exception("Fejl ved login: " . $e->getMessage());

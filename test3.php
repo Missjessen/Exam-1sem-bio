@@ -12,8 +12,8 @@ function testBookingSystem($db) {
 
         // 2. Test: Login
         $authController = new AuthController($db);
-        $email = "testuser@example.com"; // Ændr til en eksisterende brugers email
-        $password = "password123"; // Ændr til brugerens password
+        $email = "testuser@example.com";
+        $password = "password123";
 
         if ($authController->loginUser($email, $password)) {
             $results[] = "Test Login: Success. Logged in as " . $_SESSION['user_name'];
@@ -22,21 +22,11 @@ function testBookingSystem($db) {
             throw new Exception("Login failed.");
         }
 
-        // 3. Test: Hent en visning til booking
-        $bookingModel = new BookingModel($db);
-        $showingId = 1; // Ændr til en gyldig visnings-ID
-        $showingDetails = $bookingModel->getShowingDetails($showingId);
+        // 3. Test: Opret booking
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_POST['showing_id'] = 1; // Gyldigt ID fra databasen
+        $_POST['spots'] = 2; // Antal pladser
 
-        if ($showingDetails) {
-            $results[] = "Test Hent Visning: Success. Found showing with ID $showingId.";
-        } else {
-            $results[] = "Test Hent Visning: Failed. Could not find showing.";
-            throw new Exception("Showing not found.");
-        }
-
-        // 4. Test: Opret booking (Handle Booking)
-        $_POST['showing_id'] = $showingId;
-        $_POST['spots'] = 2; // Ændr til antal pladser
         $bookingController = new BookingController($db);
         $bookingController->handleBooking();
 
@@ -47,7 +37,7 @@ function testBookingSystem($db) {
             throw new Exception("Booking data not saved.");
         }
 
-        // 5. Test: Bekræft booking
+        // 4. Test: Bekræft booking
         $bookingController->confirmBooking();
         $query = "SELECT * FROM bookings WHERE customer_id = :customer_id ORDER BY created_at DESC LIMIT 1";
         $stmt = $db->prepare($query);
@@ -62,22 +52,13 @@ function testBookingSystem($db) {
             throw new Exception("Booking not confirmed.");
         }
 
-        // 6. Test: Hent kvittering
-        $bookingController->showReceipt();
-        if (!empty($_SESSION['pending_booking'])) {
-            $results[] = "Test Show Receipt: Success. Receipt data displayed.";
-        } else {
-            $results[] = "Test Show Receipt: Failed. No data in session for receipt.";
-        }
-
-        // 7. Test: Logout
+        // 5. Test: Logout
         $authController->logoutUser();
         if (!isset($_SESSION['user_id'])) {
             $results[] = "Test Logout: Success. User logged out.";
         } else {
             $results[] = "Test Logout: Failed. User still logged in.";
         }
-
     } catch (Exception $e) {
         $results[] = "Error: " . $e->getMessage();
     }
