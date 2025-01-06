@@ -46,9 +46,6 @@ class BookingController {
                 throw new Exception("Ugyldige data til booking.");
             }
     
-            // Debug POST-data
-            error_log("POST data: " . print_r($_POST, true));
-    
             // Hent visningsdetaljer
             $showingDetails = $this->bookingModel->getShowingDetails($showingId);
             if (!$showingDetails) {
@@ -69,19 +66,17 @@ class BookingController {
                 'price_per_ticket' => $showingDetails['price_per_ticket'],
             ];
     
-            // Debug session-data
-            error_log("Session data: " . print_r($_SESSION, true));
+            // Debugging
+            error_log("Booking data gemt i session: " . print_r($_SESSION['pending_booking'], true));
     
             // Redirect til booking oversigt
             header("Location: index.php?page=bookingSummary");
             exit;
-            
         } catch (Exception $e) {
             error_log("Fejl under håndtering af booking: " . $e->getMessage());
             $this->pageLoader->renderErrorPage(500, "Fejl under håndtering af booking: " . $e->getMessage());
         }
     }
-    
     
 
     // Bekræft booking
