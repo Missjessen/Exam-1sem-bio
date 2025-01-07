@@ -115,6 +115,26 @@ class BookingModel extends CrudBase {
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getLatestBookingByUser($userId) {
+        $query = "
+            SELECT 
+                b.order_number, b.total_price, b.spots_reserved, 
+                s.show_date, s.show_time, m.title AS movie_title
+            FROM bookings b
+            JOIN showings s ON b.showing_id = s.id
+            JOIN movies m ON s.movie_id = m.id
+            WHERE b.customer_id = :customer_id
+            ORDER BY b.created_at DESC
+            LIMIT 1
+        ";
+    
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':customer_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    
     
 }
 
