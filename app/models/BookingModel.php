@@ -35,9 +35,11 @@ class BookingModel extends CrudBase {
 
     // Opret en ny booking
     public function createBooking($customerId, $bookingData) {
+        $orderNumber = 'ORDER-' . strtoupper(bin2hex(random_bytes(4))); // Eks: ORDER-9C4B12EF
+        
         $query = "
-            INSERT INTO bookings (customer_id, showing_id, spots_reserved, total_price, status, price_per_ticket, created_at)
-            VALUES (:customer_id, :showing_id, :spots_reserved, :total_price, 'confirmed', :price_per_ticket, NOW())
+            INSERT INTO bookings (customer_id, showing_id, spots_reserved, total_price, status, price_per_ticket, created_at, order_number)
+            VALUES (:customer_id, :showing_id, :spots_reserved, :total_price, 'confirmed', :price_per_ticket, NOW(), :order_number)
         ";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':customer_id', $customerId, PDO::PARAM_INT);
@@ -45,9 +47,11 @@ class BookingModel extends CrudBase {
         $stmt->bindParam(':spots_reserved', $bookingData['spots'], PDO::PARAM_INT);
         $stmt->bindParam(':total_price', $bookingData['total_price'], PDO::PARAM_STR);
         $stmt->bindParam(':price_per_ticket', $bookingData['price_per_ticket'], PDO::PARAM_STR);
-    
+        $stmt->bindParam(':order_number', $orderNumber, PDO::PARAM_STR);
+        
         return $stmt->execute();
     }
+    
     
     
     
