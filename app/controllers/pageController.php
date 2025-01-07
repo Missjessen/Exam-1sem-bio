@@ -145,8 +145,8 @@ public function cancel_booking() {
 
 public function bookingSummary() {
     try {
-        // Sørg for, at session er startet
         if (!isset($_SESSION['pending_booking'])) {
+            error_log("Ingen bookingdata fundet i session.");
             $this->pageLoader->renderErrorPage(400, "Ingen booking fundet. Start en ny booking.");
             return;
         }
@@ -154,9 +154,11 @@ public function bookingSummary() {
         // Send bookingdata til viewet
         $this->pageLoader->renderPage('bookingSummary', $_SESSION['pending_booking'], 'user');
     } catch (Exception $e) {
+        error_log("Fejl under indlæsning af booking oversigt: " . $e->getMessage());
         $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af booking oversigt: " . $e->getMessage());
     }
 }
+
 
 
 
