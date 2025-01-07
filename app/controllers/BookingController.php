@@ -84,34 +84,54 @@ class BookingController {
     // Bekræft booking
     public function confirmBooking() {
         try {
-            $bookingData = $this->getBookingDataFromSession();
-            if (!$bookingData) {
-                throw new Exception("Ingen bookingdata fundet.");
+            if (!isset($_SESSION['user_id'])) {
+                $this->pageLoader->renderErrorPage(401, "Du skal være logget ind for at bekræfte en booking.");
+                return;
             }
-
+    
+            $bookingData = $_SESSION['pending_booking'] ?? null;
+    
+            if (!$bookingData) {
+                $this->pageLoader->renderErrorPage(400, "Ingen bookingdata fundet.");
+                return;
+            }
+    
             // Gem booking i databasen
             $query = "
                 INSERT INTO bookings (customer_id, showing_id, spots_reserved, price_per_ticket, total_price, status)
                 VALUES (:customer_id, :showing_id, :spots_reserved, :price_per_ticket, :total_price, 'confirmed')
             ";
-
+    
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':customer_id', $_SESSION['user_id'], PDO::PARAM_INT);
             $stmt->bindParam(':showing_id', $bookingData['showing_id'], PDO::PARAM_INT);
             $stmt->bindParam(':spots_reserved', $bookingData['spots'], PDO::PARAM_INT);
             $stmt->bindParam(':price_per_ticket', $bookingData['price_per_ticket'], PDO::PARAM_STR);
             $stmt->bindParam(':total_price', $bookingData['total_price'], PDO::PARAM_STR);
-
+    
             if ($stmt->execute()) {
-                unset($_SESSION['pending_booking']);
-                $this->pageLoader->renderPage('booking_success', [], 'user');
+                // Gem order_number til visning senere
+                $orderNumber = $this->db->lastInsertId();
+                $_SESSION['last_booking'] = [
+                    'order_number' => $orderNumber,
+                    'movie_title' => $bookingData['movie_title'],
+                    'show_date' => $bookingData['show_date'],
+                    'show_time' => $bookingData['show_time'],
+                    'spots' => $bookingData['spots'],
+                    'total_price' => $bookingData['total_price'],
+                ];
+    
+                unset($_SESSION['pending_booking']); // Ryd midlertidige bookingdata
+                header("Location: index.php?page=booking_success&order_number=" . $orderNumber);
+                exit;
             } else {
-                throw new Exception("Kunne ikke gennemføre bookingen.");
+                $this->pageLoader->renderErrorPage(500, "Kunne ikke gennemføre bookingen. Prøv igen.");
             }
-        } catch (Exception $e) {
+        } catch (PDOException $e) {
             $this->pageLoader->renderErrorPage(500, "Fejl under bekræftelse af booking: " . $e->getMessage());
         }
     }
+    
 
     
     
@@ -185,6 +205,36 @@ class BookingController {
             $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af booking oversigt: " . $e->getMessage());
         }
     }
+
+    public function getBookingByOrderNumber($orderNumber, $userId) {
+        try {
+            $query = "
+                SELECT 
+                    b.order_number, b.total_price, b.spots_reserved, 
+                    s.show_date, s.show_time, m.title AS movie_title
+                FROM bookings b
+                JOIN showings s ON b.showing_id = s.id
+                JOIN movies m ON s.movie_id = m.id
+                WHERE b.order_number = :order_number AND b.customer_id = :customer_id
+            ";
+    
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':order_number', $orderNumber, PDO::PARAM_INT);
+            $stmt->bindParam(':customer_id', $userId, PDO::PARAM_INT);
+            $stmt->execute();
+    
+            $booking = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+            if (!$booking) {
+                throw new Exception("Ingen kvittering fundet for ordrenummer: $orderNumber.");
+            }
+    
+            return $booking;
+        } catch (Exception $e) {
+            throw new Exception("Fejl under indlæsning af bookingdata: " . $e->getMessage());
+        }
+    }
+    
     
     
     

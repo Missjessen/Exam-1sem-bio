@@ -122,6 +122,25 @@ public function cancel_booking() {
 }
 
 
+public function booking_success() {
+    try {
+        $orderNumber = $_GET['order_number'] ?? null;
+        if (!$orderNumber) {
+            throw new Exception("Ordrenummer mangler.");
+        }
+
+        $bookingController = new BookingController($this->db);
+        $userId = $_SESSION['user_id'];
+
+        // Hent bookingdata via BookingController
+        $booking = $bookingController->getBookingByOrderNumber($orderNumber, $userId);
+
+        // Render siden med bookingdata
+        $this->pageLoader->renderPage('booking_success', $booking, 'user');
+    } catch (Exception $e) {
+        $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af kvitteringssiden: " . $e->getMessage());
+    }
+}
 
 
 
