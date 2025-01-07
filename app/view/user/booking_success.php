@@ -16,6 +16,7 @@
 </div>
 
 
+
 <style>
     .booking-success {
         text-align: center;

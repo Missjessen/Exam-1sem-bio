@@ -1,19 +1,20 @@
-<div class="booking-receipt">
-    <h1>Din Booking Kvittering</h1>
+<div class="booking-success">
+    <h1>Din Booking Oversigt</h1>
+    <?php if (isset($booking)): ?>
+        <p><strong>Film:</strong> <?= htmlspecialchars($booking['movie_title']) ?></p>
+        <p><strong>Dato:</strong> <?= htmlspecialchars($booking['show_date']) ?></p>
+        <p><strong>Tid:</strong> <?= htmlspecialchars($booking['show_time']) ?></p>
+        <p><strong>Antal pladser:</strong> <?= htmlspecialchars($booking['spots_reserved']) ?></p>
+        <p><strong>Total Pris:</strong> <?= htmlspecialchars($booking['total_price']) ?> DKK</p>
+        <p><strong>Ordrenummer:</strong> <?= htmlspecialchars($booking['order_number']) ?></p>
+        <p>Tak for din booking. Vi glæder os til at se dig!</p>
+        <a href="index.php?page=homePage" class="btn">Tilbage til forsiden</a>
+    <?php else: ?>
+        <p>Fejl: Ingen bookingdata fundet.</p>
+        <a href="index.php?page=homePage" class="btn">Tilbage til forsiden</a>
+    <?php endif; ?>
+</div>
 
-    <p><strong>Film:</strong> <?= htmlspecialchars($movie_title) ?></p>
-    <p><strong>Visningsdato:</strong> <?= htmlspecialchars($show_date) ?></p>
-    <p><strong>Visningstid:</strong> <?= htmlspecialchars($show_time) ?></p>
-    <p><strong>Antal pladser:</strong> <?= htmlspecialchars($spots_reserved) ?></p>
-    <p><strong>Pris pr. billet:</strong> <?= htmlspecialchars($price_per_ticket) ?> DKK</p>
-    <p><strong>Samlet pris:</strong> <?= htmlspecialchars($total_price) ?> DKK</p>
-
-    <p>Tak, fordi du har booket hos Cruise Nights Cinema. Vi glæder os til at se dig!</p>
-
-    <div class="receipt-actions">
-        <a href="?page=home" class="btn btn-primary">Tilbage til Forsiden</a>
-        <button onclick="window.print();" class="btn btn-secondary">Print Kvittering</button>
-    </div>
 </div>
 
 <style>

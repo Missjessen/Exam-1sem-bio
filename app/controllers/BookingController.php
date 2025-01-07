@@ -85,50 +85,34 @@ class BookingController {
     public function confirmBooking() {
         try {
             if (!isset($_SESSION['user_id'])) {
-                $this->pageLoader->renderErrorPage(401, "Du skal være logget ind for at bekræfte en booking.");
-                return;
+                throw new Exception("Du skal være logget ind for at bekræfte en booking.");
             }
-    
+
             $bookingData = $_SESSION['pending_booking'] ?? null;
-    
+
             if (!$bookingData) {
-                $this->pageLoader->renderErrorPage(400, "Ingen bookingdata fundet.");
-                return;
+                throw new Exception("Ingen bookingdata fundet.");
             }
-    
+
             // Gem booking i databasen
-            $query = "
-                INSERT INTO bookings (customer_id, showing_id, spots_reserved, price_per_ticket, total_price, status)
-                VALUES (:customer_id, :showing_id, :spots_reserved, :price_per_ticket, :total_price, 'confirmed')
-            ";
-    
-            $stmt = $this->db->prepare($query);
-            $stmt->bindParam(':customer_id', $_SESSION['user_id'], PDO::PARAM_INT);
-            $stmt->bindParam(':showing_id', $bookingData['showing_id'], PDO::PARAM_INT);
-            $stmt->bindParam(':spots_reserved', $bookingData['spots'], PDO::PARAM_INT);
-            $stmt->bindParam(':price_per_ticket', $bookingData['price_per_ticket'], PDO::PARAM_STR);
-            $stmt->bindParam(':total_price', $bookingData['total_price'], PDO::PARAM_STR);
-    
-            if ($stmt->execute()) {
-                // Gem order_number til visning senere
-                $orderNumber = $this->db->lastInsertId();
-                $_SESSION['last_booking'] = [
-                    'order_number' => $orderNumber,
-                    'movie_title' => $bookingData['movie_title'],
-                    'show_date' => $bookingData['show_date'],
-                    'show_time' => $bookingData['show_time'],
-                    'spots' => $bookingData['spots'],
-                    'total_price' => $bookingData['total_price'],
-                ];
-    
-                unset($_SESSION['pending_booking']); // Ryd midlertidige bookingdata
-                header("Location: index.php?page=booking_success&order_number=" . $orderNumber);
-                exit;
-            } else {
-                $this->pageLoader->renderErrorPage(500, "Kunne ikke gennemføre bookingen. Prøv igen.");
-            }
-        } catch (PDOException $e) {
-            $this->pageLoader->renderErrorPage(500, "Fejl under bekræftelse af booking: " . $e->getMessage());
+            $orderNumber = $this->bookingModel->createBooking($_SESSION['user_id'], $bookingData);
+
+            // Gem kvitteringsdata i session
+            $_SESSION['last_booking'] = [
+                'order_number' => $orderNumber,
+                'movie_title' => $bookingData['movie_title'],
+                'show_date' => $bookingData['show_date'],
+                'show_time' => $bookingData['show_time'],
+                'spots' => $bookingData['spots'],
+                'total_price' => $bookingData['total_price'],
+            ];
+
+            unset($_SESSION['pending_booking']); // Ryd midlertidige bookingdata
+            header("Location: index.php?page=booking_success&order_number=" . $orderNumber);
+            exit;
+        } catch (Exception $e) {
+            error_log("Fejl under bekræftelse af booking: " . $e->getMessage());
+            $this->pageLoader->renderErrorPage(500, $e->getMessage());
         }
     }
     
@@ -154,22 +138,7 @@ class BookingController {
                 throw new Exception("Du skal være logget ind for at se din kvittering.");
             }
 
-            $query = "
-                SELECT 
-                    b.order_number, b.total_price, b.status, b.spots_reserved, 
-                    s.show_date, s.show_time, m.title AS movie_title
-                FROM bookings b
-                JOIN showings s ON b.showing_id = s.id
-                JOIN movies m ON s.movie_id = m.id
-                WHERE b.order_number = :order_number AND b.customer_id = :customer_id
-            ";
-
-            $stmt = $this->db->prepare($query);
-            $stmt->bindParam(':order_number', $orderNumber, PDO::PARAM_STR);
-            $stmt->bindParam(':customer_id', $_SESSION['user_id'], PDO::PARAM_INT);
-            $stmt->execute();
-
-            $bookingData = $stmt->fetch(PDO::FETCH_ASSOC);
+            $bookingData = $this->bookingModel->getBookingByOrderNumber($orderNumber, $_SESSION['user_id']);
 
             if (!$bookingData) {
                 throw new Exception("Ingen kvittering fundet for ordrenummer: $orderNumber.");
@@ -177,7 +146,7 @@ class BookingController {
 
             $this->pageLoader->renderPage('booking_receipt', $bookingData, 'user');
         } catch (Exception $e) {
-            $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af kvitteringssiden: " . $e->getMessage());
+            $this->pageLoader->renderErrorPage(500, $e->getMessage());
         }
     }
 
@@ -235,7 +204,16 @@ class BookingController {
         }
     }
     
-    
+   /*  function generateShortUUID() {
+        // Generer en 16-byte UUID
+        $uuid = bin2hex(random_bytes(16));
+        // Konverter UUID til Base64
+        $base64 = base64_encode(hex2bin($uuid));
+        // Fjern '=' padding og gør den URL-venlig
+        $base64 = rtrim($base64, '=');
+        return str_replace(['+', '/'], ['-', '_'], $base64);
+    }
+     */
     
     
     private function getBookingDataFromSession() {

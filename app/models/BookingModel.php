@@ -35,7 +35,7 @@ class BookingModel extends CrudBase {
 
     // Opret en ny booking
     public function createBooking($customerId, $bookingData) {
-        $orderNumber = 'ORDER-' . strtoupper(bin2hex(random_bytes(4))); // Eks: ORDER-9C4B12EF
+        $orderNumber = $this->generateShortUUID(); // Kort UUID som ordrenummer
         
         $query = "
             INSERT INTO bookings (customer_id, showing_id, spots_reserved, total_price, status, price_per_ticket, created_at, order_number)
@@ -49,7 +49,11 @@ class BookingModel extends CrudBase {
         $stmt->bindParam(':price_per_ticket', $bookingData['price_per_ticket'], PDO::PARAM_STR);
         $stmt->bindParam(':order_number', $orderNumber, PDO::PARAM_STR);
         
-        return $stmt->execute();
+        if ($stmt->execute()) {
+            return $orderNumber;
+        } else {
+            throw new Exception("Kunne ikke oprette booking.");
+        }
     }
     
     
@@ -135,6 +139,26 @@ class BookingModel extends CrudBase {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
     
-    
+    public function getBookingByOrderNumber($orderNumber, $userId) {
+        $query = "
+            SELECT 
+                b.order_number, b.total_price, b.spots_reserved, 
+                s.show_date, s.show_time, m.title AS movie_title
+            FROM bookings b
+            JOIN showings s ON b.showing_id = s.id
+            JOIN movies m ON s.movie_id = m.id
+            WHERE b.order_number = :order_number AND b.customer_id = :customer_id
+        ";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':order_number', $orderNumber, PDO::PARAM_STR);
+        $stmt->bindParam(':customer_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    private function generateShortUUID() {
+        $uuid = bin2hex(random_bytes(8)); // Genererer 16 tegn langt UUID
+        return strtoupper($uuid); // Returner i store bogstaver
+    }
 }
 
