@@ -163,8 +163,8 @@ class BookingController {
 
     public function bookingSummary() {
         try {
-            // Tjek først sessionen for bookingdata
-            $booking = $_SESSION['pending_booking'] ?? $_SESSION['last_booking'] ?? null;
+            // Tjek sessiondata for 'pending_booking'
+            $booking = $_SESSION['pending_booking'] ?? null;
     
             // Hvis ingen data i sessionen, hent fra databasen
             if (!$booking) {
@@ -178,13 +178,14 @@ class BookingController {
                 return;
             }
     
-            // Send bookingdata til viewet
-            $this->pageLoader->renderPage('bookingSummary', $booking, 'user');
+            // Render booking-oversigten
+            $this->pageLoader->renderPage('bookingSummary', ['booking' => $booking], 'user');
         } catch (Exception $e) {
             error_log("Fejl under indlæsning af booking oversigt: " . $e->getMessage());
             $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af booking oversigt: " . $e->getMessage());
         }
     }
+    
     
     
     private function getBookingDataFromSession() {
