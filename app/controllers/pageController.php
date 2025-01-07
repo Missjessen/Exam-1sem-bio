@@ -30,9 +30,11 @@ class PageController {
 
    
     // Håndter en given side baseret på page-parametret
-    public function showPage($page) {
+    public function showPage($page, $slug = null) {
         try {
-            if (method_exists($this, $page)) {
+            if ($page === 'movie_details' && $slug) {
+                $this->movie_details($slug);
+            } else if (method_exists($this, $page)) {
                 $this->$page(); // Kald den relevante metode
             } else {
                 $this->pageLoader->loadUserPage($page); // Standard user page
@@ -41,6 +43,7 @@ class PageController {
             $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af siden: " . $e->getMessage());
         }
     }
+    
 
     
 

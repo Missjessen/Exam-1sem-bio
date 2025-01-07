@@ -3,11 +3,11 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-//ob_start(); // Start output buffering for at undgå header-fejl
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-ob_start();
+//ob_start();
 
 define('BASE_URL', rtrim((isset($_SERVER['HTTPS']) ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . dirname($_SERVER['SCRIPT_NAME']), '/') . '/');
 
@@ -16,21 +16,20 @@ define('BASE_URL', rtrim((isset($_SERVER['HTTPS']) ? 'https://' : 'http://') . $
 function currentPageURL($page, $additionalParams = []) {
     $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? "https" : "http");
     $host = $_SERVER['HTTP_HOST'];
-    $uri = $_SERVER['REQUEST_URI'];
-    // Parsér eksisterende query-parametre
-    $queryParams = [];
-    parse_str(parse_url($uri, PHP_URL_QUERY), $queryParams);
-    // Opdater eller tilføj page-parametret
-    $queryParams['page'] = $page;
+
+    // Start med en ny base-URL
+    $queryParams = ['page' => $page];
+    
     // Tilføj evt. ekstra parametre som slug
     foreach ($additionalParams as $key => $value) {
         $queryParams[$key] = $value;
     }
-    // Generér ny URL med de opdaterede parametre
-    $baseUri = strtok($uri, '?'); // Fjern eksisterende query-parametre fra URI
+
+    // Generér URL
     $queryString = http_build_query($queryParams);
-    return $protocol . ':/' . $host . $baseUri . '?' . $queryString;
+    return $protocol . '://' . $host . '/index.php?' . $queryString;
 }
+
 // Inkluder nødvendige filer
 /* require_once 'core/autoLoader.php'; */
 require_once __DIR__ . '/core/autoLoader.php';

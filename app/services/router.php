@@ -8,6 +8,9 @@ class Router {
             $db = Database::getInstance()->getConnection();
             $pageController = new PageController($db);
 
+            // Tjek for slug eller andre parametre
+            $slug = $_GET['slug'] ?? null;
+
             if (!method_exists($pageController, 'showPage')) {
                 throw new Exception("showPage metoden findes ikke i PageController.");
             }
