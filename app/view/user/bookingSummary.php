@@ -1,16 +1,19 @@
+
 <div class="booking-summary-container">
     <!-- Booking Card -->
     <div class="booking-card">
         <h2>Din Booking Oversigt</h2>
-        <?php if (isset($booking)): ?>
+        <?php if (!isset($_SESSION['pending_booking'])): ?>
+            <p>Ingen bookingdata fundet. Start en ny booking.</p>
+            <a href="<?= BASE_URL ?>index.php?page=program" class="btn-go-to-program">Se Program</a>
+
+        <?php else: ?>
+            <?php $booking = $_SESSION['pending_booking']; ?>
             <p><strong>Film:</strong> <?= htmlspecialchars($booking['movie_title']) ?></p>
             <p><strong>Dato:</strong> <?= htmlspecialchars($booking['show_date']) ?></p>
             <p><strong>Tid:</strong> <?= htmlspecialchars($booking['show_time']) ?></p>
             <p><strong>Antal pladser:</strong> <?= htmlspecialchars($booking['spots']) ?></p>
             <p><strong>Total Pris:</strong> <?= htmlspecialchars($booking['total_price']) ?> DKK</p>
-        <?php else: ?>
-            <p>Ingen booking fundet.</p>
-            <a href="index.php?page=program" class="btn-go-to-program">Start en ny booking</a>
         <?php endif; ?>
     </div>
 
@@ -62,76 +65,74 @@
     </div>
 </div>
 
-<style>
-    .booking-summary-container {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin: 20px;
-        padding: 20px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        background-color: #f9f9f9;
-    }
+ <style>.booking-summary-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
 
-    .booking-card, .user-auth-card {
-        width: 48%;
-        padding: 20px;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        background-color: #fff;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
+.booking-card, .user-auth-card {
+    width: 48%;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
-    .booking-card h2, .user-auth-card h3 {
-        margin-top: 0;
-        color: #333;
-    }
+.booking-card h2, .user-auth-card h3 {
+    margin-top: 0;
+    color: #333;
+}
 
-    .booking-card p {
-        margin: 5px 0;
-        font-size: 16px;
-    }
+.booking-card p {
+    margin: 5px 0;
+    font-size: 16px;
+}
 
-    .user-auth-card .login-form, .user-auth-card .register-form {
-        margin-top: 15px;
-    }
+.user-auth-card .login-form, .user-auth-card .register-form {
+    margin-top: 15px;
+}
 
-    .user-auth-card label {
-        display: block;
-        margin-bottom: 5px;
-        font-weight: bold;
-        font-size: 14px;
-    }
+.user-auth-card label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 14px;
+}
 
-    .user-auth-card input {
-        width: 100%;
-        padding: 8px;
-        margin-bottom: 10px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        font-size: 14px;
-    }
+.user-auth-card input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
 
-    .user-auth-card .btn-login, .user-auth-card .btn-register, .user-auth-card .btn-confirm {
-        width: 100%;
-        padding: 10px;
-        border: none;
-        border-radius: 4px;
-        background-color: #007bff;
-        color: #fff;
-        font-size: 16px;
-        cursor: pointer;
-    }
+.user-auth-card .btn-login, .user-auth-card .btn-register, .user-auth-card .btn-confirm {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+}
 
-    .user-auth-card .btn-login:hover, .user-auth-card .btn-register:hover, .user-auth-card .btn-confirm:hover {
-        background-color: #0056b3;
-    }
+.user-auth-card .btn-login:hover, .user-auth-card .btn-register:hover, .user-auth-card .btn-confirm:hover {
+    background-color: #0056b3;
+}
 
-    .logged-in-message h3 {
-        color: #4caf50;
-        font-size: 18px;
-        margin-bottom: 10px;
-    }
+.logged-in-message h3 {
+    color: #4caf50;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
 </style>
-
