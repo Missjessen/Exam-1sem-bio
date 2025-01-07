@@ -135,9 +135,15 @@ class BookingModel extends CrudBase {
     
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':customer_id', $userId, PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+    
+        try {
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Fejl ved hentning af den seneste booking: " . $e->getMessage());
+        }
     }
+    
     
     public function getBookingByOrderNumber($orderNumber, $userId) {
         $query = "
