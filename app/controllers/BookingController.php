@@ -80,44 +80,40 @@ class BookingController {
     
 
     // Bekræft booking
-    // Bekræft booking
-    public function confirmBooking() {
+     // Bekræft booking
+     public function confirmBooking() {
         try {
             if (!isset($_SESSION['user_id'])) {
-                throw new Exception("Du skal være logget ind for at bekræfte en booking.");
+                $this->pageLoader->renderErrorPage(401, "Du skal være logget ind for at bekræfte en booking.");
+                return;
             }
-
+    
             $bookingData = $_SESSION['pending_booking'] ?? null;
-
+    
             if (!$bookingData) {
-                throw new Exception("Ingen bookingdata fundet.");
+                $this->pageLoader->renderErrorPage(400, "Ingen bookingdata fundet.");
+                return;
             }
-
-            // Generer unikt ordrenummer
-            $orderNumber = 'ORDER-' . substr(md5(uniqid(mt_rand(), true)), 0, 8);
-
+    
             $query = "
-                INSERT INTO bookings (customer_id, showing_id, spots_reserved, price_per_ticket, total_price, status, order_number)
-                VALUES (:customer_id, :showing_id, :spots_reserved, :price_per_ticket, :total_price, 'confirmed', :order_number)
+                INSERT INTO bookings (customer_id, showing_id, spots_reserved, price_per_ticket, total_price, status)
+                VALUES (:customer_id, :showing_id, :spots_reserved, :price_per_ticket, :total_price, 'confirmed')
             ";
-
+    
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':customer_id', $_SESSION['user_id'], PDO::PARAM_INT);
             $stmt->bindParam(':showing_id', $bookingData['showing_id'], PDO::PARAM_INT);
             $stmt->bindParam(':spots_reserved', $bookingData['spots'], PDO::PARAM_INT);
             $stmt->bindParam(':price_per_ticket', $bookingData['price_per_ticket'], PDO::PARAM_STR);
             $stmt->bindParam(':total_price', $bookingData['total_price'], PDO::PARAM_STR);
-            $stmt->bindParam(':order_number', $orderNumber, PDO::PARAM_STR);
-
+    
             if ($stmt->execute()) {
                 unset($_SESSION['pending_booking']); // Ryd midlertidige bookingdata
-                header("Location: index.php?page=booking_receipt&order_number=$orderNumber");
-                exit;
+                $this->pageLoader->renderPage('booking_success', [], 'user');
             } else {
-                throw new Exception("Kunne ikke gennemføre bookingen. Prøv igen.");
+                $this->pageLoader->renderErrorPage(500, "Kunne ikke gennemføre bookingen. Prøv igen.");
             }
-        } catch (Exception $e) {
-            error_log("Fejl under bekræftelse af booking: " . $e->getMessage());
+        } catch (PDOException $e) {
             $this->pageLoader->renderErrorPage(500, "Fejl under bekræftelse af booking: " . $e->getMessage());
         }
     }
