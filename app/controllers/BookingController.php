@@ -38,21 +38,25 @@ class BookingController {
             if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
                 throw new Exception("Ugyldig anmodning. Kun POST er tilladt.");
             }
-
+    
             $showingId = $_POST['showing_id'] ?? null;
             $spots = $_POST['spots'] ?? null;
-
+    
             if (empty($showingId) || empty($spots)) {
                 throw new Exception("Ugyldige data til booking.");
             }
-
+    
+            // Hent visningsdetaljer
             $showingDetails = $this->bookingModel->getShowingDetails($showingId);
             if (!$showingDetails) {
+                error_log("Ingen visningsdetaljer fundet for ID: $showingId");
                 throw new Exception("Visningen kunne ikke findes.");
             }
-
+    
+            // Beregn totalpris
             $totalPrice = $showingDetails['price_per_ticket'] * $spots;
-
+    
+            // Opdater sessionen
             $_SESSION['pending_booking'] = [
                 'showing_id' => $showingId,
                 'spots' => $spots,
@@ -62,13 +66,19 @@ class BookingController {
                 'show_time' => $showingDetails['show_time'],
                 'price_per_ticket' => $showingDetails['price_per_ticket'],
             ];
-
+    
+            // Debugging
+            error_log("Booking data gemt i session: " . print_r($_SESSION['pending_booking'], true));
+    
+            // Redirect til booking oversigt
             header("Location: index.php?page=bookingSummary");
             exit;
         } catch (Exception $e) {
+            error_log("Fejl under håndtering af booking: " . $e->getMessage());
             $this->pageLoader->renderErrorPage(500, "Fejl under håndtering af booking: " . $e->getMessage());
         }
     }
+    
     
 
     // Bekræft booking
