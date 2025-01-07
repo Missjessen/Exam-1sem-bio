@@ -155,6 +155,7 @@ class BookingModel extends CrudBase {
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+    
 
     private function generateShortUUID() {
         $uuid = bin2hex(random_bytes(8)); // Genererer 16 tegn langt UUID

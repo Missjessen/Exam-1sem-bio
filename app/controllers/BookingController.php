@@ -176,6 +176,9 @@ class BookingController {
                 return;
             }
     
+            // Debugging for at se, hvilke data der sendes til viewet
+            error_log("Booking data sendt til view: " . print_r($booking, true));
+    
             // Render booking-oversigten
             $this->pageLoader->renderPage('bookingSummary', ['booking' => $booking], 'user');
         } catch (Exception $e) {
