@@ -70,7 +70,8 @@
         <h2>Din Booking Oversigt</h2>
         <?php if (!isset($_SESSION['pending_booking'])): ?>
             <p>Ingen bookingdata fundet. Start en ny booking.</p>
-            <a href="index.php?page=program" class="btn-go-to-program">Se Program</a>
+            <a href="<?= BASE_URL ?>index.php?page=program" class="btn-go-to-program">Se Program</a>
+
         <?php else: ?>
             <?php $booking = $_SESSION['pending_booking']; ?>
             <p><strong>Film:</strong> <?= htmlspecialchars($booking['movie_title']) ?></p>
