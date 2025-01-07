@@ -1,19 +1,20 @@
 <div class="booking-summary-container">
     <!-- Booking Card -->
     <div class="booking-card">
-        <h2>Din Booking Oversigt</h2>
-        <?php if (!isset($_SESSION['pending_booking'])): ?>
-            <p>Ingen bookingdata fundet. Start en ny booking.</p>
-            <a href="index.php?page=program" class="btn-go-to-program">Se Program</a>
-        <?php else: ?>
-            <?php $booking = $_SESSION['pending_booking']; ?>
-            <p><strong>Film:</strong> <?= htmlspecialchars($booking['movie_title'] ?? 'Ukendt') ?></p>
-            <p><strong>Dato:</strong> <?= htmlspecialchars($booking['show_date'] ?? 'Ukendt') ?></p>
-            <p><strong>Tid:</strong> <?= htmlspecialchars($booking['show_time'] ?? 'Ukendt') ?></p>
-            <p><strong>Antal pladser:</strong> <?= htmlspecialchars($booking['spots'] ?? '0') ?></p>
-            <p><strong>Total Pris:</strong> <?= htmlspecialchars($booking['total_price'] ?? '0') ?> DKK</p>
-        <?php endif; ?>
-    </div>
+    <div class="booking-summary">
+    <h1>Din Booking Oversigt</h1>
+    <?php if (isset($booking)): ?>
+        <p><strong>Film:</strong> <?= htmlspecialchars($booking['movie_title']) ?></p>
+        <p><strong>Dato:</strong> <?= htmlspecialchars($booking['show_date']) ?></p>
+        <p><strong>Tid:</strong> <?= htmlspecialchars($booking['show_time']) ?></p>
+        <p><strong>Antal pladser:</strong> <?= htmlspecialchars($booking['spots']) ?></p>
+        <p><strong>Total Pris:</strong> <?= htmlspecialchars($booking['total_price']) ?> DKK</p>
+    <?php else: ?>
+        <p>Ingen booking fundet.</p>
+        <a href="index.php?page=program" class="btn">Start en ny booking</a>
+    <?php endif; ?>
+</div>
+
 </div>
 
 

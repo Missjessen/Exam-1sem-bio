@@ -153,41 +153,20 @@ class BookingController {
 
     public function bookingSummary() {
         try {
-            // Tjek om der er data i sessionen
-            $booking = $_SESSION['pending_booking'] ?? $_SESSION['last_booking'] ?? null;
+            // Hent bookingdata fra session
+            $booking = $_SESSION['pending_booking'] ?? null;
     
             if (!$booking) {
-                error_log("Ingen bookingdata fundet i session. Henter fra databasen...");
-                $query = "
-                    SELECT 
-                        b.order_number, b.total_price, b.spots_reserved, 
-                        s.show_date, s.show_time, m.title AS movie_title
-                    FROM bookings b
-                    JOIN showings s ON b.showing_id = s.id
-                    JOIN movies m ON s.movie_id = m.id
-                    WHERE b.customer_id = :customer_id
-                    ORDER BY b.created_at DESC
-                    LIMIT 1
-                ";
-    
-                $stmt = $this->db->prepare($query);
-                $stmt->bindParam(':customer_id', $_SESSION['user_id'], PDO::PARAM_INT);
-                $stmt->execute();
-                $booking = $stmt->fetch(PDO::FETCH_ASSOC);
-            }
-    
-            if (!$booking) {
-                $this->pageLoader->renderErrorPage(400, "Ingen booking fundet. Start en ny booking.");
-                return;
+                throw new Exception("Ingen bookingdata fundet. Start en ny booking.");
             }
     
             // Send bookingdata til viewet
             $this->pageLoader->renderPage('bookingSummary', $booking, 'user');
         } catch (Exception $e) {
-            error_log("Fejl under indlæsning af booking oversigt: " . $e->getMessage());
-            $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af booking oversigt: " . $e->getMessage());
+            $this->pageLoader->renderErrorPage(400, "Fejl under indlæsning af booking oversigt: " . $e->getMessage());
         }
     }
+    
     private function getBookingDataFromSession() {
         return $_SESSION['pending_booking'] ?? null;
     }
