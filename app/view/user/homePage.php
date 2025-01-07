@@ -82,7 +82,10 @@ echo $hashedPassword;
 
     <!-- Vis besked, hvis den findes -->
     <?php
-    session_start(); // Start session for at læse beskeden
+    if (session_status() === PHP_SESSION_NONE) { // Tjek om sessionen allerede er aktiv
+        session_start(); // Start session, hvis den ikke er startet
+    }
+
     if (!empty($_SESSION['contactMessage'])): ?>
         <div class="<?= strpos($_SESSION['contactMessage'], 'Tak') !== false ? 'contact-message' : 'error-message' ?>">
             <?= htmlspecialchars($_SESSION['contactMessage']) ?>
@@ -93,6 +96,7 @@ echo $hashedPassword;
         unset($_SESSION['contactMessage']); // Ryd besked efter visning
         ?>
     <?php endif; ?>
+</div>
 
     <form method="POST" action="<?= htmlspecialchars(BASE_URL . 'contact-handler.php') ?>">
         <div class="form-group">
