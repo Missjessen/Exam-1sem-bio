@@ -110,54 +110,18 @@ public function movie_details() {
 
 
 public function handle_booking() {
-    try {
-        if (!isset($_SESSION['pending_booking'])) {
-            throw new Exception("Ingen bookingdata fundet.");
-        }
-
-        $booking = $_SESSION['pending_booking'];
-        $this->pageLoader->renderPage('bookingSummary', ['booking' => $booking], 'user');
-    } catch (Exception $e) {
-        $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af booking oversigt: " . $e->getMessage());
-    }
+    $this->bookingController->handleAction('handle_booking');
 }
 
-
-
 public function confirm_booking() {
-    try {
-        $bookingController = new BookingController($this->db);
-        $bookingController->handleAction('confirm_booking');
-    } catch (Exception $e) {
-        $this->pageLoader->renderErrorPage(500, "Fejl under bekræftelse af booking: " . $e->getMessage());
-    }
+    $this->bookingController->handleAction('confirm_booking');
 }
 
 public function cancel_booking() {
-    try {
-        $bookingController = new BookingController($this->db);
-        $bookingController->handleAction('cancel_booking');
-    } catch (Exception $e) {
-        $this->pageLoader->renderErrorPage(500, "Fejl under annullering af booking: " . $e->getMessage());
-    }
+    $this->bookingController->handleAction('cancel_booking');
 }
 
 
-public function bookingSummary() {
-    try {
-        if (!isset($_SESSION['pending_booking'])) {
-            error_log("Ingen bookingdata fundet i session.");
-            $this->pageLoader->renderErrorPage(400, "Ingen booking fundet. Start en ny booking.");
-            return;
-        }
-
-        // Send bookingdata til viewet
-        $this->pageLoader->renderPage('bookingSummary', $_SESSION['pending_booking'], 'user');
-    } catch (Exception $e) {
-        error_log("Fejl under indlæsning af booking oversigt: " . $e->getMessage());
-        $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af booking oversigt: " . $e->getMessage());
-    }
-}
 
 
 
