@@ -49,6 +49,7 @@ class BookingController {
             // Hent visningsdetaljer
             $showingDetails = $this->bookingModel->getShowingDetails($showingId);
             if (!$showingDetails) {
+                error_log("Ingen visningsdetaljer fundet for ID: $showingId");
                 throw new Exception("Visningen kunne ikke findes.");
             }
     
