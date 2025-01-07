@@ -2,19 +2,21 @@
 <div class="booking-summary-container">
     <!-- Booking Card -->
     <div class="booking-card">
-    <h2>Din Booking Oversigt</h2>
-    <?php if (isset($booking)): ?>
-        <p><strong>Film:</strong> <?= htmlspecialchars($booking['movie_title']) ?></p>
+        <h2>Din Booking Oversigt</h2>
+        <?php if (!isset($_SESSION['pending_booking'])): ?>
+            <p>Ingen bookingdata fundet. Start en ny booking.</p>
+            <a href="<?= BASE_URL ?>index.php?page=program" class="btn-go-to-program">Se Program</a>
+
+        <?php else: ?>
+            <?php $booking = $_SESSION['pending_booking']; ?>
+            <p><strong>Film:</strong> <?= htmlspecialchars($booking['movie_title']) ?></p>
         <p><strong>Dato:</strong> <?= htmlspecialchars($booking['show_date']) ?></p>
         <p><strong>Tid:</strong> <?= htmlspecialchars($booking['show_time']) ?></p>
         <p><strong>Antal pladser:</strong> <?= htmlspecialchars($booking['spots_reserved']) ?></p>
         <p><strong>Total Pris:</strong> <?= htmlspecialchars($booking['total_price']) ?> DKK</p>
         <p><strong>Ordrenummer:</strong> <?= htmlspecialchars($booking['order_number']) ?></p>
-    <?php else: ?>
-        <p>Ingen bookingdata fundet. Start en ny booking.</p>
-        <a href="<?= BASE_URL ?>index.php?page=program" class="btn-go-to-program">Se Program</a>
-    <?php endif; ?>
-</div>
+        <?php endif; ?>
+    </div>
 
     <!-- Login/Register Section -->
     <div class="user-auth-card">
