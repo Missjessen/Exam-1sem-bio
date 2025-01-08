@@ -37,8 +37,9 @@ try {
     $db = Database::getInstance()->getConnection();
 
        // Sæt tidszonen til Europe/Copenhagen
-       $db->exec("SET time_zone = 'Europe/Copenhagen'");
-       
+       $db->exec("SET time_zone = '+01:00'");
+
+
     error_log("Databaseforbindelse er klar.");
 } catch (Exception $e) {
     error_log("Fejl i databaseforbindelsen: " . $e->getMessage());
