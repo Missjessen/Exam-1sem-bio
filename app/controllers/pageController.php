@@ -124,19 +124,19 @@ public function cancel_booking() {
 
 public function booking_success() {
     try {
-        $orderNumber = $_GET['order_number'] ?? null;
-        if (!$orderNumber) {
-            throw new Exception("Ordrenummer mangler.");
+        if (!isset($_GET['order_number'])) {
+            throw new Exception("Ordrenummer ikke angivet.");
         }
 
-        $bookingController = new BookingController($this->db);
-        $userId = $_SESSION['user_id'];
+        $orderNumber = $_GET['order_number'];
+        $bookingModel = new BookingModel($this->db); // Instansier BookingModel
+        $booking = $bookingModel->getBookingByOrderNumber($orderNumber, $_SESSION['user_id']);
 
-        // Hent bookingdata via BookingController
-        $booking = $bookingController->getBookingByOrderNumber($orderNumber, $userId);
+        if (!$booking) {
+            throw new Exception("Ingen bookingdata fundet for ordrenummeret.");
+        }
 
-        // Render siden med bookingdata
-        $this->pageLoader->renderPage('booking_success', $booking, 'user');
+        $this->pageLoader->renderPage('booking_success', ['booking' => $booking], 'user');
     } catch (Exception $e) {
         $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af kvitteringssiden: " . $e->getMessage());
     }
