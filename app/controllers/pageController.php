@@ -148,12 +148,18 @@ public function booking_success() {
 
 public function booking_receipt() {
     try {
-        $orderNumber = $_GET['order_number'] ?? null;
-        if (!$orderNumber) {
+        if (!isset($_GET['order_number'])) {
             throw new Exception("Ordrenummer mangler.");
         }
 
-        $this->bookingController->showReceipt($orderNumber);
+        $orderNumber = htmlspecialchars($_GET['order_number']);
+        $userId = $_SESSION['user_id'];
+
+        // Hent bookingdata via BookingController
+        $booking = $this->bookingController->getBookingByOrderNumber($orderNumber, $userId);
+
+        // Render kvitteringssiden med bookingdata
+        $this->pageLoader->renderPage('booking_receipt', ['booking' => $booking], 'user');
     } catch (Exception $e) {
         $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af kvittering: " . $e->getMessage());
     }
@@ -270,10 +276,11 @@ public function admin_showings() {
     
             // Del bookinger i aktuelle og tidligere
             $currentBookings = array_filter($bookings, function ($booking) {
-                return strtotime($booking['show_date']) >= time();
+                return new DateTime($booking['show_date']) >= new DateTime();
             });
+            
             $pastBookings = array_filter($bookings, function ($booking) {
-                return strtotime($booking['show_date']) < time();
+                return new DateTime($booking['show_date']) < new DateTime();
             });
     
             // Vis profil-siden

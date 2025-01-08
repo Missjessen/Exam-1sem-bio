@@ -1,12 +1,4 @@
-<div class="profile">
-    <h1>Min Profil</h1>
-    <p><strong>Navn:</strong> <?= htmlspecialchars($user['name']) ?></p>
-    <p><strong>Email:</strong> <?= htmlspecialchars($user['email']) ?></p>
-    <p><strong>Oprettet:</strong> <?= htmlspecialchars($user['created_at']) ?></p>
-
-    <h2>Mine Bookinger</h2>
-
-    <?php if (!empty($currentBookings)): ?>
+<?php if (!empty($currentBookings)): ?>
     <h3>Aktuelle Bookinger</h3>
     <table>
         <thead>
@@ -17,7 +9,7 @@
                 <th>Antal Pladser</th>
                 <th>Total Pris</th>
                 <th>Status</th>
-                <th>Handling</th> <!-- Tilføjet kolonne -->
+                <th>Handling</th>
             </tr>
         </thead>
         <tbody>
@@ -53,7 +45,7 @@
                 <th>Antal Pladser</th>
                 <th>Total Pris</th>
                 <th>Status</th>
-                <th>Handling</th> <!-- Tilføjet kolonne -->
+                <th>Handling</th>
             </tr>
         </thead>
         <tbody>
