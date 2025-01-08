@@ -34,13 +34,25 @@ function currentPageURL($page, $additionalParams = []) {
 /* require_once 'core/autoLoader.php'; */
 require_once __DIR__ . '/core/autoLoader.php';
 try {
+    // Initialiser databaseforbindelsen
     $db = Database::getInstance()->getConnection();
-
-       // Sæt tidszonen til Europe/Copenhagen
-       $db->exec("SET time_zone = '+01:00'");
-
-
     error_log("Databaseforbindelse er klar.");
+
+    // Funktion til at sætte MySQL-tidszonen til PHP-tidszonen
+    function setMySQLTimeZoneToPHPLocal(PDO $db) {
+        $phpTimeZone = date_default_timezone_get(); // Henter PHP-tidszonen
+        try {
+            $db->exec("SET time_zone = '$phpTimeZone'");
+            error_log("MySQL tidszone sat til PHP-tidszone: $phpTimeZone");
+        } catch (PDOException $e) {
+            error_log("Kunne ikke matche MySQL tidszone med PHP-tidszone: " . $e->getMessage());
+            throw new Exception("Kunne ikke matche MySQL tidszone med PHP-tidszone.");
+        }
+    }
+
+    // Kald funktionen for at sætte tidszonen
+    setMySQLTimeZoneToPHPLocal($db);
+
 } catch (Exception $e) {
     error_log("Fejl i databaseforbindelsen: " . $e->getMessage());
     die("Kunne ikke oprette databaseforbindelse.");
