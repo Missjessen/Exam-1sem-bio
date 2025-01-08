@@ -1,5 +1,5 @@
-<div class="booking-success">
-    <h1>Din Booking Oversigt</h1>
+<div class="booking-receipt">
+    <h1>Din Kvittering</h1>
     <?php if (isset($booking)): ?>
         <p><strong>Film:</strong> <?= htmlspecialchars($booking['movie_title']) ?></p>
         <p><strong>Dato:</strong> <?= htmlspecialchars($booking['show_date']) ?></p>
@@ -7,15 +7,13 @@
         <p><strong>Antal pladser:</strong> <?= htmlspecialchars($booking['spots_reserved']) ?></p>
         <p><strong>Total Pris:</strong> <?= htmlspecialchars($booking['total_price']) ?> DKK</p>
         <p><strong>Ordrenummer:</strong> <?= htmlspecialchars($booking['order_number']) ?></p>
-        <p>Tak for din booking. Vi glæder os til at se dig!</p>
-        <a href="index.php?page=homePage" class="btn">Tilbage til forsiden</a>
+        <p><strong>Status:</strong> <?= htmlspecialchars($booking['status']) ?></p>
+        <a href="index.php?page=profile" class="btn">Tilbage til Profil</a>
     <?php else: ?>
-        <p>Fejl: Ingen bookingdata fundet.</p>
-        <a href="index.php?page=homePage" class="btn">Tilbage til forsiden</a>
+        <p>Fejl: Ingen data fundet for denne booking.</p>
     <?php endif; ?>
 </div>
 
-</div>
 
 <style>
 body {
