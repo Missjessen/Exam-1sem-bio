@@ -9,6 +9,9 @@ class AdminShowingsController {
     }
 
     public function handleAction() {
+        // Slet udløbne visninger
+        $this->deleteExpiredShowings();
+    
         $action = $_POST['action'] ?? $_GET['action'] ?? null;
         $showingId = $_POST['id'] ?? $_GET['showing_id'] ?? null;
     
@@ -33,12 +36,17 @@ class AdminShowingsController {
     }
     
     
+    
 
     public function showAdminShowings($editingShowing = null) {
+        $this->deleteExpiredShowings(); // Slet udløbne visninger først
         $showings = $this->crudBase->readWithJoin(
             'showings',
             'showings.*, movies.title AS movie_title',
-            ['JOIN movies ON showings.movie_id = movies.id']
+            [
+                'JOIN movies ON showings.movie_id = movies.id',
+                "WHERE CONCAT(showings.show_date, ' ', showings.show_time) >= NOW()" // Kun fremtidige visninger
+            ]
         );
     
         $movies = $this->crudBase->getAllItems('movies');
@@ -51,6 +59,7 @@ class AdminShowingsController {
     
         $this->pageLoader->renderPage('admin_showings', $data, 'admin');
     }
+    
     
     private function createShowing($data) {
         $this->crudBase->create('showings', [
@@ -87,7 +96,14 @@ class AdminShowingsController {
         $this->redirectToShowings();
     }
     
-
+    private function deleteExpiredShowings() {
+        $this->crudBase->delete(
+            'showings',
+            ["show_date < NOW()"]
+        );
+    }
+    
+    
    
     
 }

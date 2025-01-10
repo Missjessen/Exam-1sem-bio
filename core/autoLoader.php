@@ -20,6 +20,7 @@ spl_autoload_register(function ($class_name) {
         $basePath . 'auth/',
         $basePath . 'auth/controller/',
         $basePath . 'auth/model/',
+        $basePath . 'security/',
         
     ];
 

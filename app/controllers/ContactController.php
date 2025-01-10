@@ -2,7 +2,8 @@
 
 class ContactController {
     public function handleContactForm() {
-        $response = ''; // Feedback til brugeren
+        // Feedback til brugeren
+        $response = '';
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             // Hent og rens input

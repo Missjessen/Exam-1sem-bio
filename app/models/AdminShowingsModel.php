@@ -4,11 +4,11 @@ class AdminShowingsModel extends CrudBase {
     private $table = 'showings';
 
     public function getAllShowingsWithMovies() {
-        // Brug readWithJoin til at hente showings sammen med filmdata
         return $this->readWithJoin(
             $this->table,
             "showings.*, movies.title AS movie_title",
-            ["INNER JOIN movies ON showings.movie_id = movies.id"]
+            ["INNER JOIN movies ON showings.movie_id = movies.id"],
+            "CONCAT(showings.show_date, ' ', showings.show_time) > NOW()" // Tilføj betingelse
         );
     }
 

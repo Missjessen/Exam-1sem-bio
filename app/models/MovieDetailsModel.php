@@ -36,33 +36,35 @@ class MovieDetailsModel {
     
     
 
-    public function getShowingsForMovie($movieId) {
-        $query = "
-            SELECT 
-                id AS showing_id,
-                screen,
-                show_date,
-                show_time,
-                total_spots,
-                available_spots
-            FROM 
-                showings
-            WHERE 
-                movie_id = :movie_id
-            ORDER BY 
-                show_date, show_time
-        ";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':movie_id', $movieId, PDO::PARAM_STR);
-    
-        try {
-            $stmt->execute();
-        } catch (PDOException $e) {
-            throw new Exception("Fejl ved hentning af visninger: " . $e->getMessage());
-        }
-    
+public function getShowingsForMovie($movieId) {
+    $query = "
+        SELECT 
+            id AS showing_id,
+            screen,
+            show_date,
+            show_time,
+            total_spots,
+            available_spots
+        FROM 
+            showings
+        WHERE 
+            movie_id = :movie_id
+            AND CONCAT(show_date, ' ', show_time) > NOW() -- Kun fremtidige visninger
+        ORDER BY 
+            show_date, show_time
+    ";
+    $stmt = $this->db->prepare($query);
+    $stmt->bindParam(':movie_id', $movieId, PDO::PARAM_INT);
+
+    try {
+        $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        throw new Exception("Fejl ved hentning af visninger: " . $e->getMessage());
     }
+}
+
+
     
     
     
