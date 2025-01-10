@@ -13,11 +13,11 @@ class ContactController {
             $message = isset($_POST['message']) ? htmlspecialchars(trim($_POST['message'])) : '';
 
             // Validering
-            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $response = "Ugyldig email-adresse.";
-            } elseif (empty($name) || empty($email) || empty($subject) || empty($message)) {
-                $response = "Alle felter skal udfyldes.";
-            } else {
+            if (!Validate::validateEmail($email)) {
+                    throw new Exception("Ugyldig email-adresse.");
+                } elseif (!Validate::validateRequiredFields([$name, $email, $subject, $message])) {
+                    throw new Exception("Alle felter skal udfyldes.");
+                } else {
                 // Modtagerens email
                 $to = "nsj@cruise-nights-cinema.dk";
 
