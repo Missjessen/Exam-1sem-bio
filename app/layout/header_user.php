@@ -1,63 +1,63 @@
 <?php 
 require_once dirname(__DIR__, 2) . '/init.php';
 
-
-$current_page = $_REQUEST['page'] ?? 'homePage';
-$current_slug = $_REQUEST['slug'] ?? '';
-
+// Brug kun $_GET
+$current_page = $_GET['page'] ?? 'homePage';
+$current_slug = $_GET['slug'] ?? '';
 ?>
 
 <!DOCTYPE html>
 <html lang="da">
 <head>
 <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>  
-        <?php 
-              
-           if ($current_page === 'movie_details' && $current_slug) {
-               echo ucfirst(str_replace('-', ' ', $current_slug)) . ' - Drive-In Biograf';
-           } else {
-               echo ucfirst($current_page) . ' - Drive-In Biograf';
-           }
-           
-        ?>
-    </title>
-    <link rel="stylesheet" href="/assets/css/variables.css">
-    <?php
-    // Dynamisk CSS for hver side
-    if (!empty($current_page)) {
-        echo "<link rel='stylesheet' href='/assets/css/{$current_page}.css'>";
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+    <?php 
+    if ($current_page === 'movie_details' && $current_slug) {
+        echo ucfirst(str_replace('-', ' ', $current_slug)) . ' - Drive-In Biograf';
+    } else {
+        echo ucfirst($current_page) . ' - Drive-In Biograf';
     }
     ?>
+</title>
+<link rel="stylesheet" href="/assets/css/variables.css">
+<?php
+// Dynamisk CSS
+if (!empty($current_page)) {
+    echo "<link rel='stylesheet' href='/assets/css/{$current_page}.css'>";
+}
+?>
 </head>
 <body>
 <header>
     <nav>
         <div>Cruise Nights Cinema</div>
         <ul>
-            <li class="<?= $current_page === 'homePage' ? 'active' : '' ?>"><a href="?page=homePage">Hjem</a></li>
-            <li class="<?= $current_page === 'program' ? 'active' : '' ?>"><a href="?page=program">Program</a></li>
-            <li class="<?= $current_page === 'admin_dashboard' ? 'active' : '' ?>"><a href="?page=admin_dashboard">Admin</a></li>
-
-<?php if (isset($_SESSION['user_id'])): ?>
-    <p>Velkommen, <?= htmlspecialchars($_SESSION['user_name'] ?? ''); ?>!</p>
-    <a href="index.php?page=profile">Min Profil</a>
-    <a href="index.php?page=logout">Log ud</a>
-<?php else: ?>
-    <a href="index.php?page=login">Log ind</a>
-    <a href="index.php?page=register">Registrer</a>
-<?php endif; ?>
-
+            <li class="<?= $current_page === 'homePage' ? 'active' : '' ?>">
+                <a href="?page=homePage">Hjem</a>
+            </li>
+            <li class="<?= $current_page === 'program' ? 'active' : '' ?>">
+                <a href="?page=program">Program</a>
+            </li>
+            <li class="<?= $current_page === 'admin_dashboard' ? 'active' : '' ?>">
+                <a href="?page=admin_dashboard">Admin</a>
+            </li>
         </ul>
-
-   
-
-
+        <div class="auth-links">
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <span>Velkommen, <?= htmlspecialchars($_SESSION['user_name'] ?? ''); ?>!</span>
+                <a href="index.php?page=profile">Min Profil</a>
+                <a href="index.php?page=logout">Log ud</a>
+            <?php else: ?>
+                <a href="index.php?page=login">Log ind</a>
+                <a href="index.php?page=register">Registrer</a>
+            <?php endif; ?>
+        </div>
     </nav>
 </header>
 </body>
 </html>
+
 
 <style>
 
