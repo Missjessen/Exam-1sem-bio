@@ -57,12 +57,3 @@ try {
     error_log("Fejl i databaseforbindelsen: " . $e->getMessage());
     die("Kunne ikke oprette databaseforbindelse.");
 }
-// Initialiser Database-forbindelsen via singleton
-try {
-    $query = $db->prepare("SELECT * FROM movies");
-    $query->execute();
-    $results = $query->fetchAll();
-} catch (PDOException $e) {
-    error_log("SQL-fejl: " . $e->getMessage());
-    die("SQL-fejl.");
-}

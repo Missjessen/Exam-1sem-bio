@@ -10,6 +10,23 @@ class Database {
        // $user = getenv('DB_USER') ?: 'root';
         //$password = getenv('DB_PASS') ?: '';
        // $charset = getenv('DB_CHARSET') ?: 'utf8mb4';
+   /*     private function __construct() {
+        // Hent miljøvariabler fra .env
+        $envFile = __DIR__ . '/../.env'; // Sørg for, at stien til .env er korrekt
+        if (!file_exists($envFile)) {
+            throw new Exception(".env-filen blev ikke fundet.");
+        }
+
+        // Læs .env-filen
+        $envVariables = parse_ini_file($envFile);
+        $host = $envVariables['DB_HOST'];
+        $dbName = $envVariables['DB_NAME'];
+        $user = $envVariables['DB_USER'];
+        $password = $envVariables['DB_PASS'];
+        $charset = $envVariables['DB_CHARSET'];
+
+        // Opsæt DSN
+        $dsn = "mysql:host=$host;dbname=$dbName;charset=$charset"; */
         
         $host = 'localhost';
 $dbName = 'cjsfkt3sf_cruisenightscinema';

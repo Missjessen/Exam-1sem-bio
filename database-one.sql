@@ -266,12 +266,12 @@ INSERT INTO genres (name) VALUES
 
 INSERT INTO `showings` (`movie_id`, `screen`, `show_date`, `show_time`, `total_spots`)
 VALUES
-((SELECT id FROM movies WHERE slug = 'pulp-fiction-1994'), 'Lille', '2023-12-05', '19:00:00', 50),
-((SELECT id FROM movies WHERE slug = 'parasite-2019'), 'Stor', '2023-12-10', '20:00:00', 50),
-((SELECT id FROM movies WHERE slug = 'spirited-away-2001'), 'Lille', '2023-12-15', '18:00:00', 50),
-((SELECT id FROM movies WHERE slug = 'joker-2019'), 'Stor', '2023-12-20', '21:30:00', 50),
-((SELECT id FROM movies WHERE slug = 'frozen-2013'), 'Lille', '2023-12-22', '16:00:00', 50),
-((SELECT id FROM movies WHERE slug = 'matrix-resurrections-2021'), 'Stor', '2023-12-25', '20:00:00', 50);
+((SELECT id FROM movies WHERE slug = 'pulp-fiction-1994'), 'Lille', '2025-12-05', '19:00:00', 50),
+((SELECT id FROM movies WHERE slug = 'parasite-2019'), 'Stor', '2025-12-10', '20:00:00', 50),
+((SELECT id FROM movies WHERE slug = 'spirited-away-2001'), 'Lille', '2025-12-15', '18:00:00', 50),
+((SELECT id FROM movies WHERE slug = 'joker-2019'), 'Stor', '2025-12-20', '21:30:00', 50),
+((SELECT id FROM movies WHERE slug = 'frozen-2013'), 'Lille', '2025-12-25', '16:00:00', 50),
+((SELECT id FROM movies WHERE slug = 'matrix-resurrections-2021'), 'Stor', '2025-12-25', '20:00:00', 50);
 
 
 

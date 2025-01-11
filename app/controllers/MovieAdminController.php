@@ -167,14 +167,14 @@ class MovieAdminController {
     /**
      * Genererer en UUID for nye poster.
      */
-    private function generateUUID() {
+    public function generateUUID() {
         return bin2hex(random_bytes(16));
     }
 
     /**
      * Genererer en slug baseret på titel.
      */
-    private function generateSlug($title) {
+    public function generateSlug($title) {
         // Fjern HTML-tags, hvis de findes
         $title = strip_tags($title);
     
