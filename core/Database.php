@@ -1,16 +1,9 @@
-<?php 
+<?php
 class Database {
     private static $instance = null; // Singleton instans
     private $connection; // PDO-forbindelsen
 
     private function __construct() {
-        // Databaseforbindelsesdetaljer fra miljøvariabler
-       // $host = getenv('DB_HOST') ?: 'localhost';
-       // $dbName = getenv('DB_NAME') ?: 'cjsfkt3sf_cruisenightscinema';
-       // $user = getenv('DB_USER') ?: 'root';
-        //$password = getenv('DB_PASS') ?: '';
-       // $charset = getenv('DB_CHARSET') ?: 'utf8mb4';
-   /*     private function __construct() {
         // Hent miljøvariabler fra .env
         $envFile = __DIR__ . '/../.env'; // Sørg for, at stien til .env er korrekt
         if (!file_exists($envFile)) {
@@ -26,15 +19,6 @@ class Database {
         $charset = $envVariables['DB_CHARSET'];
 
         // Opsæt DSN
-        $dsn = "mysql:host=$host;dbname=$dbName;charset=$charset"; */
-        
-        $host = 'localhost';
-$dbName = 'cjsfkt3sf_cruisenightscinema';
-$user = 'cjsfkt3sf_cruisenightscinema'; 
-$password = '123456'; 
-$charset = 'utf8mb4';
-
-
         $dsn = "mysql:host=$host;dbname=$dbName;charset=$charset";
 
         try {
@@ -46,7 +30,6 @@ $charset = 'utf8mb4';
             error_log("PDO-fejl: " . $e->getMessage());
             throw new Exception("Kunne ikke oprette databaseforbindelse.");
         }
-        
     }
 
     // Singleton instansmetode
