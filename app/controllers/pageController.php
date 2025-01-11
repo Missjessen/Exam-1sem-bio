@@ -30,19 +30,23 @@ class PageController {
 
    
     // Håndter en given side baseret på page-parametret
-    public function showPage($page, $slug = null) {
+    public function showPage($page) {
         try {
-            if ($page === 'movie_details' && $slug) {
+            $slug = $_GET['slug'] ?? null;
+    
+            // Dynamisk metodehåndtering
+            if ($slug && $page === 'movie_details') {
                 $this->movie_details($slug);
-            } else if (method_exists($this, $page)) {
-                $this->$page(); // Kald den relevante metode
+            } elseif (method_exists($this, $page)) {
+                $this->$page();
             } else {
-                $this->pageLoader->loadUserPage($page); // Standard user page
+                $this->pageLoader->loadUserPage($page);
             }
         } catch (Exception $e) {
             $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af siden: " . $e->getMessage());
         }
     }
+    
     
 
     
