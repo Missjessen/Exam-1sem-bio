@@ -30,19 +30,23 @@ class PageController {
 
    
     // Håndter en given side baseret på page-parametret
-    public function showPage($page, $slug = null) {
+    public function showPage($page) {
         try {
-            if ($page === 'movie_details' && $slug) {
+            $slug = $_GET['slug'] ?? null;
+    
+            // Dynamisk metodehåndtering
+            if ($slug && $page === 'movie_details') {
                 $this->movie_details($slug);
-            } else if (method_exists($this, $page)) {
-                $this->$page(); // Kald den relevante metode
+            } elseif (method_exists($this, $page)) {
+                $this->$page();
             } else {
-                $this->pageLoader->loadUserPage($page); // Standard user page
+                $this->pageLoader->loadUserPage($page);
             }
         } catch (Exception $e) {
             $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af siden: " . $e->getMessage());
         }
     }
+    
     
 
     
@@ -91,22 +95,21 @@ class PageController {
     }
 
     // Håndter filmdetaljer
-public function movie_details() {
-    try {
-        if (!empty($_GET['slug'])) {
-            $slug = htmlspecialchars($_GET['slug'], ENT_QUOTES, 'UTF-8');
-            error_log("Slug fra URL: $slug"); // Debug
+    public function movie_details() {
+        try {
+            $slug = $_GET['slug'] ?? null;
+    
+            if (!$slug) {
+                throw new Exception("Slug mangler i URL'en.");
+            }
     
             $movieDetailsController = new MovieDetailsController($this->db);
-            $movieDetailsController->showMovieDetails($slug);
-        } else {
-            throw new Exception("Slug mangler i URL'en.");
+            $movieDetailsController->showMovieDetails(htmlspecialchars($slug, ENT_QUOTES, 'UTF-8'));
+        } catch (Exception $e) {
+            error_log("Fejl i movie_details: " . $e->getMessage());
+            $this->pageLoader->renderErrorPage(400, $e->getMessage());
         }
-    } catch (Exception $e) {
-        error_log("Fejl i movie_details: " . $e->getMessage());
-        $this->pageLoader->renderErrorPage(400, $e->getMessage());
     }
-}
 
 
 public function handle_booking() {

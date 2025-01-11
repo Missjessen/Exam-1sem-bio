@@ -1,18 +1,21 @@
-
-
 RewriteEngine On
 
-
-# Start omskrivning for alle anmodninger, der ikke er en fil eller mappe
+# Omskrivningsbase
 RewriteBase /
+
+# Ignorer filer og mapper
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
-# Specifik regel for movie_details
+# Specifik regel for movie_details (slug)
 RewriteRule ^movie_details/([a-zA-Z0-9_-]+)$ index.php?page=movie_details&slug=$1 [L,QSA]
 
-# Specifik regel for movie
+# Specifik regel for movie (slug)
 RewriteRule ^movie/([a-zA-Z0-9-_]+)$ index.php?page=movieDetails&slug=$1 [L,QSA]
+
+# Regel for at rydde slug, hvis page er sat
+RewriteCond %{QUERY_STRING} page=([a-zA-Z0-9_-]+)&slug=([a-zA-Z0-9_-]+)
+RewriteRule ^ index.php?page=%1 [L,R=302]
 
 # Generel regel for alle andre sider
 RewriteRule ^([a-zA-Z0-9-_]+)$ index.php?page=$1 [L,QSA]

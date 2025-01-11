@@ -8,8 +8,6 @@ class FileUploadService {
     public function __construct() {
         $this->upload_dir = rtrim(dirname(__DIR__, 2), '/') . '/uploads';
 
-
-        error_log("Upload-sti: " . $this->upload_dir); // Debug
     }
 
     public function uploadFile($file) {
