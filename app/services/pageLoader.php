@@ -21,7 +21,7 @@ class PageLoader {
         $this->renderPage($viewName, $data, 'user');
     }
 
-    public function renderPage($viewName, $data = [], $type = 'user') {
+public function renderPage($viewName, $data = [], $type = 'user') {
         $current_page = $viewName;
 
         if (!is_array($data)) {
@@ -46,6 +46,8 @@ class PageLoader {
         $footerFile = 'footer.php';
         $this->includeLayout($footerFile, compact('current_page'));
     }
+
+
 
     private function includeCSS($page) {
         echo "<link rel='stylesheet' href='/assets/css/$page.css'>";

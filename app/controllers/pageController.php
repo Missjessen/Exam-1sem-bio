@@ -313,46 +313,48 @@ public function admin_showings() {
     
     
     public function register() {
-        try {
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $name = trim($_POST['name']);
-                $email = trim($_POST['email']);
-                $password = trim($_POST['password']);
-    
-                $authController = new AuthController($this->db);
-                $authController->registerUser($name, $email, $password);
-    
-                header("Location: " . BASE_URL . "index.php?page=login");
-                exit();
-            } else {
-                $this->pageLoader->renderPage('register', [], 'auth');
-            }
-        } catch (Exception $e) {
-            $this->pageLoader->renderPage('register', ['error' => $e->getMessage()], 'auth');
+    try {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $name = trim($_POST['name']);
+            $email = trim($_POST['email']);
+            $password = trim($_POST['password']);
+
+            $authController = new AuthController($this->db);
+            $authController->registerUser($name, $email, $password);
+
+            // Omdiriger til login efter registrering
+            header("Location: " . BASE_URL . "index.php?page=login");
+            exit();
+        } else {
+            $this->pageLoader->renderPage('register', [], 'user');
         }
+    } catch (Exception $e) {
+        $this->pageLoader->renderPage('register', ['error' => $e->getMessage()], 'user');
     }
-    
+}
+
     
     public function login() {
-        try {
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $email = trim($_POST['email']);
-                $password = trim($_POST['password']);
-    
-                $authController = new AuthController($this->db);
-                if ($authController->loginUser($email, $password)) {
-                    header("Location: " . BASE_URL . "index.php?page=homePage");
-                    exit();
-                } else {
-                    $this->pageLoader->renderPage('login', ['error' => 'Forkert email eller adgangskode'], 'auth');
-                }
+    try {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $email = trim($_POST['email']);
+            $password = trim($_POST['password']);
+
+            $authController = new AuthController($this->db);
+            if ($authController->loginUser($email, $password)) {
+                header("Location: " . BASE_URL . "index.php?page=homePage");
+                exit();
             } else {
-                $this->pageLoader->renderPage('login', [], 'auth');
+                $this->pageLoader->renderPage('login', ['error' => 'Forkert email eller adgangskode'], 'user');
             }
-        } catch (Exception $e) {
-            $this->pageLoader->renderErrorPage(500, $e->getMessage());
+        } else {
+            $this->pageLoader->renderPage('login', [], 'user');
         }
+    } catch (Exception $e) {
+        $this->pageLoader->renderErrorPage(500, $e->getMessage());
     }
+}
+
     
     
 
@@ -382,27 +384,28 @@ public function admin_showings() {
     }
 
     // Admin login-side
-    public function admin_login() {
-        try {
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $email = trim($_POST['email']);
-                $password = trim($_POST['password']);
+ public function admin_login() {
+    try {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $email = trim($_POST['email']);
+            $password = trim($_POST['password']);
 
-                $authController = new AuthController($this->db);
+            $authController = new AuthController($this->db);
 
-                if ($authController->loginAdmin($email, $password)) {
-                    header("Location: " . BASE_URL . "index.php?page=admin_dashboard");
-                    exit();
-                } else {
-                    $this->pageLoader->renderPage('admin_login', ['error' => 'Forkert email eller adgangskode'], 'auth/view');
-                }
+            if ($authController->loginAdmin($email, $password)) {
+                header("Location: " . BASE_URL . "index.php?page=admin_dashboard");
+                exit();
             } else {
-                $this->pageLoader->renderPage('admin_login', [], 'auth/view');
+                $this->pageLoader->renderPage('admin_login', ['error' => 'Forkert email eller adgangskode'], 'auth/view');
             }
-        } catch (Exception $e) {
-            $this->pageLoader->renderErrorPage(500, "Fejl under admin-login: " . $e->getMessage());
+        } else {
+            $this->pageLoader->renderPage('admin_login', [], 'auth/view');
         }
+    } catch (Exception $e) {
+        $this->pageLoader->renderErrorPage(500, "Fejl under admin-login: " . $e->getMessage());
     }
+}
+
         // Admin logout
         public function admin_logout() {
             $authController = new AuthController($this->db);
