@@ -6,7 +6,7 @@ class FileUploadService {
     private $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif'];
 
     public function __construct() {
-        $this->upload_dir = rtrim(dirname(__DIR__, 2), '/') . '/uploads';
+        $this->upload_dir = rtrim(dirname(__DIR__, 2),) . 'uploads';
 
 
         error_log("Upload-sti: " . $this->upload_dir); // Debug
@@ -41,6 +41,6 @@ class FileUploadService {
             throw new Exception("Fejl: Kunne ikke flytte den uploadede fil.");
         }
 
-        return '/uploads/' . $poster_name; // Returner relativ sti
+        return 'uploads/' . $poster_name; // Returner relativ sti
     }
 }
