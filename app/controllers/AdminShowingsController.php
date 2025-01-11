@@ -92,18 +92,17 @@ class AdminShowingsController {
     
 
     public function updateShowing($data) {
-    if (empty($data['id'])) {
-        throw new Exception("Visningens ID mangler.");
+        if (empty($data['id'])) {
+            throw new Exception("ID mangler ved opdatering.");
+        }
+    
+        $this->crudBase->update('showings', [
+            'movie_id' => $data['movie_id'],
+            'screen' => $data['screen'],
+            'show_date' => $data['show_date'],
+            'show_time' => $data['show_time']
+        ], ['id' => $data['id']]);
     }
-    error_log("Opdaterer visning med data: " . print_r($data, true));
-
-    $this->crudBase->update('showings', [
-        'movie_id' => $data['movie_id'],
-        'screen' => $data['screen'],
-        'show_date' => $data['show_date'],
-        'show_time' => $data['show_time']
-    ], ['id' => $data['id']]);
-}
     
     
     private function deleteExpiredShowings() {
