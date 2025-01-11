@@ -61,16 +61,20 @@ class AdminShowingsController {
     }
     
     
-    private function createShowing($data) {
-        $this->crudBase->create('showings', [
-            'movie_id' => $data['movie_id'],
-            'screen' => $data['screen'],
-            'show_date' => $data['show_date'],
-            'show_time' => $data['show_time'],
-            'total_spots' => 50,
-            'available_spots' => 50
-        ]);
-        $this->redirectToShowings();
+    public function createShowing($data) {
+        try {
+            $this->crudBase->create('showings', [
+                'movie_id' => $data['movie_id'],
+                'screen' => $data['screen'],
+                'show_date' => $data['show_date'],
+                'show_time' => $data['show_time'],
+                'total_spots' => 50,
+                'available_spots' => 50
+            ]);
+        } catch (PDOException $e) {
+            error_log("Fejl ved oprettelse af showing: " . $e->getMessage());
+            throw new Exception("Kunne ikke oprette showing.");
+        }
     }
     
     private function deleteShowing($showingId) {
@@ -86,15 +90,20 @@ class AdminShowingsController {
     
     
 
-    private function updateShowing($data) {
-        $this->crudBase->update('showings', [
-            'movie_id' => $data['movie_id'],
-            'screen' => $data['screen'],
-            'show_date' => $data['show_date'],
-            'show_time' => $data['show_time']
-        ], ['id' => $data['id']]);
-        $this->redirectToShowings();
+    public function updateShowing($data) {
+        try {
+            $this->crudBase->update('showings', [
+                'movie_id' => $data['movie_id'],
+                'screen' => $data['screen'],
+                'show_date' => $data['show_date'],
+                'show_time' => $data['show_time']
+            ], ['id' => $data['id']]);
+        } catch (PDOException $e) {
+            error_log("Fejl ved opdatering af showing: " . $e->getMessage());
+            throw new Exception("Kunne ikke opdatere showing.");
+        }
     }
+    
     
     private function deleteExpiredShowings() {
         $this->crudBase->delete(

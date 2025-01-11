@@ -38,20 +38,20 @@ class MovieDetailsModel {
 
 public function getShowingsForMovie($movieId) {
     $query = "
-        SELECT 
-            id AS showing_id,
-            screen,
-            show_date,
-            show_time,
-            total_spots,
-            available_spots
-        FROM 
-            showings
-        WHERE 
-            movie_id = :movie_id
-            AND CONCAT(show_date, ' ', show_time) > NOW() -- Kun fremtidige visninger
-        ORDER BY 
-            show_date, show_time
+    SELECT 
+    id AS showing_id,
+    screen,
+    show_date,
+    show_time,
+    total_spots,
+    available_spots
+FROM 
+    showings
+WHERE 
+    movie_id = :movie_id
+    AND CONCAT(show_date, ' ', show_time) > NOW()
+ORDER BY 
+    show_date, show_time
     ";
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':movie_id', $movieId, PDO::PARAM_INT);
