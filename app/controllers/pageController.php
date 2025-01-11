@@ -175,19 +175,27 @@ public function booking_receipt() {
 
 
 
-    // Admin dashboard
-    public function admin_dashboard() {
-        try {
-            $adminDashboardModel = new AdminDashboardModel($this->db);
-            $data = [
-                'dailyShowings' => $adminDashboardModel->getDailyShowings(),
-                'newsMovies' => $adminDashboardModel->getNewsMovies(),
-            ];
-            $this->pageLoader->renderPage('admin_dashboard', $data, 'admin');
-        } catch (Exception $e) {
-            $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af admin dashboard: " . $e->getMessage());
-        }
+public function admin_dashboard() {
+    // Sikrer, at kun loggede admins kan få adgang
+    $this->requireAdminLogin();
+
+    try {
+        // Initialiser AdminDashboardModel
+        $adminDashboardModel = new AdminDashboardModel($this->db);
+
+        // Hent nødvendige data til dashboardet
+        $data = [
+            'dailyShowings' => $adminDashboardModel->getDailyShowings(),
+            'newsMovies' => $adminDashboardModel->getNewsMovies(),
+        ];
+
+        // Render admin dashboard med data
+        $this->pageLoader->renderPage('admin_dashboard', $data, 'admin');
+    } catch (Exception $e) {
+        // Håndter fejl og vis en fejlside
+        $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af admin dashboard: " . $e->getMessage());
     }
+}
 
     // Admin movie
     public function admin_movie() {
@@ -366,5 +374,40 @@ public function admin_showings() {
     }
     
     
+    public function requireAdminLogin() {
+        if (!isset($_SESSION['admin_id'])) {
+            header("Location: " . BASE_URL . "index.php?page=admin_login");
+            exit();
+        }
+    }
+
+    // Admin login-side
+    public function admin_login() {
+        try {
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $email = trim($_POST['email']);
+                $password = trim($_POST['password']);
+
+                $authController = new AuthController($this->db);
+
+                if ($authController->loginAdmin($email, $password)) {
+                    header("Location: " . BASE_URL . "index.php?page=admin_dashboard");
+                    exit();
+                } else {
+                    $this->pageLoader->renderPage('admin_login', ['error' => 'Forkert email eller adgangskode'], 'auth/view');
+                }
+            } else {
+                $this->pageLoader->renderPage('admin_login', [], 'auth/view');
+            }
+        } catch (Exception $e) {
+            $this->pageLoader->renderErrorPage(500, "Fejl under admin-login: " . $e->getMessage());
+        }
+    }
+        // Admin logout
+        public function admin_logout() {
+            $authController = new AuthController($this->db);
+            $authController->logoutAdmin();
+        }
+    }
     
-}
+

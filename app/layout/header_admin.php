@@ -1,35 +1,45 @@
 
 <?php 
 require_once dirname(__DIR__, 2) . '/init.php';
+
+// Sørg for at beskytte alle admin-sider
+if (!isset($_SESSION['admin_id'])) {
+    header("Location: " . BASE_URL . "index.php?page=admin_login");
+    exit();
+}
+
 $current_page = $_REQUEST['page'] ?? 'admin_dashboard';
-
-
-
-
-
-
-
-
-
-
 ?>
 
 <header>
     <nav>
         <div>Cruise Nights Cinema</div>
         <ul>
-            <li class="<?= $current_page === 'admin_dashboard' ? 'active' : '' ?>"><a href="?page=admin_dashboard">Dashboard</a></li>
-            <li class="<?= $current_page === 'admin_bookings' ? 'active' : '' ?>"><a href="?page=admin_bookings">Bookings</a></li>
-            <li class="<?= $current_page === 'admin_showings' ? 'active' : '' ?>"><a href="?page=admin_showings">Showings</a></li>
-            <li class="<?= $current_page === 'admin_movie' ? 'active' : '' ?>"><a href="?page=admin_movie">Movie Upload</a></li>
-            <li class="<?= $current_page === 'admin_ManageUsers' ? 'active' : '' ?>"><a href="?page=admin_ManageUsers">Manage User</a></li>
-             <li class="<?= $current_page === 'admin_settings' ? 'active' : '' ?>"><a href="?page=admin_settings">Info Indstillinger</a></li>
-            
-            
+            <li class="<?= $current_page === 'admin_dashboard' ? 'active' : '' ?>">
+                <a href="<?= BASE_URL ?>index.php?page=admin_dashboard">Dashboard</a>
+            </li>
+            <li class="<?= $current_page === 'admin_bookings' ? 'active' : '' ?>">
+                <a href="<?= BASE_URL ?>index.php?page=admin_bookings">Bookings</a>
+            </li>
+            <li class="<?= $current_page === 'admin_showings' ? 'active' : '' ?>">
+                <a href="<?= BASE_URL ?>index.php?page=admin_showings">Showings</a>
+            </li>
+            <li class="<?= $current_page === 'admin_movie' ? 'active' : '' ?>">
+                <a href="<?= BASE_URL ?>index.php?page=admin_movie">Movie Upload</a>
+            </li>
+            <li class="<?= $current_page === 'admin_ManageUsers' ? 'active' : '' ?>">
+                <a href="<?= BASE_URL ?>index.php?page=admin_ManageUsers">Manage User</a>
+            </li>
+            <li class="<?= $current_page === 'admin_settings' ? 'active' : '' ?>">
+                <a href="<?= BASE_URL ?>index.php?page=admin_settings">Info Indstillinger</a>
+            </li>
+            <li>
+                <a href="<?= BASE_URL ?>index.php?page=admin_logout">Log ud</a>
+            </li>
         </ul>
-
     </nav>
 </header>
+
 
 <style>
     /* Basic reset */
