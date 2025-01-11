@@ -10,6 +10,7 @@ class PageController {
     private $bookingModel;
     private $bookingController;
     private $moviedetailsController;
+    private $authController;
   
     
 
@@ -24,6 +25,7 @@ class PageController {
         $this->bookingModel = new BookingModel($this->db);
         $this->bookingController = new BookingController($this->db);
         $this->moviedetailsController = new MovieDetailsController($this->db);
+        $this->authController = new AuthController($this->db);
        
        
     }
@@ -363,8 +365,11 @@ public function admin_showings() {
     
     
     public function logout() {
-        $authController = new AuthController();
-        $authController->logoutUser();
+        $this->authController->logoutUser(); // Kald logout-logik
+        header("Location: " . BASE_URL . "index.php?page=homePage"); // Omdiriger
+        exit();
     }
+    
+    
     
 }
