@@ -78,11 +78,6 @@ class AuthController {
     
 
     public function logoutUser() {
-        // Start session kun, hvis den ikke allerede er startet
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-    
         // Fjern alle session-data
         session_unset();
         session_destroy();
