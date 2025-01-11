@@ -42,48 +42,53 @@
     </table>
 
     <div class="admin-form-container">
-        <h2><?= isset($editingShowing) ? "Rediger Visning" : "Tilføj Ny Visning" ?></h2>
-        <form method="post" action="index.php?page=admin_showings" class="admin-form">
-            <div class="form-group">
-                <label for="movie_id">Film:</label>
-                <select name="movie_id" id="movie_id" required>
-                    <option value="">Vælg en film</option>
-                    <?php foreach ($movies as $movie): ?>
-                        <option value="<?= $movie['id'] ?>" <?= isset($editingShowing) && $editingShowing['movie_id'] === $movie['id'] ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($movie['title'], ENT_QUOTES, 'UTF-8') ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
+    <form method="post" action="index.php?page=admin_showings" class="admin-form">
+    <input type="hidden" name="action" value="<?= isset($editingShowing) ? 'update' : 'create' ?>">
+    <?php if (isset($editingShowing)): ?>
+        <input type="hidden" name="id" value="<?= htmlspecialchars($editingShowing['id'], ENT_QUOTES, 'UTF-8') ?>">
+    <?php endif; ?>
 
-            <div class="form-group">
-                <label for="screen">Skærm:</label>
-                <select name="screen" id="screen" required>
-                    <option value="Lille" <?= isset($editingShowing) && $editingShowing['screen'] === 'Lille' ? 'selected' : '' ?>>Lille</option>
-                    <option value="Stor" <?= isset($editingShowing) && $editingShowing['screen'] === 'Stor' ? 'selected' : '' ?>>Stor</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="show_date">Dato:</label>
-                <input type="date" name="show_date" id="show_date" value="<?= $editingShowing['show_date'] ?? '' ?>" required>
-            </div>
-
-            <div class="form-group">
-                <label for="show_time">Tid:</label>
-                <input type="time" name="show_time" id="show_time" value="<?= $editingShowing['show_time'] ?? '' ?>" required>
-            </div>
-
-            <input type="hidden" name="action" value="<?= isset($editingShowing) ? 'update' : 'create' ?>">
-            <input type="hidden" name="id" value="<?= $editingShowing['id'] ?? '' ?>">
-
-            <div class="form-group">
-                <button type="submit" class="btn btn-submit">
-                    <?= isset($editingShowing) ? 'Opdater' : 'Tilføj' ?>
-                </button>
-            </div>
-        </form>
+    <!-- Film -->
+    <div class="form-group">
+        <label for="movie_id">Film:</label>
+        <select name="movie_id" id="movie_id" required>
+            <option value="">Vælg en film</option>
+            <?php foreach ($movies as $movie): ?>
+                <option value="<?= htmlspecialchars($movie['id'], ENT_QUOTES, 'UTF-8') ?>" <?= isset($editingShowing) && $editingShowing['movie_id'] === $movie['id'] ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($movie['title'], ENT_QUOTES, 'UTF-8') ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
     </div>
+
+    <!-- Skærm -->
+    <div class="form-group">
+        <label for="screen">Skærm:</label>
+        <select name="screen" id="screen" required>
+            <option value="Lille" <?= isset($editingShowing) && $editingShowing['screen'] === 'Lille' ? 'selected' : '' ?>>Lille</option>
+            <option value="Stor" <?= isset($editingShowing) && $editingShowing['screen'] === 'Stor' ? 'selected' : '' ?>>Stor</option>
+        </select>
+    </div>
+
+    <!-- Dato -->
+    <div class="form-group">
+        <label for="show_date">Dato:</label>
+        <input type="date" name="show_date" id="show_date" value="<?= htmlspecialchars($editingShowing['show_date'] ?? '', ENT_QUOTES, 'UTF-8') ?>" required>
+    </div>
+
+    <!-- Tid -->
+    <div class="form-group">
+        <label for="show_time">Tid:</label>
+        <input type="time" name="show_time" id="show_time" value="<?= htmlspecialchars($editingShowing['show_time'] ?? '', ENT_QUOTES, 'UTF-8') ?>" required>
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-submit">
+            <?= isset($editingShowing) ? 'Opdater' : 'Tilføj' ?>
+        </button>
+    </div>
+</form>
+
 </div>
 
 

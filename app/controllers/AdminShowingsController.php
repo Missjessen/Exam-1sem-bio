@@ -92,18 +92,18 @@ class AdminShowingsController {
     
 
     public function updateShowing($data) {
-        try {
-            $this->crudBase->update('showings', [
-                'movie_id' => $data['movie_id'],
-                'screen' => $data['screen'],
-                'show_date' => $data['show_date'],
-                'show_time' => $data['show_time']
-            ], ['id' => $data['id']]);
-        } catch (PDOException $e) {
-            error_log("Fejl ved opdatering af showing: " . $e->getMessage());
-            throw new Exception("Kunne ikke opdatere showing.");
-        }
+    if (empty($data['id'])) {
+        throw new Exception("Visningens ID mangler.");
     }
+    error_log("Opdaterer visning med data: " . print_r($data, true));
+
+    $this->crudBase->update('showings', [
+        'movie_id' => $data['movie_id'],
+        'screen' => $data['screen'],
+        'show_date' => $data['show_date'],
+        'show_time' => $data['show_time']
+    ], ['id' => $data['id']]);
+}
     
     
     private function deleteExpiredShowings() {
