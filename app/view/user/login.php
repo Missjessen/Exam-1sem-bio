@@ -1,4 +1,3 @@
-<h1>Login</h1>
 <form method="POST" action="index.php?page=login">
     <label for="email">E-mail:</label>
     <input type="email" id="email" name="email" required>
