@@ -44,9 +44,9 @@
     <div class="admin-form-container">
     <form method="post" action="index.php?page=admin_showings" class="admin-form">
     <input type="hidden" name="action" value="<?= isset($editingShowing) ? 'update' : 'create' ?>">
-    <?php if (isset($editingShowing)): ?>
-        <input type="hidden" name="id" value="<?= htmlspecialchars($editingShowing['id'], ENT_QUOTES, 'UTF-8') ?>">
-    <?php endif; ?>
+<?php if (isset($editingShowing)): ?>
+    <input type="hidden" name="id" value="<?= htmlspecialchars($editingShowing['id'], ENT_QUOTES, 'UTF-8') ?>">
+<?php endif; ?>
 
     <!-- Film -->
     <div class="form-group">
