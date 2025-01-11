@@ -78,9 +78,29 @@ class AuthController {
     
 
     public function logoutUser() {
-        // Slet session og log brugeren ud
+        // Start session kun, hvis den ikke allerede er startet
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+    
+        // Fjern alle session-data
         session_unset();
         session_destroy();
+    
+        // Sørg for, at cookies også bliver slettet
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000, $params["path"], $params["domain"], $params["secure"], $params["httponly"]);
+        }
+    
+        // Omdiriger brugeren
+        if (!headers_sent()) {
+            header("Location: index.php?page=homePage");
+            exit();
+        } else {
+            echo "<script>window.location.href='index.php?page=homePage';</script>";
+            exit();
+        }
     }
 
     public function isLoggedIn() {
