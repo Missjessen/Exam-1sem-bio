@@ -308,14 +308,14 @@ public function admin_showings() {
                 $name = trim($_POST['name']);
                 $email = trim($_POST['email']);
                 $password = trim($_POST['password']);
-    
+        
                 $authController = new AuthController($this->db);
                 $authController->registerUser($name, $email, $password);
     
-                // Automatisk login efter registrering
+                // Log brugeren ind efter registrering
                 $authController->loginUser($email, $password);
-    
-                header("Location: index.php?page=profile");
+        
+                header("Location: " . BASE_URL . "index.php?page=profile");
                 exit;
             } else {
                 $this->pageLoader->renderPage('register', [], 'auth');
@@ -327,36 +327,29 @@ public function admin_showings() {
     
     public function login() {
         try {
-            error_log("Anmodningstype: " . $_SERVER['REQUEST_METHOD']); // Debugging
-    
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                error_log("Login POST-data: " . print_r($_POST, true)); // Debugging
-    
                 $email = trim($_POST['email']);
                 $password = trim($_POST['password']);
         
                 $authController = new AuthController($this->db);
                 if ($authController->loginUser($email, $password)) {
-                    // Debugging
-                    error_log("Login succesfuldt for bruger: $email");
-                    
-                    // Tjek om der er en redirect URL
-                    $redirectUrl = $_SESSION['redirect_url'] ?? 'index.php?page=homePage';
-                    unset($_SESSION['redirect_url']); // Fjern redirect URL efter login
+                    // Redirect efter succesfuldt login
+                    $redirectUrl = $_SESSION['redirect_url'] ?? BASE_URL . 'index.php?page=homePage';
+                    unset($_SESSION['redirect_url']);
                     header("Location: $redirectUrl");
                     exit;
                 } else {
-                    error_log("Login mislykkedes for bruger: $email"); // Debugging
-                    $this->pageLoader->renderPage('login', ['error' => 'Forkert email eller adgangskode.'], 'auth');
+                    $error = 'Forkert email eller adgangskode.';
+                    $this->pageLoader->renderPage('login', ['error' => $error], 'auth');
                 }
             } else {
-                error_log("Login forespørgsel ikke af typen POST."); // Debugging
-                $this->pageLoader->renderErrorPage(400, "Ugyldig anmodning til login.");
+                $this->pageLoader->renderPage('login', [], 'auth');
             }
         } catch (Exception $e) {
             $this->pageLoader->renderErrorPage(500, "Fejl under login: " . $e->getMessage());
         }
     }
+    
 
     
     
