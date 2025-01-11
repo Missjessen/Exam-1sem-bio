@@ -325,36 +325,38 @@ public function admin_showings() {
         }
     }
     
-  public function login() {
-    try {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            error_log("Login POST-data: " . print_r($_POST, true)); // Debugging
-
-            $email = trim($_POST['email']);
-            $password = trim($_POST['password']);
+    public function login() {
+        try {
+            error_log("Anmodningstype: " . $_SERVER['REQUEST_METHOD']); // Debugging
     
-            $authController = new AuthController($this->db);
-            if ($authController->loginUser($email, $password)) {
-                // Debugging
-                error_log("Login succesfuldt for bruger: $email");
-                
-                // Tjek om der er en redirect URL
-                $redirectUrl = $_SESSION['redirect_url'] ?? 'index.php?page=homePage';
-                unset($_SESSION['redirect_url']); // Fjern redirect URL efter login
-                header("Location: $redirectUrl");
-                exit;
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                error_log("Login POST-data: " . print_r($_POST, true)); // Debugging
+    
+                $email = trim($_POST['email']);
+                $password = trim($_POST['password']);
+        
+                $authController = new AuthController($this->db);
+                if ($authController->loginUser($email, $password)) {
+                    // Debugging
+                    error_log("Login succesfuldt for bruger: $email");
+                    
+                    // Tjek om der er en redirect URL
+                    $redirectUrl = $_SESSION['redirect_url'] ?? 'index.php?page=homePage';
+                    unset($_SESSION['redirect_url']); // Fjern redirect URL efter login
+                    header("Location: $redirectUrl");
+                    exit;
+                } else {
+                    error_log("Login mislykkedes for bruger: $email"); // Debugging
+                    $this->pageLoader->renderPage('login', ['error' => 'Forkert email eller adgangskode.'], 'auth');
+                }
             } else {
-                error_log("Login mislykkedes for bruger: $email"); // Debugging
-                $this->pageLoader->renderPage('login', ['error' => 'Forkert email eller adgangskode.'], 'user');
+                error_log("Login forespørgsel ikke af typen POST."); // Debugging
+                $this->pageLoader->renderErrorPage(400, "Ugyldig anmodning til login.");
             }
-        } else {
-            error_log("Login forespørgsel ikke af typen POST."); // Debugging
-            $this->pageLoader->renderErrorPage(400, "Ugyldig anmodning til login.");
+        } catch (Exception $e) {
+            $this->pageLoader->renderErrorPage(500, "Fejl under login: " . $e->getMessage());
         }
-    } catch (Exception $e) {
-        $this->pageLoader->renderErrorPage(500, "Fejl under login: " . $e->getMessage());
     }
-}
 
     
     
