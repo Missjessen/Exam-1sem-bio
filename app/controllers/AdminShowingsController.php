@@ -61,27 +61,30 @@ class AdminShowingsController {
     }
     
     public function createShowing($data) {
-        $existing = $this->crudBase->read('showings', '*', [
-            'movie_id' => $data['movie_id'],
-            'show_date' => $data['show_date'],
-            'show_time' => $data['show_time']
-        ]);
+        try {
+            // Log data for debugging
+            error_log("Opretter visning med data: " . print_r($data, true));
     
-        if (!empty($existing)) {
-            throw new Exception("Visningen eksisterer allerede for denne film, dato og tidspunkt.");
+            // Generer et unikt ID, hvis nødvendigt
+            $data['id'] = bin2hex(random_bytes(16));
+    
+            // Indsæt i databasen
+            $this->crudBase->create('showings', [
+                'id' => $data['id'], // Sørg for unikt ID
+                'movie_id' => $data['movie_id'],
+                'screen' => $data['screen'],
+                'show_date' => $data['show_date'],
+                'show_time' => $data['show_time'],
+                'total_spots' => 50,
+                'available_spots' => 50,
+            ]);
+    
+            error_log("Visning oprettet med ID: " . $data['id']);
+        } catch (PDOException $e) {
+            error_log("Fejl ved oprettelse af visning: " . $e->getMessage());
+            throw new Exception("Kunne ikke oprette visning.");
         }
-    
-        $this->crudBase->create('showings', [
-            'id' => bin2hex(random_bytes(16)),
-            'movie_id' => $data['movie_id'],
-            'screen' => $data['screen'],
-            'show_date' => $data['show_date'],
-            'show_time' => $data['show_time'],
-            'total_spots' => 50,
-            'available_spots' => 50
-        ]);
     }
-    
     
     private function deleteShowing($showingId) {
         $this->crudBase->delete('showings', ['id' => $showingId]);
@@ -111,9 +114,19 @@ class AdminShowingsController {
     }
     
     
-    public function deleteExpiredShowings() {
+    private function deleteExpiredShowings() {
         error_log("Sletter udløbne visninger...");
-        $this->crudBase->delete('showings', ["CONCAT(show_date, ' ', show_time) < NOW()"]);
+        $showings = $this->crudBase->read(
+            'showings',
+            '*',
+            ["show_date < NOW()"]
+        );
+        error_log("Visninger til sletning: " . print_r($showings, true));
+    
+        $this->crudBase->delete(
+            'showings',
+            ["show_date < NOW()"]
+        );
     }
     
     
