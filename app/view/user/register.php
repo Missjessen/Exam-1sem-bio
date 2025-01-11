@@ -1,8 +1,3 @@
-<?php if (!empty($error)): ?>
-    <div class="error-message">
-        <?= htmlspecialchars($error) ?>
-    </div>
-<?php endif; ?>
 <h1>Registrering</h1>
 <form method="POST" action="index.php?page=register">
     <label for="name">Navn:</label>
@@ -16,6 +11,7 @@
 
     <button type="submit">Opret Bruger</button>
 </form>
+
 
 
 
