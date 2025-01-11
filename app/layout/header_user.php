@@ -46,11 +46,11 @@ if (!empty($current_page)) {
         <div class="auth-links">
             <?php if (isset($_SESSION['user_id'])): ?>
                 <span>Velkommen, <?= htmlspecialchars($_SESSION['user_name'] ?? ''); ?>!</span>
-                <a href="index.php?page=profile">Min Profil</a>
+                <a href="<?= BASE_URL ?>index.php?page=login">Log ind</a>
                 <a href="index.php?page=logout">Log ud</a>
             <?php else: ?>
-                <a href="index.php?page=login">Log ind</a>
-                <a href="index.php?page=register">Registrer</a>
+                <a href="<?= BASE_URL ?>index.php?page=login">Log ind</a>
+                <a href="<?= BASE_URL ?>index.php?page=register">Registrer</a>
             <?php endif; ?>
         </div>
     </nav>
