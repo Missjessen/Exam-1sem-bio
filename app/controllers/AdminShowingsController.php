@@ -34,21 +34,21 @@ class AdminShowingsController {
     
         $this->showAdminShowings();
     }
-    
-    
-    
-
-    public function showAdminShowings($editingShowing = null) {
-       
-        $showings = $this->crudBase->readWithJoin(
+    private function getAllShowingsWithMovies() {
+        return $this->crudBase->readWithJoin(
             'showings',
             'showings.*, movies.title AS movie_title',
             [
                 'JOIN movies ON showings.movie_id = movies.id',
-                "WHERE CONCAT(showings.show_date, ' ', showings.show_time) >= NOW()" // Kun fremtidige visninger
+                "WHERE CONCAT(showings.show_date, ' ', showings.show_time) >= NOW()"
             ]
         );
+    }
     
+    
+    
+    public function showAdminShowings($editingShowing = null) {
+        $showings = $this->getAllShowingsWithMovies();
         $movies = $this->crudBase->getAllItems('movies');
     
         $data = [
@@ -88,6 +88,16 @@ class AdminShowingsController {
         exit;
     }
     
+    private function collectShowingData($data) {
+        return [
+            'movie_id' => $data['movie_id'] ?? null,
+            'screen' => $data['screen'] ?? null,
+            'show_date' => $data['show_date'] ?? null,
+            'show_time' => $data['show_time'] ?? null,
+            'total_spots' => 50,
+            'available_spots' => 50,
+        ];
+    }
     
     
 
