@@ -62,15 +62,7 @@ class AdminShowingsController {
     
     public function createShowing($data) {
         try {
-            // Log data for debugging
-            error_log("Opretter visning med data: " . print_r($data, true));
-    
-            // Generer et unikt ID, hvis nødvendigt
-            $data['id'] = bin2hex(random_bytes(16));
-    
-            // Indsæt i databasen
             $this->crudBase->create('showings', [
-                'id' => $data['id'], // Sørg for unikt ID
                 'movie_id' => $data['movie_id'],
                 'screen' => $data['screen'],
                 'show_date' => $data['show_date'],
