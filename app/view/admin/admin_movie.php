@@ -76,7 +76,11 @@
             <input type="date" id="premiere_date" name="premiere_date" value="<?= $movieToEdit['premiere_date'] ?? '' ?>" required>
 
             <label for="language">Sprog:</label>
-            <input type="text" id="language" name="language" value="<?= $movieToEdit['language'] ?? '' ?>" required>
+<select id="language" name="language" required>
+    <option value="Engelsk" <?= (isset($movieToEdit['language']) && $movieToEdit['language'] === 'Engelsk') ? 'selected' : '' ?>>Engelsk</option>
+    <option value="Dansk" <?= (isset($movieToEdit['language']) && $movieToEdit['language'] === 'Dansk') ? 'selected' : '' ?>>Dansk</option>
+    <option value="Tysk" <?= (isset($movieToEdit['language']) && $movieToEdit['language'] === 'Tysk') ? 'selected' : '' ?>>Tysk</option>
+</select>
 
             <label for="poster">Filmplakat:</label>
             <input type="file" id="poster" name="poster" accept="image/*">
