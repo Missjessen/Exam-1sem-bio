@@ -9,17 +9,18 @@ class AuthController {
 
     public function loginUser($email, $password) {
         try {
+            if (empty($email) || empty($password)) {
+                throw new Exception("Email og adgangskode skal udfyldes.");
+            }
+    
             $query = "SELECT id, name, password FROM customers WHERE email = :email";
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':email', $email, PDO::PARAM_STR);
             $stmt->execute();
-        
+    
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
-        
+    
             if ($user && password_verify($password, $user['password'])) {
-                // Debugging
-                error_log("Bruger fundet og verificeret: " . print_r($user, true));
-                
                 // Sæt brugeroplysninger i sessionen
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['user_name'] = $user['name'];
@@ -27,7 +28,7 @@ class AuthController {
             } else {
                 error_log("Forkert adgangskode eller bruger ikke fundet: $email");
             }
-        
+    
             return false;
         } catch (PDOException $e) {
             throw new Exception("Fejl ved login: " . $e->getMessage());
@@ -37,9 +38,19 @@ class AuthController {
     
     
     
+    
 
     public function registerUser($name, $email, $password) {
         try {
+            if (empty($name) || empty($email) || empty($password)) {
+                throw new Exception("Alle felter skal udfyldes.");
+            }
+    
+            // Tjek om email allerede findes
+            if ($this->emailExists($email)) {
+                throw new Exception("Denne email er allerede registreret.");
+            }
+    
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
     
             $query = "
@@ -55,7 +66,7 @@ class AuthController {
             if ($stmt->execute()) {
                 // Sæt brugeroplysninger i session
                 $_SESSION['user_id'] = $this->db->lastInsertId();
-                $_SESSION['user_name'] = $name; // Gem brugerens navn i sessionen
+                $_SESSION['user_name'] = $name;
                 return true;
             }
     
@@ -64,6 +75,7 @@ class AuthController {
             throw new Exception("Fejl ved registrering: " . $e->getMessage());
         }
     }
+    
     
     
     
@@ -87,7 +99,9 @@ class AuthController {
             $params = session_get_cookie_params();
             setcookie(session_name(), '', time() - 42000, $params["path"], $params["domain"], $params["secure"], $params["httponly"]);
         }
+        error_log("Brugeren er logget ud.");
     }
+    
     
     
     

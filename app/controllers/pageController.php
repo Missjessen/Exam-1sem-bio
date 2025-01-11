@@ -310,15 +310,12 @@ public function admin_showings() {
                 $name = trim($_POST['name']);
                 $email = trim($_POST['email']);
                 $password = trim($_POST['password']);
-        
+    
                 $authController = new AuthController($this->db);
                 $authController->registerUser($name, $email, $password);
     
-                // Log brugeren ind efter registrering
-                $authController->loginUser($email, $password);
-        
-                header("Location: " . BASE_URL . "index.php?page=profile");
-                exit;
+                header("Location: " . BASE_URL . "index.php?page=login");
+                exit();
             } else {
                 $this->pageLoader->renderPage('register', [], 'auth');
             }
@@ -327,30 +324,28 @@ public function admin_showings() {
         }
     }
     
+    
     public function login() {
         try {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $email = trim($_POST['email']);
                 $password = trim($_POST['password']);
-        
+    
                 $authController = new AuthController($this->db);
                 if ($authController->loginUser($email, $password)) {
-                    // Redirect efter succesfuldt login
-                    $redirectUrl = $_SESSION['redirect_url'] ?? BASE_URL . 'index.php?page=homePage';
-                    unset($_SESSION['redirect_url']);
-                    header("Location: $redirectUrl");
-                    exit;
+                    header("Location: " . BASE_URL . "index.php?page=homePage");
+                    exit();
                 } else {
-                    $error = 'Forkert email eller adgangskode.';
-                    $this->pageLoader->renderPage('login', ['error' => $error], 'auth');
+                    $this->pageLoader->renderPage('login', ['error' => 'Forkert email eller adgangskode'], 'auth');
                 }
             } else {
                 $this->pageLoader->renderPage('login', [], 'auth');
             }
         } catch (Exception $e) {
-            $this->pageLoader->renderErrorPage(500, "Fejl under login: " . $e->getMessage());
+            $this->pageLoader->renderErrorPage(500, $e->getMessage());
         }
     }
+    
     
 
     
