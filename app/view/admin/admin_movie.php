@@ -59,7 +59,15 @@
             <input type="number" id="length" name="length" value="<?= $movieToEdit['length'] ?? '' ?>" required>
 
             <label for="age_limit">Aldersgrænse:</label>
-            <input type="number" id="age_limit" name="age_limit" value="<?= $movieToEdit['age_limit'] ?? '' ?>" required>
+<select id="age_limit" name="age_limit" required>
+    <option value="G" <?= isset($movieToEdit) && $movieToEdit['age_limit'] === 'G' ? 'selected' : '' ?>>G</option>
+    <option value="PG" <?= isset($movieToEdit) && $movieToEdit['age_limit'] === 'PG' ? 'selected' : '' ?>>PG</option>
+    <option value="PG-13" <?= isset($movieToEdit) && $movieToEdit['age_limit'] === 'PG-13' ? 'selected' : '' ?>>PG-13</option>
+    <option value="R" <?= isset($movieToEdit) && $movieToEdit['age_limit'] === 'R' ? 'selected' : '' ?>>R</option>
+    <option value="NC-17" <?= isset($movieToEdit) && $movieToEdit['age_limit'] === 'NC-17' ? 'selected' : '' ?>>NC-17</option>
+    <option value="18+" <?= isset($movieToEdit) && $movieToEdit['age_limit'] === '18+' ? 'selected' : '' ?>>18+</option>
+    <option value="U" <?= isset($movieToEdit) && $movieToEdit['age_limit'] === 'U' ? 'selected' : '' ?>>U</option>
+</select>
 
             <label for="description">Beskrivelse:</label>
             <textarea id="description" name="description" required><?= $movieToEdit['description'] ?? '' ?></textarea>
