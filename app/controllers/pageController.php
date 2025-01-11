@@ -363,11 +363,8 @@ public function admin_showings() {
     
     
     public function logout() {
-        session_start();
-        session_unset();
-        session_destroy();
-        header("Location: index.php?page=homePage");
-        exit;
+        $authController = new AuthController();
+        $authController->logoutUser();
     }
     
 }
