@@ -164,10 +164,12 @@ class MovieAdminController {
         }
     }
 
+    /**
+     * Genererer en UUID for nye poster.
+     */
     public function generateUUID() {
-        return uniqid('', true);
+        return bin2hex(random_bytes(16));
     }
-    
 
     /**
      * Genererer en slug baseret på titel.
