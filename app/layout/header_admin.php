@@ -2,6 +2,10 @@
 <?php 
 require_once dirname(__DIR__, 2) . '/init.php';
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 // Sørg for at beskytte alle admin-sider
 if (!isset($_SESSION['admin_id'])) {
     header("Location: " . BASE_URL . "index.php?page=admin_login");
