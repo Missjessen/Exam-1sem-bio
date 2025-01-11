@@ -39,7 +39,7 @@ class AdminShowingsController {
     
 
     public function showAdminShowings($editingShowing = null) {
-        $this->deleteExpiredShowings(); // Slet udløbne visninger først
+       
         $showings = $this->crudBase->readWithJoin(
             'showings',
             'showings.*, movies.title AS movie_title',
@@ -60,9 +60,9 @@ class AdminShowingsController {
         $this->pageLoader->renderPage('admin_showings', $data, 'admin');
     }
     
-    
     public function createShowing($data) {
         try {
+            error_log("Opretter visning med data: " . print_r($data, true));
             $this->crudBase->create('showings', [
                 'movie_id' => $data['movie_id'],
                 'screen' => $data['screen'],
@@ -106,6 +106,14 @@ class AdminShowingsController {
     
     
     private function deleteExpiredShowings() {
+        error_log("Sletter udløbne visninger...");
+        $showings = $this->crudBase->read(
+            'showings',
+            '*',
+            ["show_date < NOW()"]
+        );
+        error_log("Visninger til sletning: " . print_r($showings, true));
+    
         $this->crudBase->delete(
             'showings',
             ["show_date < NOW()"]
