@@ -33,15 +33,9 @@ if (!empty($current_page)) {
     <nav>
         <div>Cruise Nights Cinema</div>
         <ul>
-            <li class="<?= $current_page === 'homePage' ? 'active' : '' ?>">
-                <a href="?page=homePage">Hjem</a>
-            </li>
-            <li class="<?= $current_page === 'program' ? 'active' : '' ?>">
-                <a href="?page=program">Program</a>
-            </li>
-            <li class="<?= $current_page === 'admin_dashboard' ? 'active' : '' ?>">
-                <a href="?page=admin_dashboard">Admin</a>
-            </li>
+        <li class="<?= $current_page === 'homePage' ? 'active' : '' ?>"><a href="index.php?page=homePage">Hjem</a></li>
+        <li class="<?= $current_page === 'program' ? 'active' : '' ?>"><a href="index.php?page=program">Program</a></li>
+        <li class="<?= $current_page === 'admin_dashboard' ? 'active' : '' ?>"><a href="index.php?page=admin_dashboard">Admin</a></li>
         </ul>
         <div class="auth-links">
             <?php if (isset($_SESSION['user_id'])): ?>
