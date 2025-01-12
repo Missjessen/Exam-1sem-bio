@@ -1,6 +1,5 @@
 <?php
-error_log("Aktuel rute: $current_page", print_r($current_page));
-// Undgå undefined variable-fejl ved at kontrollere, om $settings er sat
+
 $site_title = $settings['site_title'] ?? '';
 $contact_email = $settings['contact_email'] ?? '';
 $opening_hours = $settings['opening_hours'] ?? '';

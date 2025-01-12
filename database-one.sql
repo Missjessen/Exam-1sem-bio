@@ -179,6 +179,18 @@ JOIN
 JOIN 
     genres g ON mg.genre_id = g.id;
 
+DELIMITER $$
+
+CREATE TRIGGER after_booking_insert
+AFTER INSERT ON bookings
+FOR EACH ROW
+BEGIN
+    UPDATE showings
+    SET available_spots = available_spots - NEW.spots_reserved
+    WHERE id = NEW.showing_id;
+END $$
+
+DELIMITER ;
 
 
 DELIMITER $$
@@ -192,18 +204,40 @@ BEGIN
     WHERE id = OLD.showing_id;
 END $$
 
+DELIMITER ;
+
 DELIMITER $$
 
-CREATE TRIGGER after_booking_insert
-AFTER INSERT ON bookings
+CREATE TRIGGER after_booking_update
+AFTER UPDATE ON bookings
 FOR EACH ROW
 BEGIN
-    UPDATE showings
-    SET available_spots = available_spots - NEW.spots_reserved
-    WHERE id = NEW.showing_id;
+    -- Hvis antal reserverede pladser ændres
+    IF OLD.spots_reserved != NEW.spots_reserved THEN
+        UPDATE showings
+        SET available_spots = available_spots + OLD.spots_reserved
+        WHERE id = OLD.showing_id;
+
+        UPDATE showings
+        SET available_spots = available_spots - NEW.spots_reserved
+        WHERE id = NEW.showing_id;
+    END IF;
+
+    -- Hvis showing ændres
+    IF OLD.showing_id != NEW.showing_id THEN
+        UPDATE showings
+        SET available_spots = available_spots + OLD.spots_reserved
+        WHERE id = OLD.showing_id;
+
+        UPDATE showings
+        SET available_spots = available_spots - NEW.spots_reserved
+        WHERE id = NEW.showing_id;
+    END IF;
 END $$
 
 DELIMITER ;
+
+
 
 
 

@@ -213,11 +213,11 @@ public function admin_dashboard() {
     }
 
     // Bookinger
-    public function admin_bookings() {
-        $controller = new AdminBookingController($this->db);
-        $controller->admin_bookings();
-    }
-    
+public function admin_bookings() {
+    $controller = new AdminBookingController($this->db);
+    $controller->admin_bookings();
+}
+
     
 
 

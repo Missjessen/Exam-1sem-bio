@@ -5,12 +5,12 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+$current_page = $_REQUEST['page'] ?? 'admin_dashboard';
+
 if (!isset($_SESSION['admin_id']) && $current_page !== 'admin_login') {
     header("Location: " . BASE_URL . "index.php?page=admin_login");
     exit();
 }
-
-$current_page = $_REQUEST['page'] ?? 'admin_dashboard';
 ?>
 
 <header>
