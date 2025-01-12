@@ -21,6 +21,7 @@ class AdminBookingController {
     public function updateBooking($orderNumber, $data) {
         return $this->model->updateBooking($orderNumber, $data);
     }
+    
 
     // Slet en booking
     public function deleteBooking($orderNumber) {
