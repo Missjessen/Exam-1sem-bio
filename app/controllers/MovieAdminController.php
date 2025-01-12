@@ -10,7 +10,7 @@ class MovieAdminController {
         $this->pageLoader = new PageLoader($db); 
     }
     public function getAllMoviesWithDetails() {
-        return $this->movieAdminModel->getAllMoviesWithDetails(); 
+        return $this->movieAdminModel->getAllMoviesWithDetails(); // Kalder modelens metode
     }
     public function index() {
         try {
@@ -40,7 +40,7 @@ class MovieAdminController {
     public function handlePostRequest() {
         if (!isset($_POST['action'])) {
             error_log("Ingen 'action' parameter blev sendt med POST-forespørgslen.");
-            return; 
+            return; // Afslut tidligt, hvis 'action' ikke er sat
         }
     
         $action = $_POST['action'];
@@ -153,33 +153,43 @@ class MovieAdminController {
             $movieId = $_GET['movie_id'] ?? null;
             if ($movieId) {
                 $movieDetails = $this->movieAdminModel->getMovieDetails($movieId);
+                error_log("Movie Details: " . print_r($movieDetails, true)); // Debug
                 return $movieDetails;
             }
         }
         return null;
     }
 
+    
 
+    /**
+     * Sletter en film og dens relationer.
+     */
     public function deleteMovie($movieId) {
         if ($movieId) {
             $this->movieAdminModel->deleteMovieWithRelations($movieId);
         }
     }
 
-    
-      private function generateUUID() {
+    /**
+     * Genererer en UUID for nye poster.
+     */
+    private function generateUUID() {
         return bin2hex(random_bytes(16));
     }
 
     // Genererer en slug baseret på titel.
-     private function generateSlug($title) {
+    
+    private function generateSlug($title) {
+       
         $title = strip_tags($title);
         return trim(strtolower(preg_replace('/[^a-zA-Z0-9-]+/', '-', $title)), '-');
     }
 
     
      // Håndterer oprettelse af nye aktører eller genrer.
-      private function processNewEntities($newEntities, $type) {
+     
+    private function processNewEntities($newEntities, $type) {
         $newIds = [];
         if (!empty($newEntities)) {
             $names = explode(',', $newEntities);
