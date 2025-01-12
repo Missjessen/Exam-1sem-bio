@@ -7,8 +7,12 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // Sørg for at beskytte alle admin-sider
 if (!isset($_SESSION['admin_id'])) {
-    header("Location: " . BASE_URL . "index.php?page=admin_login");
-    exit();
+    if (headers_sent()) {
+        echo "<script>window.location.href = '" . BASE_URL . "index.php?page=admin_login';</script>";
+    } else {
+        header("Location: " . BASE_URL . "index.php?page=admin_login");
+        exit();
+    }
 }
 
 $current_page = $_REQUEST['page'] ?? 'admin_dashboard';
