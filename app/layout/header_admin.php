@@ -15,6 +15,7 @@ if (!isset($_SESSION['admin_id'])) {
     }
 }
 
+
 $current_page = $_REQUEST['page'] ?? 'admin_dashboard';
 ?>
 
