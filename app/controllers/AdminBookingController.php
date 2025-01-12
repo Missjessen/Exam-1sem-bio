@@ -16,11 +16,6 @@ class AdminBookingController {
     public function getBooking($orderNumber) {
         return $this->model->getBookingByOrderNumber($orderNumber);
     }
-
-    // Opdater en booking
-    public function updateBooking($orderNumber, $data) {
-        return $this->model->updateBooking($orderNumber, $data);
-    }
     
 
     // Slet en booking
@@ -29,10 +24,10 @@ class AdminBookingController {
     }
 
 public function getBookingDetails($orderNumber) {
-    return $this->adminBookingModel->getBookingByOrderNumber($orderNumber);
+    return $this->model->getBookingByOrderNumber($orderNumber);
 }
 
 public function updateBooking($orderNumber, $data) {
-    return $this->adminBookingModel->updateBooking($orderNumber, $data);
+    return $this->model->updateBooking($orderNumber, $data);
 }
 }
