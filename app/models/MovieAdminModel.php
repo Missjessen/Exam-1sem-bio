@@ -231,14 +231,6 @@ public function createActor($name, $birthdate = null) {
         }
     }
 
-   /*  private function manageRelations($movieId, $entityIds, $relationTable, $entityColumn) {
-        $this->delete($relationTable, ['movie_id' => $movieId]);
-        foreach ($entityIds as $id) {
-            $this->create($relationTable, ['movie_id' => $movieId, $entityColumn => $id]);
-        }
-    } */
-
-
     public function saveMovie($data, $actorIds, $genreIds, $newActors, $newGenres, $isUpdate) {
         if (!$isUpdate) {
             $data['id'] = bin2hex(random_bytes(16));
