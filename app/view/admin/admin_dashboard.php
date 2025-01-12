@@ -16,14 +16,17 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($dailyShowings as $showing): ?>
-                            <tr>
-                                <td><?= htmlspecialchars($showing['title']) ?></td>
-                                <td><?= htmlspecialchars($showing['genres'] ?? 'N/A') ?></td>
-                                <td><?= htmlspecialchars($showing['showing_time']) ?></td>
-                                <td><img src="<?= htmlspecialchars($showing['image']) ?>" alt="Poster"></td>
-                            </tr>
-                        <?php endforeach; ?>
+                    <?php foreach ($dailyShowings as $showing): ?>
+    <tr>
+        <td><?= htmlspecialchars($showing['title'] ?? 'Ukendt titel') ?></td>
+        <td><?= htmlspecialchars($showing['genres'] ?? 'Ingen genre') ?></td>
+        <td><?= htmlspecialchars($showing['show_time'] ?? 'Ikke angivet') ?></td>
+        <td>
+            <img src="<?= htmlspecialchars($showing['image'] ?? '/path/to/default-image.jpg') ?>" alt="Poster">
+        </td>
+    </tr>
+<?php endforeach; ?>
+                       
                     </tbody>
                 </table>
             <?php else: ?>
