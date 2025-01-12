@@ -11,6 +11,7 @@ class PageController {
     private $bookingController;
     private $moviedetailsController;
     private $authController;
+    private $adminBookingController;
   
     
 
@@ -26,6 +27,7 @@ class PageController {
         $this->bookingController = new BookingController($this->db);
         $this->moviedetailsController = new MovieDetailsController($this->db);
         $this->authController = new AuthController($this->db);
+        $this->adminBookingController = new AdminBookingController($this->db);
        
        
     }
@@ -211,20 +213,42 @@ public function admin_dashboard() {
     }
 
     // Bookinger
-   public function admin_bookings() {
-    try {
-        // Initialiser AdminBookingController
-        $adminBookingController = new AdminBookingController($this->db);
-        
-        // Hent alle bookinger
-        $bookings = $adminBookingController->listBookings();
-
-        // Send data til viewet
+    public function admin_bookings() {
+        $this->requireAdminLogin();
+        $bookings = $this->adminBookingController->listBookings();
         $this->pageLoader->renderPage('admin_bookings', ['bookings' => $bookings], 'admin');
-    } catch (Exception $e) {
-        $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af bookingsiden: " . $e->getMessage());
     }
-}
+    
+    public function admin_edit_booking() {
+        $this->requireAdminLogin();
+        $orderNumber = $_GET['order_number'];
+        $booking = $this->adminBookingController->getBooking($orderNumber);
+        $this->pageLoader->renderPage('admin_edit_booking', ['booking' => $booking], 'admin');
+    }
+    
+    public function admin_update_booking() {
+        $this->requireAdminLogin();
+    
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $orderNumber = $_POST['order_number'];
+            $data = [
+                'spots_reserved' => $_POST['spots_reserved'],
+                'status' => $_POST['status']
+            ];
+            $this->adminBookingController->updateBooking($orderNumber, $data);
+            header("Location: " . BASE_URL . "index.php?page=admin_bookings");
+            exit();
+        }
+    }
+    public function admin_delete_booking() {
+        $this->requireAdminLogin();
+        $orderNumber = $_GET['order_number'];
+        $this->adminBookingController->deleteBooking($orderNumber);
+        header("Location: " . BASE_URL . "index.php?page=admin_bookings");
+        exit();
+    }
+    
+
 
 public function admin_showings() {
     try {
