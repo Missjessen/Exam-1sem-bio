@@ -129,21 +129,27 @@ class AuthController {
 
  // Admin-login-funktion
  public function loginAdmin($email, $password) {
-    $query = "SELECT id, name, password FROM employees WHERE email = :email";
-    $stmt = $this->db->prepare($query);
-    $stmt->bindParam(':email', $email, PDO::PARAM_STR);
-    $stmt->execute();
+    try {
+        $query = "SELECT id, name, password FROM employees WHERE email = :email AND role = 'admin'";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+        $stmt->execute();
 
-    $admin = $stmt->fetch(PDO::FETCH_ASSOC);
+        $admin = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($admin && password_verify($password, $admin['password'])) {
-        // Gem admin-session
-        $_SESSION['admin_id'] = $admin['id'];
-        $_SESSION['admin_name'] = $admin['name'];
-        return true;
+        if ($admin && password_verify($password, $admin['password'])) {
+            // Sæt admin-session
+            $_SESSION['admin_id'] = $admin['id'];
+            $_SESSION['admin_name'] = $admin['name'];
+            return true;
+        }
+
+        return false;
+    } catch (PDOException $e) {
+        throw new Exception("Fejl ved admin-login: " . $e->getMessage());
     }
-    return false;
 }
+
 
 // Admin-logout-funktion
 public function logoutAdmin() {
