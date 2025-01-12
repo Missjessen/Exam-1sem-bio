@@ -27,4 +27,12 @@ class AdminBookingController {
     public function deleteBooking($orderNumber) {
         return $this->model->deleteBooking($orderNumber);
     }
+
+public function getBookingDetails($orderNumber) {
+    return $this->adminBookingModel->getBookingByOrderNumber($orderNumber);
+}
+
+public function updateBooking($orderNumber, $data) {
+    return $this->adminBookingModel->updateBooking($orderNumber, $data);
+}
 }

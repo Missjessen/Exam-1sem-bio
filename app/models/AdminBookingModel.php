@@ -23,20 +23,21 @@ class AdminBookingModel extends CrudBase {
 
     public function getBookingByOrderNumber($orderNumber) {
         $sql = "SELECT 
-                    b.id AS booking_id,
                     b.order_number,
+                    b.spots_reserved,
+                    b.status,
+                    b.showing_id,
+                    b.customer_id,
                     c.name AS customer_name,
-                    m.title AS movie_title,
                     s.show_date,
                     s.show_time,
-                    b.spots_reserved,
-                    b.status
+                    m.title AS movie_title
                 FROM bookings b
                 JOIN customers c ON b.customer_id = c.id
                 JOIN showings s ON b.showing_id = s.id
                 JOIN movies m ON s.movie_id = m.id
                 WHERE b.order_number = :order_number";
-        
+    
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':order_number', $orderNumber, PDO::PARAM_STR);
         $stmt->execute();
@@ -48,12 +49,18 @@ class AdminBookingModel extends CrudBase {
     // Opdater en booking
     public function updateBooking($orderNumber, $data) {
         $sql = "UPDATE bookings 
-                SET spots_reserved = :spots_reserved, status = :status 
+                SET 
+                    spots_reserved = :spots_reserved, 
+                    status = :status, 
+                    showing_id = :showing_id, 
+                    customer_id = :customer_id
                 WHERE order_number = :order_number";
-        
+    
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':spots_reserved', $data['spots_reserved'], PDO::PARAM_INT);
         $stmt->bindParam(':status', $data['status'], PDO::PARAM_STR);
+        $stmt->bindParam(':showing_id', $data['showing_id'], PDO::PARAM_INT);
+        $stmt->bindParam(':customer_id', $data['customer_id'], PDO::PARAM_INT);
         $stmt->bindParam(':order_number', $orderNumber, PDO::PARAM_STR);
     
         return $stmt->execute();
