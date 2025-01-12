@@ -56,54 +56,71 @@ class AdminController {
 
 
     // Customers methods
-     // Håndter alle POST- og GET-anmodninger for kunder og ansatte
-     public function handleCustomerAndEmployeeSubmission($postData, $getData) {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Tilføj eller opdater kunder
-            if (isset($postData['add_or_update_customer'])) {
-                $password = !empty($postData['password']) ? password_hash($postData['password'], PASSWORD_BCRYPT) : null;
-                $this->saveCustomer([
-                    'id' => $postData['id'] ?? null,
-                    'name' => $postData['name'],
-                    'email' => $postData['email'],
-                   
-                ]);
-            }
-    
-            // Tilføj eller opdater ansatte
-            if (isset($postData['add_or_update_employee'])) {
-                $password = !empty($postData['password']) ? password_hash($postData['password'], PASSWORD_BCRYPT) : null;
-                $this->saveEmployee([
-                    'id' => $postData['id'] ?? null,
-                    'name' => $postData['employee_name'],
-                    'email' => $postData['employee_email'],
-                    'phone' => $postData['employee_phone'],
-                    'role' => $postData['employee_role'],
-                    'address' => $postData['employee_address'],
-                    'password' => $password,
-                ]);
-            }
-        }
+  public function handleCustomerAndEmployeeSubmission($postData, $getData) {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        // Tilføj eller opdater kunder
+       if (isset($postData['add_or_update_customer'])) {
+    $customerData = [
+        'name' => $postData['name'],
+        'email' => $postData['email']
+    ];
+    if (!empty($postData['id'])) {
+        $this->model->updateCustomer($postData['id'], $customerData);
+    } else {
+        $customerData['password'] = password_hash($postData['password'], PASSWORD_BCRYPT); // Kun ved oprettelse
+        $this->model->createCustomer($customerData);
+    }
+}
 
-        // Håndter GET-anmodninger for sletning
-        if (isset($getData['delete_customer_id'])) {
-            $this->deleteCustomer($getData['delete_customer_id']);
-        }
-
-        if (isset($getData['delete_employee_id'])) {
-            $this->deleteEmployee($getData['delete_employee_id']);
+        // Tilføj eller opdater ansatte
+        if (isset($postData['add_or_update_employee'])) {
+            $employeeData = [
+                'name' => $postData['employee_name'],
+                'email' => $postData['employee_email'],
+                'phone' => $postData['employee_phone'],
+                'role' => $postData['employee_role'],
+                'address' => $postData['employee_address']
+            ];
+            if (!empty($postData['id'])) {
+                $this->model->updateEmployee($postData['id'], $employeeData);
+            } else {
+                $this->model->createEmployee($employeeData);
+            }
         }
     }
+
+    // Håndter GET (sletning)
+    if (isset($getData['delete_customer_id'])) {
+        $this->model->deleteCustomer($getData['delete_customer_id']);
+    }
+
+    if (isset($getData['delete_employee_id'])) {
+        $this->model->deleteEmployee($getData['delete_employee_id']);
+    }
+}
+public function handlePostRequest($postData) {
+    if (isset($postData['action']) && $postData['action'] === 'update_customer') {
+        $customerId = $postData['id'];
+        $customerData = [
+            'name' => $postData['name'],
+            'email' => $postData['email']
+        ];
+        if (!$this->model->updateCustomer($customerId, $customerData)) {
+            error_log("Fejl ved opdatering af kunde.");
+        }
+    }
+}
 
     // Returnér data til visning
-    public function getCustomersAndEmployeesData() {
-        return [
-            'customers' => $this->getAllCustomers(),
-            'employees' => $this->getAllEmployees(),
-            'editCustomer' => isset($_GET['edit_customer_id']) ? $this->getCustomerById($_GET['edit_customer_id']) : null,
-            'editEmployee' => isset($_GET['edit_employee_id']) ? $this->getEmployeeById($_GET['edit_employee_id']) : null,
-        ];
-    }
+public function getCustomersAndEmployeesData() {
+    return [
+        'customers' => $this->model->getAllCustomers(),
+        'employees' => $this->model->getAllEmployees(),
+        'editCustomer' => isset($_GET['edit_customer_id']) ? $this->model->getCustomerById($_GET['edit_customer_id']) : null,
+        'editEmployee' => isset($_GET['edit_employee_id']) ? $this->model->getEmployeeById($_GET['edit_employee_id']) : null,
+    ];
+}
+
 
     // CRUD-metoder
     public function saveCustomer($data) {

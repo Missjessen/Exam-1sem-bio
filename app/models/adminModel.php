@@ -33,43 +33,55 @@ public function getSettings(array $keys): array {
 
 
         // Customers methods
-            // CRUD-metoder for kunder
-            public function createCustomer($data) {
-                $stmt = $this->db->prepare("INSERT INTO customers (name, email, phone, password) VALUES (:name, :email, :phone, :password)");
-                $stmt->bindParam(':name', $data['name']);
-                $stmt->bindParam(':email', $data['email']);
-                $stmt->bindParam(':phone', $data['phone']);
-                $stmt->bindParam(':password', $data['password']);
-                return $stmt->execute();
-            }
+public function createCustomer($data) {
+    $stmt = $this->db->prepare("INSERT INTO customers (name, email, password) VALUES (:name, :email, :password)");
+    $stmt->bindParam(':name', $data['name']);
+    $stmt->bindParam(':email', $data['email']);
+    $stmt->bindParam(':password', $data['password']);
+    return $stmt->execute();
+}
 
-    public function updateCustomer($id, $data) {
-        $stmt = $this->db->prepare("UPDATE customers SET name = :name, email = :email, phone = :phone WHERE id = :id");
-        $stmt->bindParam(':id', $id);
-        $stmt->bindParam(':name', $data['name']);
-        $stmt->bindParam(':email', $data['email']);
-        $stmt->bindParam(':phone', $data['phone']);
-        $stmt->bindparam(':password', $data['password']);
-        return $stmt->execute();
-    }
 
-    public function deleteCustomer($id) {
-        $stmt = $this->db->prepare("DELETE FROM customers WHERE id = :id");
-        $stmt->bindParam(':id', $id);
-        return $stmt->execute();
-    }
-
-    public function getAllCustomers() {
-        $stmt = $this->db->query("SELECT * FROM customers");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public function getCustomerById($id) {
-        $stmt = $this->db->prepare("SELECT * FROM customers WHERE id = :id");
-        $stmt->bindParam(':id', $id);
+public function updateCustomer($id, $data) {
+    try {
+        $stmt = $this->db->prepare("UPDATE customers SET name = :name, email = :email WHERE id = :id");
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->bindParam(':name', $data['name'], PDO::PARAM_STR);
+        $stmt->bindParam(':email', $data['email'], PDO::PARAM_STR);
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return true;
+    } catch (PDOException $e) {
+        error_log("Fejl under opdatering af kunde: " . $e->getMessage());
+        return false;
     }
+}
+
+
+
+public function deleteCustomer($id) {
+    try {
+        $stmt = $this->db->prepare("DELETE FROM customers WHERE id = :id");
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return true;
+    } catch (PDOException $e) {
+        error_log("Fejl ved sletning af kunde: " . $e->getMessage());
+        return false;
+    }
+}
+
+
+public function getAllCustomers() {
+    $stmt = $this->db->query("SELECT id, name, email FROM customers");
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+
+   public function getCustomerById($id) {
+    return $this->read('customers', 'id, name, email', ['id' => $id], true);
+}
 
     // CRUD-metoder for ansatte
     public function createEmployee($data) {
@@ -83,35 +95,21 @@ public function getSettings(array $keys): array {
         return $stmt->execute();
     }
 
-    public function updateEmployee($id, $data) {
-        $stmt = $this->db->prepare("UPDATE employees SET name = :name, email = :email, phone = :phone, role = :role, address = :address WHERE id = :id");
-        $stmt->bindParam(':id', $id);
-        $stmt->bindParam(':name', $data['name']);
-        $stmt->bindParam(':email', $data['email']);
-        $stmt->bindParam(':phone', $data['phone']);
-        $stmt->bindParam(':role', $data['role']);
-        $stmt->bindParam(':address', $data['address']);
-        $stmt->bindParam(':password', $data['password']);
-        return $stmt->execute();
-    }
+  public function updateEmployee($id, $data) {
+    return $this->update('employees', $data, ['id' => $id]);
+}
 
     public function deleteEmployee($id) {
-        $stmt = $this->db->prepare("DELETE FROM employees WHERE id = :id");
-        $stmt->bindParam(':id', $id);
-        return $stmt->execute();
-    }
+    return $this->delete('employees', ['id' => $id]);
+}
 
-    public function getAllEmployees() {
-        $stmt = $this->db->query("SELECT * FROM employees");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+   public function getAllEmployees($limit = 10, $offset = 0) {
+    return $this->read('employees', 'id, name, email, phone, role, address', [], false, $limit, $offset);
+}
 
-    public function getEmployeeById($id) {
-        $stmt = $this->db->prepare("SELECT * FROM employees WHERE id = :id");
-        $stmt->bindParam(':id', $id);
-        $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
+   public function getEmployeeById($id) {
+    return $this->read('employees', 'id, name, email, phone, role, address', ['id' => $id], true);
+}
 
     
 // Metode til at hente en admin ved email
