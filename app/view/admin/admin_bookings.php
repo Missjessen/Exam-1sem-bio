@@ -42,18 +42,24 @@
 </table>
 
 <!-- Update Booking Form -->
-<h2>Rediger Booking</h2>
+<h3>Opdater Booking</h3>
 <form method="POST" action="<?= BASE_URL ?>index.php?page=admin_update_booking">
-    <input type="hidden" name="order_number" value="<?= htmlspecialchars($booking['order_number']) ?>">
+    <label for="order_number">Ordrenummer:</label>
+    <select name="order_number" required>
+        <option value="" disabled selected>Vælg en booking</option>
+        <?php foreach ($bookings as $booking): ?>
+            <option value="<?= htmlspecialchars($booking['order_number']) ?>"><?= htmlspecialchars($booking['order_number']) ?></option>
+        <?php endforeach; ?>
+    </select>
 
     <label for="spots_reserved">Antal Spots:</label>
-    <input type="number" id="spots_reserved" name="spots_reserved" value="<?= htmlspecialchars($booking['spots_reserved']) ?>" required>
+    <input type="number" name="spots_reserved" required>
 
     <label for="status">Status:</label>
-    <select id="status" name="status">
-        <option value="pending" <?= $booking['status'] === 'pending' ? 'selected' : '' ?>>Afventer</option>
-        <option value="confirmed" <?= $booking['status'] === 'confirmed' ? 'selected' : '' ?>>Bekræftet</option>
-        <option value="cancelled" <?= $booking['status'] === 'cancelled' ? 'selected' : '' ?>>Annulleret</option>
+    <select name="status" required>
+        <option value="pending">Afventer</option>
+        <option value="confirmed">Bekræftet</option>
+        <option value="cancelled">Annulleret</option>
     </select>
 
     <button type="submit">Opdater Booking</button>
