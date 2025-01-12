@@ -21,31 +21,34 @@ class PageLoader {
         $this->renderPage($viewName, $data, 'user');
     }
 
-public function renderPage($viewName, $data = [], $type = 'user') {
-        $current_page = $viewName;
-
+    public function renderPage($viewName, $data = [], $type = 'user') {
         if (!is_array($data)) {
             $data = [];
         }
-
+    
         $data['page'] = $viewName;
         extract($data);
-
-        $this->includeCSS($viewName);
-
+    
+        // Bestem header baseret på typen
         $headerFile = $type === 'admin' ? 'header_admin.php' : 'header_user.php';
-        $this->includeLayout($headerFile, compact('current_page'));
-
-        $viewPath = __DIR__ . "/../../app/view/$type/$viewName.php";
+        $this->includeLayout($headerFile, compact('viewName'));
+    
+        // Håndter specifikke cases for `admin_login`
+        $viewPath = $type === 'admin' && $viewName === 'admin_login' 
+            ? __DIR__ . "/../../app/view/admin/admin_login.php" 
+            : __DIR__ . "/../../app/view/$type/$viewName.php";
+    
         if (file_exists($viewPath)) {
             require $viewPath;
         } else {
             throw new Exception("View-filen $viewName for $type kunne ikke indlæses.");
         }
-
+    
+        // Footer inkluderes altid
         $footerFile = 'footer.php';
-        $this->includeLayout($footerFile, compact('current_page'));
+        $this->includeLayout($footerFile, compact('viewName'));
     }
+    
 
 
 
