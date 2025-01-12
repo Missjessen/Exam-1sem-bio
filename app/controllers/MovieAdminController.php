@@ -10,7 +10,7 @@ class MovieAdminController {
         $this->pageLoader = new PageLoader($db); 
     }
     public function getAllMoviesWithDetails() {
-        return $this->movieAdminModel->getAllMoviesWithDetails(); // Kalder modelens metode
+        return $this->movieAdminModel->getAllMoviesWithDetails(); 
     }
     public function index() {
         try {
@@ -40,7 +40,7 @@ class MovieAdminController {
     public function handlePostRequest() {
         if (!isset($_POST['action'])) {
             error_log("Ingen 'action' parameter blev sendt med POST-forespørgslen.");
-            return; // Afslut tidligt, hvis 'action' ikke er sat
+            return; 
         }
     
         $action = $_POST['action'];
@@ -153,46 +153,33 @@ class MovieAdminController {
             $movieId = $_GET['movie_id'] ?? null;
             if ($movieId) {
                 $movieDetails = $this->movieAdminModel->getMovieDetails($movieId);
-                error_log("Movie Details: " . print_r($movieDetails, true)); // Debug
                 return $movieDetails;
             }
         }
         return null;
     }
 
-    
 
-    /**
-     * Sletter en film og dens relationer.
-     */
     public function deleteMovie($movieId) {
         if ($movieId) {
             $this->movieAdminModel->deleteMovieWithRelations($movieId);
         }
     }
 
-    /**
-     * Genererer en UUID for nye poster.
-     */
-    public function generateUUID() {
+    
+      private function generateUUID() {
         return bin2hex(random_bytes(16));
     }
 
-    /**
-     * Genererer en slug baseret på titel.
-     */
-    public function generateSlug($title) {
-        // Fjern HTML-tags, hvis de findes
+    // Genererer en slug baseret på titel.
+     private function generateSlug($title) {
         $title = strip_tags($title);
-    
-        // Erstat mellemrum med bindestreger og fjern specialtegn
         return trim(strtolower(preg_replace('/[^a-zA-Z0-9-]+/', '-', $title)), '-');
     }
 
-    /**
-     * Håndterer oprettelse af nye aktører eller genrer.
-     */
-    private function processNewEntities($newEntities, $type) {
+    
+     // Håndterer oprettelse af nye aktører eller genrer.
+      private function processNewEntities($newEntities, $type) {
         $newIds = [];
         if (!empty($newEntities)) {
             $names = explode(',', $newEntities);
@@ -205,9 +192,6 @@ class MovieAdminController {
         return $newIds;
     }
 
-    /**
-     * Gemmer eller opdaterer en film og dens relationer.
-     */
     public function saveMovie($data, $file, $actorIds, $genreIds, $newActors, $newGenres, $isUpdate) {
         try {
             if (empty($data['title'])) {
@@ -244,13 +228,13 @@ class MovieAdminController {
     }
     
     public function getAllActors() {
-        return $this->movieAdminModel->getAllActors(); // Kalder modelens metode
+        return $this->movieAdminModel->getAllActors(); 
     }
     public function getAllGenres() {
-        return $this->movieAdminModel->getAllGenres(); // Kalder modelens metode
+        return $this->movieAdminModel->getAllGenres(); 
     }
     public function getMovieDetails($movieId) {
-        return $this->movieAdminModel->getMovieDetails($movieId); // Kalder modelens metode
+        return $this->movieAdminModel->getMovieDetails($movieId); 
     }
      
     
