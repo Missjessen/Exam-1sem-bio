@@ -231,21 +231,25 @@ public function admin_dashboard() {
     
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $orderNumber = $_POST['order_number'];
-            $data = [
-                'spots_reserved' => (int) $_POST['spots_reserved'],
-                'status' => $_POST['status']
+            $spotsReserved = $_POST['spots_reserved'];
+            $status = $_POST['status'];
+    
+            $updateData = [
+                'spots_reserved' => $spotsReserved,
+                'status' => $status,
             ];
     
-            if ($this->adminBookingController->updateBooking($orderNumber, $data)) {
-                $_SESSION['success_message'] = "Booking opdateret med succes.";
-            } else {
-                $_SESSION['error_message'] = "Kunne ikke opdatere bookingen.";
-            }
+            $result = $this->adminBookingController->updateBooking($orderNumber, $updateData);
     
-            header("Location: " . BASE_URL . "index.php?page=admin_bookings");
-            exit();
+            if ($result) {
+                header("Location: " . BASE_URL . "index.php?page=admin_bookings");
+                exit();
+            } else {
+                $this->pageLoader->renderErrorPage(500, "Kunne ikke opdatere booking.");
+            }
         }
     }
+    
     
     public function admin_delete_booking() {
         $this->requireAdminLogin();
