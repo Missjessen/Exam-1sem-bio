@@ -214,70 +214,10 @@ public function admin_dashboard() {
 
     // Bookinger
     public function admin_bookings() {
-        $this->requireAdminLogin();
-        $bookings = $this->adminBookingController->listBookings();
-        $this->pageLoader->renderPage('admin_bookings', ['bookings' => $bookings], 'admin');
+        $controller = new AdminBookingController($this->db);
+        $controller->admin_bookings();
     }
     
-    public function admin_edit_booking() {
-        $this->requireAdminLogin();
-    
-        // Tjek om ordrenummer er angivet
-        if (isset($_GET['order_number'])) {
-            $orderNumber = $_GET['order_number'];
-    
-            // Hent bookingdata fra AdminBookingController
-            $booking = $this->adminBookingController->getBookingDetails($orderNumber);
-    
-            if ($booking) {
-                // Send data til view
-                $this->pageLoader->renderPage('admin_edit_booking', ['booking' => $booking], 'admin');
-            } else {
-                $this->pageLoader->renderErrorPage(404, "Booking ikke fundet.");
-            }
-        } else {
-            $this->pageLoader->renderErrorPage(400, "Ordrenummer mangler.");
-        }
-    }
-    
-    public function admin_update_booking() {
-        $this->requireAdminLogin();
-    
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $orderNumber = $_POST['order_number'];
-            $spotsReserved = $_POST['spots_reserved'];
-            $status = $_POST['status'];
-    
-            // Hent yderligere data fra form
-            $showingId = $_POST['showing_id'];
-            $customerId = $_POST['customer_id'];
-    
-            $updateData = [
-                'spots_reserved' => $spotsReserved,
-                'status' => $status,
-                'showing_id' => $showingId,
-                'customer_id' => $customerId,
-            ];
-    
-            $result = $this->adminBookingController->updateBooking($orderNumber, $updateData);
-    
-            if ($result) {
-                header("Location: " . BASE_URL . "index.php?page=admin_bookings");
-                exit();
-            } else {
-                $this->pageLoader->renderErrorPage(500, "Kunne ikke opdatere booking.");
-            }
-        }
-    }
-    
-    
-    public function admin_delete_booking() {
-        $this->requireAdminLogin();
-        $orderNumber = $_GET['order_number'];
-        $this->adminBookingController->deleteBooking($orderNumber);
-        header("Location: " . BASE_URL . "index.php?page=admin_bookings");
-        exit();
-    }
     
 
 

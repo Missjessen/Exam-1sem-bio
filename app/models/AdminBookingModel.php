@@ -1,75 +1,35 @@
 <?php
 
 class AdminBookingModel extends CrudBase {
-    public function __construct($db) {
-        parent::__construct($db);
-    }
-
-    // Hent alle bookinger
-    public function getAllBookings() {
-        $columns = "
-            b.id, b.order_number, b.spots_reserved, b.status, b.total_price,
-            c.name AS customer_name,
-            m.title AS movie_title,
-            s.show_date, s.show_time
-        ";
+    public function getAllBookingsWithDetails() {
+        $columns = "b.id AS booking_id, 
+                    b.customer_id, 
+                    c.name AS customer_name, 
+                    b.showing_id, 
+                    m.title AS movie_title, 
+                    b.order_number, 
+                    b.spots_reserved, 
+                    b.status, 
+                    s.show_date, 
+                    s.show_time";
         $joins = [
-            "JOIN customers c ON b.customer_id = c.id",
-            "JOIN showings s ON b.showing_id = s.id",
-            "JOIN movies m ON s.movie_id = m.id"
+            "INNER JOIN customers c ON b.customer_id = c.id",
+            "INNER JOIN showings s ON b.showing_id = s.id",
+            "INNER JOIN movies m ON s.movie_id = m.id"
         ];
+
         return $this->readWithJoin('bookings b', $columns, $joins);
     }
 
-    public function getBookingByOrderNumber($orderNumber) {
-        $sql = "SELECT 
-                    b.order_number,
-                    b.spots_reserved,
-                    b.status,
-                    b.showing_id,
-                    b.customer_id,
-                    c.name AS customer_name,
-                    s.show_date,
-                    s.show_time,
-                    m.title AS movie_title
-                FROM bookings b
-                JOIN customers c ON b.customer_id = c.id
-                JOIN showings s ON b.showing_id = s.id
-                JOIN movies m ON s.movie_id = m.id
-                WHERE b.order_number = :order_number";
-    
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':order_number', $orderNumber, PDO::PARAM_STR);
-        $stmt->execute();
-    
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+    public function createBooking($data) {
+        return $this->create('bookings', $data);
     }
-    
 
-    // Opdater en booking
-    public function updateBooking($orderNumber, $data) {
-        $sql = "UPDATE bookings 
-                SET 
-                    spots_reserved = :spots_reserved, 
-                    status = :status, 
-                    showing_id = :showing_id, 
-                    customer_id = :customer_id
-                WHERE order_number = :order_number";
-    
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':spots_reserved', $data['spots_reserved'], PDO::PARAM_INT);
-        $stmt->bindParam(':status', $data['status'], PDO::PARAM_STR);
-        $stmt->bindParam(':showing_id', $data['showing_id'], PDO::PARAM_INT);
-        $stmt->bindParam(':customer_id', $data['customer_id'], PDO::PARAM_INT);
-        $stmt->bindParam(':order_number', $orderNumber, PDO::PARAM_STR);
-    
-        return $stmt->execute();
+    public function updateBooking($data, $where) {
+        return $this->update('bookings', $data, $where);
     }
-    
 
-    // Slet en booking
-    public function deleteBooking($orderNumber) {
-        $where = ['order_number' => $orderNumber];
+    public function deleteBooking($where) {
         return $this->delete('bookings', $where);
     }
 }
