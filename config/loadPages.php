@@ -51,7 +51,7 @@ return [
        //login og logout
 
        'login' => ['view' => '/app/view/user/login.php', 'css' => 'assets/css/login.css'],
-       'admin-login' => ['view' => '/auth/view/admin_login.php', 'css' => 'assets/css/admin_login.css'],
+       'admin-login' => ['view' => '/app/view/user/admin_login.php', 'css' => 'assets/css/admin_login.css'],
        'logout' => ['view' => '/auth/logout.php'],
 
         'register' => ['view' => '/app/view/user/register.php', 'css' => 'assets/css/register.css'],
