@@ -26,9 +26,7 @@ class MovieAdminModel extends CrudBase {
             $sql = "UPDATE movies SET " . implode(', ', $columns) . " WHERE id = :id";
             $stmt = $this->db->prepare($sql);
     
-            // Log SQL for debugging
-            error_log("SQL til opdatering: $sql");
-            error_log("Data til opdatering: " . print_r($data, true));
+        
     
             // Bind værdier
             foreach ($data as $key => $value) {
@@ -160,12 +158,25 @@ class MovieAdminModel extends CrudBase {
         return $this->executeQuery($sql);
     }
 
-    public function createActor($name) {
-        $sql = "INSERT INTO actors (name) VALUES (:name)";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute(['name' => $name]);
+public function createActor($name, $birthdate = null) {
+    $sql = "INSERT INTO actors (name, birthdate) VALUES (:name, :birthdate)";
+    $stmt = $this->db->prepare($sql);
+
+    // Bind værdier
+    $stmt->bindParam(':name', $name, PDO::PARAM_STR);
+    $stmt->bindParam(':birthdate', $birthdate, $birthdate ? PDO::PARAM_STR : PDO::PARAM_NULL);
+
+    try {
+        $stmt->execute();
         return $this->db->lastInsertId();
+    } catch (PDOException $e) {
+        error_log("Fejl ved oprettelse af aktør: " . $e->getMessage());
+        throw new Exception("Kunne ikke oprette aktør.");
     }
+}
+
+
+
     
     public function createGenre($name) {
         $sql = "INSERT INTO genres (name) VALUES (:name)";
@@ -270,21 +281,8 @@ class MovieAdminModel extends CrudBase {
         }
     }
 
-    public function createActors(array $actorNames) {
-        $actorIds = [];
-        try {
-            foreach ($actorNames as $name) {
-                $name = trim($name);
-                if (!empty($name)) {
-                    $actorIds[] = $this->create('actors', ['name' => $name]);
-                }
-            }
-            return $actorIds;
-        } catch (PDOException $e) {
-            error_log("Fejl ved oprettelse af aktører: " . $e->getMessage());
-            throw new Exception("Kunne ikke oprette aktører.");
-        }
-    }
+ 
+
     
     // Opret flere genrer
     public function createGenres(array $genreNames) {

@@ -65,13 +65,22 @@ class MovieAdminController {
                 break;
                 
             case 'create_actor':
-                $actorName = trim($_POST['actor_name'] ?? '');
-                if ($actorName) {
-                    $this->movieAdminModel->createActor($actorName);
-                } else {
-                    error_log("Actor name mangler i 'create_actor' handling.");
-                }
-                break;
+    $actorName = trim($_POST['actor_name'] ?? '');
+    $actorBirthdate = $_POST['actor_birthdate'] ?? null;
+
+    if (empty($actorName) || empty($actorBirthdate)) {
+        error_log("Manglende data: Skuespillerens navn eller fødselsdato.");
+        $this->pageLoader->renderErrorPage(400, "Både navn og fødselsdato er påkrævet.");
+        return;
+    }
+
+    try {
+        $this->movieAdminModel->createActor($actorName, $actorBirthdate);
+    } catch (Exception $e) {
+        error_log("Fejl under oprettelse af aktør: " . $e->getMessage());
+        $this->pageLoader->renderErrorPage(500, "Kunne ikke oprette skuespiller.");
+    }
+    break;
     
             case 'create_genre':
                 $genreName = trim($_POST['genre_name'] ?? '');
@@ -110,36 +119,34 @@ class MovieAdminController {
     
     // Gemmer eller opdaterer en film.
      
-    private function handleMovieSave($action) {
-        $movieId = $_POST['movie_id'] ?? null;
-    
-        $movieData = [
-            'title' => $_POST['title'] ?? '',
-            'release_year' => $_POST['release_year'] ?? '',
-            'length' => $_POST['length'] ?? '',
-            'director' => $_POST['director'] ?? '',
-            'description' => $_POST['description'] ?? '',
-            'premiere_date' => $_POST['premiere_date'] ?? '',
-            'language' => $_POST['language'] ?? '',
-            'age_limit' => $_POST['age_limit'] ?? '',
-            'status' => $_POST['status'] ?? '',
-            'slug' => $this->generateSlug($_POST['title'] ?? ''),
-            'poster' => isset($_FILES['poster']) && $_FILES['poster']['error'] === UPLOAD_ERR_OK
-                ? $this->fileUploadService->uploadFile($_FILES['poster'])
-                : null
-        ];
-    
-        error_log("Data sendt til updateMovie: " . print_r($movieData, true));
-    
-        if ($action === 'update' && $movieId) {
-            $this->movieAdminModel->updateMovie($movieId, $movieData);
-        } elseif ($action === 'create') {
-            $movieData['id'] = $this->generateUUID();
-            $this->movieAdminModel->createMovie($movieData);
-        } else {
-            throw new Exception("Ugyldig handling eller manglende movie_id");
-        }
+   private function handleMovieSave($action) {
+    $allowedStatuses = ['available', 'archived', 'coming_soon']; // Tilladte ENUM-værdier
+
+    $movieData = [
+        'title' => $_POST['title'] ?? '',
+        'release_year' => $_POST['release_year'] ?? '',
+        'length' => $_POST['length'] ?? '',
+        'director' => $_POST['director'] ?? '',
+        'description' => $_POST['description'] ?? '',
+        'premiere_date' => $_POST['premiere_date'] ?? '',
+        'language' => $_POST['language'] ?? 'Engelsk',
+        'age_limit' => $_POST['age_limit'] ?? 'U',
+        'status' => in_array($_POST['status'] ?? '', $allowedStatuses) ? $_POST['status'] : 'available', // Valider status
+        'slug' => $this->generateSlug($_POST['title'] ?? ''),
+        'poster' => isset($_FILES['poster']) && $_FILES['poster']['error'] === UPLOAD_ERR_OK
+            ? $this->fileUploadService->uploadFile($_FILES['poster'])
+            : null
+    ];
+
+    if ($action === 'update' && isset($_POST['movie_id'])) {
+        $this->movieAdminModel->updateMovie($_POST['movie_id'], $movieData);
+    } elseif ($action === 'create') {
+        $movieData['id'] = $this->generateUUID();
+        $this->movieAdminModel->createMovie($movieData);
+    } else {
+        throw new Exception("Ugyldig handling eller manglende movie_id");
     }
+}
 
     private function prepareMovieEdit() {
         if (isset($_GET['action']) && $_GET['action'] === 'edit') {

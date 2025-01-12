@@ -121,10 +121,15 @@
 
         <!-- Form til at tilføje ny skuespiller -->
         <form action="<?= htmlspecialchars(BASE_URL . 'index.php?page=admin_movie') ?>" method="post">
-            <label for="actor_name">Tilføj ny skuespiller:</label>
-            <input type="text" id="actor_name" name="actor_name" placeholder="Indtast skuespillers navn" required>
-            <button type="submit" name="action" value="create_actor">Tilføj Skuespiller</button>
-        </form>
+    <label for="actor_name">Tilføj ny skuespiller:</label>
+    <input type="text" id="actor_name" name="actor_name" placeholder="Indtast skuespillers navn" required>
+
+    <label for="actor_birthdate">Fødselsdato:</label>
+    <input type="date" id="actor_birthdate" name="actor_birthdate">
+
+    <button type="submit" name="action" value="create_actor">Tilføj Skuespiller</button>
+</form>
+
 
         <!-- Form til at tilføje ny genre -->
         <form action="<?= htmlspecialchars(BASE_URL . 'index.php?page=admin_movie') ?>" method="post">
