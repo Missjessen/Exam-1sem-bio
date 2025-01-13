@@ -11,9 +11,9 @@ require_once __DIR__ . '/init.php';
 
 // Start session
 //Security::startSession();
+$current_page = $_GET['page'] ?? 'homePage';
 
-// Definér den aktuelle side
-$current_page = $_REQUEST['page'] ?? 'homePage';
+
 define('CURRENT_PAGE', $current_page);
 
 
