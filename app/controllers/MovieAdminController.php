@@ -65,22 +65,13 @@ class MovieAdminController {
                 break;
                 
             case 'create_actor':
-    $actorName = trim($_POST['actor_name'] ?? '');
-    $actorBirthdate = $_POST['actor_birthdate'] ?? null;
-
-    if (empty($actorName) || empty($actorBirthdate)) {
-        error_log("Manglende data: Skuespillerens navn eller fødselsdato.");
-        $this->pageLoader->renderErrorPage(400, "Både navn og fødselsdato er påkrævet.");
-        return;
-    }
-
-    try {
-        $this->movieAdminModel->createActor($actorName, $actorBirthdate);
-    } catch (Exception $e) {
-        error_log("Fejl under oprettelse af aktør: " . $e->getMessage());
-        $this->pageLoader->renderErrorPage(500, "Kunne ikke oprette skuespiller.");
-    }
-    break;
+                $actorName = trim($_POST['actor_name'] ?? '');
+                if ($actorName) {
+                    $this->movieAdminModel->createActor($actorName);
+                } else {
+                    error_log("Actor name mangler i 'create_actor' handling.");
+                }
+                break;
     
             case 'create_genre':
                 $genreName = trim($_POST['genre_name'] ?? '');
@@ -174,21 +165,24 @@ class MovieAdminController {
     /**
      * Genererer en UUID for nye poster.
      */
-    private function generateUUID() {
+    public function generateUUID() {
         return bin2hex(random_bytes(16));
     }
 
-    // Genererer en slug baseret på titel.
-    
-    private function generateSlug($title) {
-       
+    /**
+     * Genererer en slug baseret på titel.
+     */
+    public function generateSlug($title) {
+        // Fjern HTML-tags, hvis de findes
         $title = strip_tags($title);
+    
+        // Erstat mellemrum med bindestreger og fjern specialtegn
         return trim(strtolower(preg_replace('/[^a-zA-Z0-9-]+/', '-', $title)), '-');
     }
 
-    
-     // Håndterer oprettelse af nye aktører eller genrer.
-     
+    /**
+     * Håndterer oprettelse af nye aktører eller genrer.
+     */
     private function processNewEntities($newEntities, $type) {
         $newIds = [];
         if (!empty($newEntities)) {
@@ -202,6 +196,9 @@ class MovieAdminController {
         return $newIds;
     }
 
+    /**
+     * Gemmer eller opdaterer en film og dens relationer.
+     */
     public function saveMovie($data, $file, $actorIds, $genreIds, $newActors, $newGenres, $isUpdate) {
         try {
             if (empty($data['title'])) {
@@ -238,13 +235,13 @@ class MovieAdminController {
     }
     
     public function getAllActors() {
-        return $this->movieAdminModel->getAllActors(); 
+        return $this->movieAdminModel->getAllActors(); // Kalder modelens metode
     }
     public function getAllGenres() {
-        return $this->movieAdminModel->getAllGenres(); 
+        return $this->movieAdminModel->getAllGenres(); // Kalder modelens metode
     }
     public function getMovieDetails($movieId) {
-        return $this->movieAdminModel->getMovieDetails($movieId); 
+        return $this->movieAdminModel->getMovieDetails($movieId); // Kalder modelens metode
     }
      
     
