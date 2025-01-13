@@ -1,7 +1,5 @@
 <?php 
-require_once dirname(__DIR__, 2) . '/init.php';
 
-// Brug kun $_GET
 $current_page = $_GET['page'] ?? 'homePage';
 $current_slug = $_GET['slug'] ?? '';
 ?>

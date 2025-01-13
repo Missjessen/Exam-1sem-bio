@@ -44,21 +44,7 @@ $current_slug = 'test-slug';
     <button type="submit">Book nu</button>
 </form>
 
-<!-- <script>
-    // Dynamisk prisberegning
-    const spotsInput = document.getElementById('spots');
-    const totalPriceElement = document.getElementById('totalPrice');
-    const pricePerSpot = 50; // Justér prisen per plads efter behov
 
-    spotsInput.addEventListener('input', () => {
-        const spots = parseInt(spotsInput.value, 10) || 0;
-        totalPriceElement.textContent = (spots * pricePerSpot) + ' DKK';
-    });
-
-    // Initial opdatering af pris
-    const initialSpots = parseInt(spotsInput.value, 10) || 0;
-    totalPriceElement.textContent = (initialSpots * pricePerSpot) + ' DKK';
-</script> -->
 
 
 <style>body {

@@ -46,7 +46,7 @@ nav a:hover {
     background-image: url('/assets/img/hero2.webp'); /* Udskift med dit hero-billede */
     background-size: cover;
     background-position: center;
-    height: 400px;
+    height: 4px;
     color: #fff;
     display: flex;
     justify-content: center;
