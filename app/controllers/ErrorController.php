@@ -1,14 +1,17 @@
 <?php 
 class ErrorController {
     public function show404($message = 'The page you requested could not be found.') {
+        error_log("404 Error: $message");
         http_response_code(404);
         $this->renderErrorPage(404, $message);
     }
 
     public function show500($message = 'Something went wrong. Please try again later.') {
+        error_log("500 Error: $message");
         http_response_code(500);
         $this->renderErrorPage(500, $message);
     }
+
 
     private function renderErrorPage($errorCode, $errorMessage) {
         $additionalData = [
