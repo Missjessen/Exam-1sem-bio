@@ -43,7 +43,7 @@ nav a:hover {
 
 /* Hero Image Section */
 .hero-image {
-    background-image: url('/assets/img/hero.webp'); /* Udskift med dit hero-billede */
+    background-image: url('/assets/img/hero2.webp'); /* Udskift med dit hero-billede */
     background-size: cover;
     background-position: center;
     height: 400px;
