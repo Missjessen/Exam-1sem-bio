@@ -8,13 +8,13 @@ error_reporting(E_ALL);
 require_once __DIR__ . '/init.php';
 
 
-
+define('CURRENT_PAGE', $current_page);
 // Start session
 //Security::startSession();
-$current_page = $_GET['page'] ?? 'homePage';
+$current_page = $_REQUEST['page'] ?? 'homePage';
 
 
-define('CURRENT_PAGE', $current_page);
+
 
 
     $router = new Router();
