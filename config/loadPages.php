@@ -57,8 +57,8 @@ return [
         'register' => ['view' => '/app/view/user/register.php', 'css' => 'assets/css/register.css'],
         'profile' => ['view' => '/app/view/user/profile.php', 'css' => 'assets/css/profile.css'],
 
-       '404' => [ 'view' => '/app/view/errors/404.php', 'css' => '/assets/css/errors.css'],
-       '500' => ['view' => '/app/view/errors/500.php', 'css' => '/assets/css/errors.css'],
+       '404' => [ 'view' => '/app/view/Error/404.php', 'css' => '/assets/css/error.css'],
+       '500' => ['view' => '/app/view/Error/500.php', 'css' => '/assets/css/error.css'],
        
 
     ],

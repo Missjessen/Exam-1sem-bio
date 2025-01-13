@@ -1,10 +1,15 @@
 <?php 
 class ErrorController {
-    public function show404($message = 'The page you requested could not be found.') {
-        error_log("404 Error: $message");
-        http_response_code(404);
-        $this->renderErrorPage(404, $message);
-    }
+  private static $errorHandled = false;
+
+public function show404($message = 'The page you requested could not be found.') {
+    if (self::$errorHandled) return;
+    self::$errorHandled = true;
+
+    error_log("404 Error: $message");
+    http_response_code(404);
+    $this->renderErrorPage(404, $message);
+}
 
     public function show500($message = 'Something went wrong. Please try again later.') {
         error_log("500 Error: $message");

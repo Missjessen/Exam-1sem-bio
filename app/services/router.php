@@ -14,12 +14,15 @@ class Router {
                 throw new Exception("showPage metoden findes ikke i PageController.");
             }
 
-            $pageController->showPage($page, $slug);
-        } catch (Exception $e) {
-            error_log("Router fejl: " . $e->getMessage());
+        $pageController->showPage($page, $slug);
+    } catch (Exception $e) {
+        error_log("Router fejl: " . $e->getMessage());
 
-            $errorController = new ErrorController();
-            $errorController->show404("Page not found: $page");
+        $errorController = new ErrorController();
+        if (http_response_code() === 404) {
+            exit; // Undgå yderligere loops ved allerede håndteret 404
         }
+        $errorController->show404("Page not found: $page");
     }
+}
 }

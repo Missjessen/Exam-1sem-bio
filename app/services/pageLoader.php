@@ -57,6 +57,7 @@ class PageLoader {
     }
 
     private function includeLayout($layout, $data = []) {
+    try {
         extract($data); 
         $layoutPath = __DIR__ . "/../../app/layout/$layout";
         if (file_exists($layoutPath)) {
@@ -64,9 +65,15 @@ class PageLoader {
         } else {
             throw new Exception("Layout-fil $layout ikke fundet.");
         }
+    } catch (Exception $e) {
+        error_log("Layout fejl: " . $e->getMessage());
+        $this->renderErrorPage(500, "Fejl ved indlæsning af layout: $layout");
     }
+}
 
-    public function renderErrorPage($errorCode, $errorMessage) {
+
+  public function renderErrorPage($errorCode, $errorMessage) {
+    try {
         error_log("RenderErrorPage kaldt med kode: $errorCode og besked: $errorMessage");
 
         $additionalData = [
@@ -80,10 +87,15 @@ class PageLoader {
         if (file_exists($errorViewPath)) {
             include $errorViewPath;
         } else {
-            echo "<h1>Error $errorCode</h1>";
-            echo "<p>$errorMessage</p>";
+            throw new Exception("Error view ikke fundet for kode: $errorCode");
         }
-
-        exit;
+    } catch (Exception $e) {
+        error_log("RenderErrorPage fejl: " . $e->getMessage());
+        echo "<h1>Error $errorCode</h1>";
+        echo "<p>$errorMessage</p>";
     }
+
+    exit;
+}
+
 }
