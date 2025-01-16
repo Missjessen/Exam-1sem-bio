@@ -1,89 +1,90 @@
-<h1>Registrering</h1>
-<form method="POST" action="<?= BASE_URL ?>index.php?page=register">
-    <label for="name">Navn:</label>
-    <input type="text" id="name" name="name" required>
+<div class="admin-login">
+    <h1>Registrering</h1>
+    <form method="POST" action="<?= htmlspecialchars(BASE_URL . 'index.php?page=register') ?>">
+        <label for="name">Navn:</label>
+        <input type="text" id="name" name="name" placeholder="Indtast dit navn" required>
 
-    <label for="email">E-mail:</label>
-    <input type="email" id="email" name="email" required>
+        <label for="email">E-mail:</label>
+        <input type="email" id="email" name="email" placeholder="Indtast din e-mail" required>
 
-    <label for="password">Adgangskode:</label>
-    <input type="password" id="password" name="password" required>
+        <label for="password">Adgangskode:</label>
+        <input type="password" id="password" name="password" placeholder="Vælg en adgangskode" required>
 
-    <button type="submit">Registrer</button>
-</form>
+        <button type="submit">Registrer</button>
+    </form>
 
-<?php if (!empty($error)): ?>
-    <div class="error-message">
-        <?= htmlspecialchars($error) ?>
-    </div>
-<?php endif; ?>
+    <?php if (!empty($error)): ?>
+        <div class="error-message">
+            <?= htmlspecialchars($error) ?>
+        </div>
+    <?php endif; ?>
+</div>
 
 
-
-<style>.register-form {
-    max-width: 400px !important;
-    margin: 50px auto !important;
-    padding: 20px !important;
-    background-color: #f9f9f9 !important; /* Lys baggrund */
-    color: #333 !important; /* Mørk tekst */
-    border-radius: 8px !important;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4) !important;
+<style>body {
+    font-family: Arial, sans-serif;
+    background-color: #000; /* Mørk baggrund */
+    color: #f6f6f6; /* Lys tekst */
+    margin: 0;
+    padding: 0;
 }
 
-.register-form h1 {
-    text-align: center !important;
-    margin-bottom: 20px !important;
-    color: #f39c12 !important;
+.admin-login {
+    max-width: 400px;
+    margin: 100px auto;
+    padding: 20px;
+    background-color: #1a1a1a; /* Mørk grå */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    text-align: center;
 }
 
-.register-form label {
-    display: block !important;
-    margin: 10px 0 5px !important;
-    font-weight: bold !important;
-    color: #333 !important; /* Sørger for at labels er læsbare */
+.admin-login h1 {
+    margin-bottom: 20px;
+    color: #f39c12; /* Fremhæv med orange */
 }
 
-.register-form input {
-    width: 100% !important;
-    padding: 10px !important;
-    margin-bottom: 15px !important;
-    border: 1px solid #ccc !important;
-    border-radius: 4px !important;
-    background-color: #fff !important; /* Lys baggrund */
-    color: #000 !important; /* Mørk tekst for høj kontrast */
-    font-size: 1rem !important;
+.admin-login label {
+    display: block;
+    margin-bottom: 10px;
+    text-align: left;
+    font-weight: bold;
+    color: #f6f6f6;
 }
 
-.register-form input::placeholder {
-    color: #aaa !important; /* Lysere tekst til placeholder */
+.admin-login input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff; /* Lys baggrund */
+    color: #000; /* Mørk tekst */
 }
 
-.register-form input:focus {
-    border-color: #f39c12 !important; /* Fremhæv inputfelt ved fokus */
-    outline: none !important;
-    background-color: #fef5e7 !important; /* Lys fremhævning ved fokus */
-    color: #333 !important; /* Tekstfarve forbliver læsbar */
+.admin-login input:focus {
+    border-color: #f39c12;
+    outline: none;
 }
 
-.register-form button {
-    width: 100% !important;
-    padding: 10px !important;
-    background-color: #f39c12 !important;
-    color: #fff !important;
-    border: none !important;
-    border-radius: 4px !important;
-    cursor: pointer !important;
-    font-weight: bold !important;
-    font-size: 1rem !important;
+.admin-login button {
+    width: 100%;
+    padding: 10px;
+    background-color: #f39c12;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
 }
 
-.register-form button:hover {
-    background-color: #e67e22 !important;
+.admin-login button:hover {
+    background-color: #e67e22;
 }
 
-.register-form .error {
-    color: red !important;
-    text-align: center !important;
-    margin-bottom: 10px !important;
+.error-message {
+    color: red;
+    margin-top: 10px;
+    font-weight: bold;
 }
 </style>
