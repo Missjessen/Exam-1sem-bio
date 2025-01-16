@@ -1,84 +1,98 @@
-<h1>Login</h1>
-<form method="POST" action="<?= BASE_URL ?>index.php?page=login">
-    <label for="email">E-mail:</label>
-    <input type="email" id="email" name="email" required>
+<div class="form-container">
+    <h1><?= $pageTitle ?></h1>
+    <form method="POST" action="<?= $formAction ?>">
+        <label for="name" <?= $showNameField ? '' : 'style="display:none;"' ?>>Navn:</label>
+        <input type="text" id="name" name="name" placeholder="Dit navn" <?= $showNameField ? 'required' : 'style="display:none;"' ?>>
 
-    <label for="password">Adgangskode:</label>
-    <input type="password" id="password" name="password" required>
+        <label for="email">E-mail:</label>
+        <input type="email" id="email" name="email" placeholder="Din e-mail" required>
 
-    <button type="submit">Log ind</button>
-</form>
+        <label for="password">Adgangskode:</label>
+        <input type="password" id="password" name="password" placeholder="Din adgangskode" required>
 
-<?php if (!empty($error)): ?>
-    <div class="error-message">
-        <?= htmlspecialchars($error) ?>
-    </div>
-<?php endif; ?>
+        <button type="submit"><?= $buttonText ?></button>
+    </form>
 
-<style>.register-form {
-    max-width: 400px !important;
-    margin: 50px auto !important;
-    padding: 20px !important;
-    background-color: #f9f9f9 !important; /* Lys baggrund */
-    color: #333 !important; /* Mørk tekst */
-    border-radius: 8px !important;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4) !important;
+    <?php if (!empty($error)): ?>
+        <div class="error-message">
+            <?= htmlspecialchars($error) ?>
+        </div>
+    <?php endif; ?>
+</div>
+
+
+<style>body {
+    font-family: Arial, sans-serif;
+    background-color: #000;
+    color: #f6f6f6;
+    margin: 0;
+    padding: 0;
 }
 
-.register-form h1 {
-    text-align: center !important;
-    margin-bottom: 20px !important;
-    color: #f39c12 !important;
+.form-container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #1a1a1a;
+    color: #f6f6f6;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
 }
 
-.register-form label {
-    display: block !important;
-    margin: 10px 0 5px !important;
-    font-weight: bold !important;
-    color: #333 !important; /* Sørger for at labels er læsbare */
+.form-container h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #f39c12;
 }
 
-.register-form input {
-    width: 100% !important;
-    padding: 10px !important;
-    margin-bottom: 15px !important;
-    border: 1px solid #ccc !important;
-    border-radius: 4px !important;
-    background-color: #fff !important; /* Lys baggrund */
-    color: #000 !important; /* Mørk tekst for høj kontrast */
-    font-size: 1rem !important;
+.form-container label {
+    display: block;
+    margin: 10px 0 5px;
+    font-weight: bold;
+    color: #f6f6f6;
 }
 
-.register-form input::placeholder {
-    color: #aaa !important; /* Lysere tekst til placeholder */
+.form-container input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #000;
+    font-size: 1rem;
 }
 
-.register-form input:focus {
-    border-color: #f39c12 !important; /* Fremhæv inputfelt ved fokus */
-    outline: none !important;
-    background-color: #fef5e7 !important; /* Lys fremhævning ved fokus */
-    color: #333 !important; /* Tekstfarve forbliver læsbar */
+.form-container input::placeholder {
+    color: #aaa;
 }
 
-.register-form button {
-    width: 100% !important;
-    padding: 10px !important;
-    background-color: #f39c12 !important;
-    color: #fff !important;
-    border: none !important;
-    border-radius: 4px !important;
-    cursor: pointer !important;
-    font-weight: bold !important;
-    font-size: 1rem !important;
+.form-container input:focus {
+    border-color: #f39c12;
+    outline: none;
+    background-color: #fef5e7;
+    color: #333;
 }
 
-.register-form button:hover {
-    background-color: #e67e22 !important;
+.form-container button {
+    width: 100%;
+    padding: 10px;
+    background-color: #f39c12;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
 }
 
-.register-form .error {
-    color: red !important;
-    text-align: center !important;
-    margin-bottom: 10px !important;
+.form-container button:hover {
+    background-color: #e67e22;
+}
+
+.error-message {
+    color: red;
+    text-align: center;
+    margin-bottom: 10px;
 }
 </style>
