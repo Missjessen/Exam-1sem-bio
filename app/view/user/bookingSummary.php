@@ -153,7 +153,7 @@
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 8px;
-   
+   background-color: #000;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -193,7 +193,7 @@
     border-color: #007bff;
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
     outline: none;
-    background-color: #000;
+    background-color: #fff;
 }
 
 .user-auth-card .btn-login, .user-auth-card .btn-register, .user-auth-card .btn-confirm {
