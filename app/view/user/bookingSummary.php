@@ -185,7 +185,7 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 14px;
-    background-color: #000;
+    background-color: #f6f6f6;
     transition: border-color 0.3s, box-shadow 0.3s;
 }
 
@@ -193,7 +193,7 @@
     border-color: #007bff;
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
     outline: none;
-    background-color: #fff;
+    background-color: #000;
 }
 
 .user-auth-card .btn-login, .user-auth-card .btn-register, .user-auth-card .btn-confirm {
@@ -201,7 +201,7 @@
     padding: 10px;
     border: none;
     border-radius: 4px;
-    background-color: #000;
+    background-color: #f6f6f6;
     color: #fff;
     font-size: 16px;
     cursor: pointer;
