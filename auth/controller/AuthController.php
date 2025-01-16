@@ -9,10 +9,16 @@ class AuthController {
 
     public function loginUser($email, $password) {
         try {
-            // Log admin ud, hvis admin-session eksisterer
-            if (isset($_SESSION['admin_id'])) {
-                session_unset();
-                session_destroy();
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                throw new Exception("Ugyldig email.");
+            }
+    
+            // Begræns loginforsøg
+            $loginAttempts = $_SESSION['login_attempts'] ?? 0;
+            $lastAttempt = $_SESSION['last_login_attempt'] ?? time();
+    
+            if ($loginAttempts >= 5 && (time() - $lastAttempt) < 900) {
+                throw new Exception("For mange forsøg. Prøv igen om 15 minutter.");
             }
     
             $query = "SELECT id, name, password FROM customers WHERE email = :email";
@@ -23,11 +29,19 @@ class AuthController {
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
     
             if ($user && password_verify($password, $user['password'])) {
-                // Sæt brugeroplysninger i sessionen
+                session_regenerate_id(true); // Rotér session-ID
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['user_name'] = $user['name'];
+                $_SESSION['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
+                $_SESSION['ip_address'] = $_SERVER['REMOTE_ADDR'];
+    
+                // Nulstil loginforsøg
+                unset($_SESSION['login_attempts'], $_SESSION['last_login_attempt']);
                 return true;
             }
+    
+            $_SESSION['login_attempts'] = $loginAttempts + 1;
+            $_SESSION['last_login_attempt'] = time();
     
             return false;
         } catch (PDOException $e) {
