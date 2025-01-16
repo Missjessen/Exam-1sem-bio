@@ -26,6 +26,7 @@
             <div class="login-form">
                 <h4>Log ind</h4>
                 <form method="POST" action="index.php?page=login">
+                <input type="hidden" name="redirect_to" value="<?= htmlspecialchars($_SERVER['REQUEST_URI']) ?>">
                     <label for="email-login">Email:</label>
                     <input type="email" name="email" id="email-login" required>
                     
@@ -40,6 +41,7 @@
             <div class="register-form">
                 <h4>Registrer</h4>
                 <form method="POST" action="index.php?page=register">
+                <input type="hidden" name="redirect_to" value="<?= htmlspecialchars($_SERVER['REQUEST_URI']) ?>">
                     <label for="name-register">Navn:</label>
                     <input type="text" name="name" id="name-register" required>
                     

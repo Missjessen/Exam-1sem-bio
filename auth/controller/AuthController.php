@@ -5,7 +5,7 @@ class AuthController {
     public function __construct($db) {
         $this->db = $db;
 
-        // Start session, hvis det ikke allerede er gjort
+      
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
@@ -13,23 +13,32 @@ class AuthController {
 
     public function loginUser($email, $password) {
         try {
-            // Login-logik her (ingen ændringer nødvendige)
+            // Prepare and execute query
             $query = "SELECT id, name, password FROM customers WHERE email = :email";
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':email', $email, PDO::PARAM_STR);
             $stmt->execute();
-
+    
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
+    
             if ($user && password_verify($password, $user['password'])) {
-                // Sæt brugeroplysninger i session
+                // Set session variables
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['user_name'] = $user['name'];
-                $_SESSION['last_activity'] = time(); // Til inaktivitetshåndtering
-                return true;
+                $_SESSION['last_activity'] = time(); // Track activity for session timeout
+    
+                // Redirect to the previous page if redirect_to is provided
+                if (!empty($_POST['redirect_to'])) {
+                    header("Location: " . htmlspecialchars($_POST['redirect_to']));
+                    exit;
+                }
+    
+                // Default redirect to homepage
+                header("Location: index.php");
+                exit;
             }
-
-            return false;
+    
+            return false; // Login failed
         } catch (PDOException $e) {
             throw new Exception("Fejl ved login: " . $e->getMessage());
         }
@@ -68,7 +77,16 @@ class AuthController {
                 // Sæt brugeroplysninger i session
                 $_SESSION['user_id'] = $this->db->lastInsertId();
                 $_SESSION['user_name'] = $name;
-                return true;
+    
+                // Omdiriger til booking-siden, hvis redirect_to er sat
+                if (!empty($_POST['redirect_to'])) {
+                    header("Location: " . htmlspecialchars($_POST['redirect_to']));
+                    exit;
+                }
+    
+                // Standard redirect til forsiden
+                header("Location: index.php");
+                exit;
             }
     
             return false;
@@ -77,14 +95,15 @@ class AuthController {
         }
     }
     
+    
     public function autoLogout() {
         // Tidsgrænse for inaktivitet (30 minutter)
-        $inactiveLimit = 1800; // 30 minutter i sekunder
+        $inactiveLimit = 1800; 
 
         if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity']) > $inactiveLimit) {
-            // Hvis brugeren har været inaktiv for længe, log ud
+           
             $this->logoutUser();
-            header("Location: index.php?page=login&message=timeout"); // Eventuel omdirigering med besked
+            header("Location: index.php?page=login&message=timeout"); 
             exit();
         }
 
@@ -118,12 +137,7 @@ class AuthController {
     }
     
     
-    
-    
-    
-    
-
-    public function isLoggedIn() {
+     public function isLoggedIn() {
         return isset($_SESSION['user_id']);
     }
 
