@@ -9,8 +9,10 @@ class AuthController {
 
     public function loginUser($email, $password) {
         try {
-            if (empty($email) || empty($password)) {
-                throw new Exception("Email og adgangskode skal udfyldes.");
+            // Log admin ud, hvis admin-session eksisterer
+            if (isset($_SESSION['admin_id'])) {
+                session_unset();
+                session_destroy();
             }
     
             $query = "SELECT id, name, password FROM customers WHERE email = :email";
@@ -25,8 +27,6 @@ class AuthController {
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['user_name'] = $user['name'];
                 return true;
-            } else {
-                error_log("Forkert adgangskode eller bruger ikke fundet: $email");
             }
     
             return false;
@@ -34,6 +34,7 @@ class AuthController {
             throw new Exception("Fejl ved login: " . $e->getMessage());
         }
     }
+    
     
     
     
@@ -127,9 +128,14 @@ class AuthController {
 
 
 
- // Admin-login-funktion
  public function loginAdmin($email, $password) {
     try {
+        // Log bruger ud, hvis bruger-session eksisterer
+        if (isset($_SESSION['user_id'])) {
+            session_unset();
+            session_destroy();
+        }
+
         $query = "SELECT id, name, password FROM employees WHERE email = :email AND role = 'admin'";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':email', $email, PDO::PARAM_STR);

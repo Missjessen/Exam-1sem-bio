@@ -63,7 +63,7 @@ class MovieAdminModel extends CrudBase {
             SELECT 
                 id, slug, title, description, poster, premiere_date 
             FROM movies
-            WHERE status = 'active' 
+            WHERE status IN ('available', 'coming_soon') 
             ORDER BY premiere_date ASC
         ";
         $stmt = $this->db->prepare($query);
@@ -76,17 +76,19 @@ class MovieAdminModel extends CrudBase {
     
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    
 
     // Hent en specifik film
     public function getMovie($movieId) {
         return $this->read('movies', '*', ['id' => $movieId], true);
     }
 
-    public function getAllMoviesWithDetails($limit = 10, $offset = 0) {
+    public function getAllMoviesWithDetails() {
         $sql = "
-        SELECT m.*, 
-        GROUP_CONCAT(DISTINCT g.name) AS genres, 
-        GROUP_CONCAT(DISTINCT a.name) AS actors
+            SELECT 
+                m.*, 
+                GROUP_CONCAT(DISTINCT g.name SEPARATOR ', ') AS genres, 
+                GROUP_CONCAT(DISTINCT a.name SEPARATOR ', ') AS actors
             FROM 
                 movies m
             LEFT JOIN 
@@ -99,13 +101,14 @@ class MovieAdminModel extends CrudBase {
                 actors a ON ma.actor_id = a.id
             GROUP BY 
                 m.id
-            LIMIT :limit OFFSET :offset";
+            ORDER BY 
+                m.premiere_date ASC
+        ";
         $stmt = $this->db->prepare($sql);
-        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    
 
     public function getMovieDetails($movieId) {
         try {

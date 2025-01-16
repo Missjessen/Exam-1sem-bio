@@ -212,6 +212,8 @@ class BookingController {
             throw new Exception("Fejl under indlæsning af bookingdata: " . $e->getMessage());
         }
     }
+
+    
     
    /*  function generateShortUUID() {
         // Generer en 16-byte UUID
