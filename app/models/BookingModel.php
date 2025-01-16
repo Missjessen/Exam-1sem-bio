@@ -23,7 +23,7 @@ class BookingModel extends CrudBase {
         try {
             $stmt->execute();
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            error_log("Hentede visningsdetaljer: " . print_r($result, true)); // Debugging
+            error_log("Hentede visningsdetaljer: " . print_r($result, true)); 
             return $result;
         } catch (PDOException $e) {
             throw new Exception("Fejl ved hentning af visning: " . $e->getMessage());
@@ -35,7 +35,7 @@ class BookingModel extends CrudBase {
 
     // Opret en ny booking
     public function createBooking($customerId, $bookingData) {
-        $orderNumber = $this->generateShortUUID(); // Kort UUID som ordrenummer
+        $orderNumber = $this->generateShortUUID(); 
         
         $query = "
             INSERT INTO bookings (customer_id, showing_id, spots_reserved, total_price, status, price_per_ticket, created_at, order_number)
@@ -164,8 +164,8 @@ class BookingModel extends CrudBase {
     
 
     private function generateShortUUID() {
-        $uuid = bin2hex(random_bytes(8)); // Genererer 16 tegn langt UUID
-        return strtoupper($uuid); // Returner i store bogstaver
+        $uuid = bin2hex(random_bytes(8)); 
+        return strtoupper($uuid); 
     }
 }
 

@@ -6,7 +6,7 @@ class PageController {
     private $pageLoader;
     private $movieAdminController;
     private $adminController;
-    //private $movieFrontendController;
+   
     private $bookingModel;
     private $bookingController;
     private $moviedetailsController;
@@ -22,7 +22,7 @@ class PageController {
         $this->pageLoader = new PageLoader($this->db);
         $this->movieAdminController = new MovieAdminController($this->db);
         $this->adminController = new AdminController(new AdminModel($this->db));
-        //$this->movieFrontendController = new MovieFrontendController(new MovieFrontendModel($this->db));
+       
         $this->bookingModel = new BookingModel($this->db);
         $this->bookingController = new BookingController($this->db);
         $this->moviedetailsController = new MovieDetailsController($this->db);
@@ -144,7 +144,7 @@ public function booking_success() {
         }
 
         $orderNumber = $_GET['order_number'];
-        $bookingModel = new BookingModel($this->db); // Instansier BookingModel
+        $bookingModel = new BookingModel($this->db); 
         $booking = $bookingModel->getBookingByOrderNumber($orderNumber, $_SESSION['user_id']);
 
         if (!$booking) {
@@ -188,19 +188,19 @@ public function admin_dashboard() {
     $this->requireAdminLogin();
 
     try {
-        // Initialiser AdminDashboardModel
+       
         $adminDashboardModel = new AdminDashboardModel($this->db);
 
-        // Hent nødvendige data til dashboardet
+      
         $data = [
             'dailyShowings' => $adminDashboardModel->getDailyShowings(),
             'newsMovies' => $adminDashboardModel->getNewsMovies(),
         ];
 
-        // Render admin dashboard med data
+        
         $this->pageLoader->renderPage('admin_dashboard', $data, 'admin');
     } catch (Exception $e) {
-        // Håndter fejl og vis en fejlside
+       
         $this->pageLoader->renderErrorPage(500, "Fejl under indlæsning af admin dashboard: " . $e->getMessage());
     }
 }
@@ -229,10 +229,10 @@ public function admin_bookings() {
 
 public function admin_showings() {
     try {
-        // Initialiser AdminShowingsController
+       
         $adminShowingsController = new AdminShowingsController($this->db);
 
-        // Kald controllerens main-metode til at håndtere handlingen
+       
         $adminShowingsController->handleAction();
     } catch (Exception $e) {
         $this->pageLoader->renderErrorPage(500, "Fejl under håndtering af filmvisninger: " . $e->getMessage());
@@ -278,7 +278,7 @@ public function admin_showings() {
     }
 
     public function profile() {
-        $this->requireLogin(); // Beskyt profilen, så kun loggede brugere kan få adgang
+        $this->requireLogin(); 
     
         try {
             $userId = $_SESSION['user_id'];
@@ -371,8 +371,8 @@ public function admin_showings() {
     
     
     public function logout() {
-        $this->authController->logoutUser(); // Kald logout-logik
-        header("Location: " . BASE_URL . "index.php?page=homePage"); // Omdiriger
+        $this->authController->logoutUser(); 
+        header("Location: " . BASE_URL . "index.php?page=homePage"); 
         exit();
     }
     

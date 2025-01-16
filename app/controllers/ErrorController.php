@@ -34,11 +34,11 @@ public function show404($message = 'The page you requested could not be found.')
             echo "<p>$errorMessage</p>";
         }
 
-        exit; // Afslut scriptkørsel
+        exit; 
     }
 
     public function showErrorPage($message) {
-        http_response_code(500); // Som standard, en serverfejl
+        http_response_code(500); 
         $this->renderErrorPage(500, $message);
     }
 }

@@ -44,7 +44,7 @@ class AdminBookingController {
             'showing_id' => $_POST['showing_id'],
             'spots_reserved' => $_POST['spots_reserved'],
             'status' => 'confirmed',
-            'price_per_ticket' => 100, // Evt. dynamisk
+            'price_per_ticket' => 100, 
             'total_price' => $_POST['spots_reserved'] * 100
         ];
 

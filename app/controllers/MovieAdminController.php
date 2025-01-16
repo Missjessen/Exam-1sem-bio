@@ -10,7 +10,7 @@ class MovieAdminController {
         $this->pageLoader = new PageLoader($db); 
     }
     public function getAllMoviesWithDetails() {
-        return $this->movieAdminModel->getAllMoviesWithDetails(); // Kalder modelens metode
+        return $this->movieAdminModel->getAllMoviesWithDetails();
     }
     public function index() {
         try {
@@ -50,7 +50,7 @@ class MovieAdminController {
             case 'edit':
                 $movieId = $_POST['movie_id'] ?? null;
                 if ($movieId) {
-                    // Hent filmdata og forbered til redigering
+                  
                     $movieToEdit = $this->movieAdminModel->getMovieDetails($movieId);
                     $this->pageLoader->loadAdminPage('admin_movie', [
                         'movieToEdit' => $movieToEdit,
@@ -58,7 +58,7 @@ class MovieAdminController {
                         'actors' => $this->movieAdminModel->getAllActors(),
                         'genres' => $this->movieAdminModel->getAllGenres(),
                     ]);
-                    return; // Stop yderligere handling
+                    return; 
                 } else {
                     error_log("Ingen movie_id fundet til edit.");
                 }
@@ -100,7 +100,7 @@ class MovieAdminController {
                 error_log("Ukendt handling: $action");
         }
     
-        // Redirect tilbage til admin_movie siden
+       
         header("Location: " . BASE_URL . "index.php?page=admin_movie");
         exit;
         
@@ -111,7 +111,7 @@ class MovieAdminController {
     // Gemmer eller opdaterer en film.
      
    private function handleMovieSave($action) {
-    $allowedStatuses = ['available', 'archived', 'coming_soon']; // Tilladte ENUM-værdier
+    $allowedStatuses = ['available', 'archived', 'coming_soon']; 
 
     $movieData = [
         'title' => $_POST['title'] ?? '',
@@ -144,7 +144,7 @@ class MovieAdminController {
             $movieId = $_GET['movie_id'] ?? null;
             if ($movieId) {
                 $movieDetails = $this->movieAdminModel->getMovieDetails($movieId);
-                error_log("Movie Details: " . print_r($movieDetails, true)); // Debug
+                error_log("Movie Details: " . print_r($movieDetails, true)); 
                 return $movieDetails;
             }
         }
@@ -173,10 +173,10 @@ class MovieAdminController {
      * Genererer en slug baseret på titel.
      */
     public function generateSlug($title) {
-        // Fjern HTML-tags, hvis de findes
+       
         $title = strip_tags($title);
     
-        // Erstat mellemrum med bindestreger og fjern specialtegn
+    
         return trim(strtolower(preg_replace('/[^a-zA-Z0-9-]+/', '-', $title)), '-');
     }
 
@@ -235,13 +235,13 @@ class MovieAdminController {
     }
     
     public function getAllActors() {
-        return $this->movieAdminModel->getAllActors(); // Kalder modelens metode
+        return $this->movieAdminModel->getAllActors(); 
     }
     public function getAllGenres() {
-        return $this->movieAdminModel->getAllGenres(); // Kalder modelens metode
+        return $this->movieAdminModel->getAllGenres(); 
     }
     public function getMovieDetails($movieId) {
-        return $this->movieAdminModel->getMovieDetails($movieId); // Kalder modelens metode
+        return $this->movieAdminModel->getMovieDetails($movieId); 
     }
      
     

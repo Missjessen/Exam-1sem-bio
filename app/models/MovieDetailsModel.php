@@ -27,7 +27,7 @@ class MovieDetailsModel {
     try {
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        error_log("Resultat fra databasen: " . print_r($result, true)); // Debug
+        error_log("Resultat fra databasen: " . print_r($result, true)); 
         return $result;
     } catch (PDOException $e) {
         throw new Exception("Fejl ved hentning af film: " . $e->getMessage());
@@ -104,6 +104,6 @@ ORDER BY
             throw new Exception("Fejl ved booking: " . $e->getMessage());
         }
     
-        return $stmt->rowCount() > 0; // Returner true, hvis en række blev opdateret
+        return $stmt->rowCount() > 0; 
     }
 }

@@ -8,7 +8,7 @@ class AdminShowingsModel extends CrudBase {
             $this->table,
             "showings.*, movies.title AS movie_title",
             ["INNER JOIN movies ON showings.movie_id = movies.id"],
-            "CONCAT(showings.show_date, ' ', showings.show_time) > NOW()" // Tilføj betingelse
+            "CONCAT(showings.show_date, ' ', showings.show_time) > NOW()" 
         );
     }
 

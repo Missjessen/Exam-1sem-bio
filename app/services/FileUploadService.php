@@ -39,6 +39,6 @@ class FileUploadService {
             throw new Exception("Fejl: Kunne ikke flytte den uploadede fil.");
         }
 
-        return '/uploads/' . $poster_name; // Returner relativ sti
+        return '/uploads/' . $poster_name; 
     }
 }

@@ -76,8 +76,8 @@
 
     <!-- Vis besked, hvis den findes -->
     <?php
-    if (session_status() === PHP_SESSION_NONE) { // Tjek om sessionen allerede er aktiv
-        session_start(); // Start session, hvis den ikke er startet
+    if (session_status() === PHP_SESSION_NONE) { 
+        session_start(); 
     }
 
     if (!empty($_SESSION['contactMessage'])): ?>
@@ -85,9 +85,9 @@
             <?= htmlspecialchars($_SESSION['contactMessage']) ?>
         </div>
         <?php
-        // Debugging for at sikre, at beskeden vises
+      
         error_log("Besked vist: " . $_SESSION['contactMessage']);
-        unset($_SESSION['contactMessage']); // Ryd besked efter visning
+        unset($_SESSION['contactMessage']); 
         ?>
     <?php endif; ?>
 </div>

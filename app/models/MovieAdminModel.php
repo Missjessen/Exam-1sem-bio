@@ -12,7 +12,7 @@ class MovieAdminModel extends CrudBase {
 
     public function updateMovie($movieId, $data) {
         try {
-            // Kontroller, at data ikke er tomt
+           
             if (empty($data)) {
                 throw new Exception("Data til opdatering er tomt.");
             }
@@ -128,7 +128,7 @@ class MovieAdminModel extends CrudBase {
             return $movie;
         } catch (Exception $e) {
             error_log("Fejl i getMovieDetails: " . $e->getMessage());
-            throw $e; // Genkast undtagelsen for at håndtere den længere oppe
+            throw $e; 
         }
     }
     

@@ -7,7 +7,7 @@ class Router {
             $db = Database::getInstance()->getConnection();
             $pageController = new PageController($db);
 
-            // Tjek for slug, men kun hvis det er relevant
+           
             $slug = ($page === 'movie_details' && isset($_GET['slug'])) ? $_GET['slug'] : null;
 
             if (!method_exists($pageController, 'showPage')) {
@@ -20,7 +20,7 @@ class Router {
 
         $errorController = new ErrorController();
         if (http_response_code() === 404) {
-            exit; // Undgå yderligere loops ved allerede håndteret 404
+            exit; 
         }
         $errorController->show404("Page not found: $page");
     }

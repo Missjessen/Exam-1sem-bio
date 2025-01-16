@@ -8,10 +8,7 @@ class AdminController {
     }
 
     
-  /*   // Metode til at hente indstillinger
-    public function getSettings(array $keys): array {
-        return $this->model->getSettings($keys);
-    } */
+
     public function handleSettings($postData = null) {
         if ($postData) {
             $updatedSettings = [
@@ -38,7 +35,7 @@ class AdminController {
             if ($result && isset($result['setting_value'])) {
                 $settings[$key] = $result['setting_value'];
             } else {
-                $settings[$key] = ''; // Brug en tom streng, hvis der ikke findes en værdi
+                $settings[$key] = ''; 
             }
         }
         return $settings;
@@ -57,7 +54,7 @@ class AdminController {
     // Customers methods
   public function handleCustomerAndEmployeeSubmission($postData, $getData) {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        // Tilføj eller opdater kunder
+       
        if (isset($postData['add_or_update_customer'])) {
     $customerData = [
         'name' => $postData['name'],

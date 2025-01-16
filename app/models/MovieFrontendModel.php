@@ -14,7 +14,7 @@ class MovieFrontendModel {
 
 
     public function getShowingsForMovie($movieId) {
-        error_log("Henter visninger for film med ID: $movieId"); // Debug
+        error_log("Henter visninger for film med ID: $movieId"); 
     
         $query = "
             SELECT 
@@ -41,7 +41,7 @@ class MovieFrontendModel {
         }
     
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        error_log("Visninger hentet: " . print_r($result, true)); // Debug
+        error_log("Visninger hentet: " . print_r($result, true)); 
         return $result;
     }
 
@@ -74,10 +74,10 @@ public function getDailyShowings($filterDate = null) {
               ORDER BY 
                 s.show_time ASC";
 
-    // Brug CURDATE(), hvis ingen dato er angivet
+   
     $date = $filterDate ?? date('Y-m-d');
     
-    // Forbered og bind parametre
+   
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':date', $date, PDO::PARAM_STR);
     $stmt->execute();
@@ -98,7 +98,7 @@ public function getDailyShowings($filterDate = null) {
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             error_log("SQL Fejl i getUpcomingMovies(): " . $e->getMessage());
-            return []; // Returner en tom array som fallback
+            return []; 
         }
     }
     
@@ -169,9 +169,9 @@ public function getDailyShowings($filterDate = null) {
             $movie = $stmt->fetch(PDO::FETCH_ASSOC);
     
             if ($movie) {
-                error_log("Film fundet: " . print_r($movie, true)); // Debug-log
+                error_log("Film fundet: " . print_r($movie, true)); 
             } else {
-                error_log("Ingen film fundet for slug: " . $slug); // Debug-log
+                error_log("Ingen film fundet for slug: " . $slug); 
             }
     
             return $movie;

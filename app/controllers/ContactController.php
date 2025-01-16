@@ -2,11 +2,11 @@
 
 class ContactController {
     public function handleContactForm() {
-        // Feedback til brugeren
+        
         $response = '';
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
-            // Hent og rens input
+           
             $name = isset($_POST['name']) ? htmlspecialchars(trim($_POST['name'])) : '';
             $email = isset($_POST['email']) ? htmlspecialchars(trim($_POST['email'])) : '';
             $subject = isset($_POST['subject']) ? htmlspecialchars(trim($_POST['subject'])) : '';
@@ -18,7 +18,7 @@ class ContactController {
                 } elseif (!Validate::validateRequiredFields([$name, $email, $subject, $message])) {
                     throw new Exception("Alle felter skal udfyldes.");
                 } else {
-                // Modtagerens email
+                
                 $to = "nsj@cruise-nights-cinema.dk";
 
                 // Email-indhold
@@ -42,7 +42,7 @@ class ContactController {
             }
         }
 
-        // Return feedback til view
+       
         return $response;
     }
 }

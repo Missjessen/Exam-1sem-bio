@@ -1,11 +1,11 @@
 <?php
 class Database {
-    private static $instance = null; // Singleton instans
-    private $connection; // PDO-forbindelsen
+    private static $instance = null; 
+    private $connection; 
 
     private function __construct() {
         // Hent miljøvariabler fra .env
-        $envFile = __DIR__ . '/../.env'; // Sørg for, at stien til .env er korrekt
+        $envFile = __DIR__ . '/../.env'; 
         if (!file_exists($envFile)) {
             throw new Exception(".env-filen blev ikke fundet.");
         }

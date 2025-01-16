@@ -100,7 +100,7 @@ class BookingController {
             $orderNumber = $this->bookingModel->createBooking($_SESSION['user_id'], $bookingData);
     
             if ($orderNumber) {
-                // Gem order_number til visning senere
+                
                 $_SESSION['last_booking'] = [
                     'order_number' => $orderNumber,
                     'movie_title' => $bookingData['movie_title'],
@@ -110,7 +110,7 @@ class BookingController {
                     'total_price' => $bookingData['total_price'],
                 ];
     
-                unset($_SESSION['pending_booking']); // Ryd midlertidige bookingdata
+                unset($_SESSION['pending_booking']); 
                 header("Location: index.php?page=booking_success&order_number=" . $orderNumber);
                 exit;
             } else {
@@ -143,8 +143,8 @@ class BookingController {
                 throw new Exception("Du skal være logget ind for at se din kvittering.");
             }
     
-            // Debugging for at kontrollere værdier
-            error_log("Order Number: $orderNumber, Customer ID: " . $_SESSION['user_id']);
+          
+        
     
             $bookingData = $this->bookingModel->getBookingByOrderNumber($orderNumber, $_SESSION['user_id']);
     
@@ -161,10 +161,10 @@ class BookingController {
 
     public function bookingSummary() {
         try {
-            // Tjek om der er data i sessionen
+            
             $booking = $_SESSION['pending_booking'] ?? null;
     
-            // Hvis ingen sessiondata, hent fra databasen
+       
             if (!$booking) {
                 $booking = $this->bookingModel->getLatestBookingByUser($_SESSION['user_id']);
             }
@@ -214,17 +214,7 @@ class BookingController {
     }
 
     
-    
-   /*  function generateShortUUID() {
-        // Generer en 16-byte UUID
-        $uuid = bin2hex(random_bytes(16));
-        // Konverter UUID til Base64
-        $base64 = base64_encode(hex2bin($uuid));
-        // Fjern '=' padding og gør den URL-venlig
-        $base64 = rtrim($base64, '=');
-        return str_replace(['+', '/'], ['-', '_'], $base64);
-    }
-     */
+
     
     
     private function getBookingDataFromSession() {
