@@ -75,7 +75,7 @@
     padding: 20px;
     border: 1px solid #ddd;
     border-radius: 8px;
-    background-color: #f9f9f9;
+    background-color: #000;
 }
 
 .booking-card, .user-auth-card {
@@ -201,8 +201,8 @@
     padding: 10px;
     border: none;
     border-radius: 4px;
-    background-color: #f6f6f6;
-    color: #fff;
+    background-color: #000;
+    color: #f6f6f6;
     font-size: 16px;
     cursor: pointer;
     transition: background-color 0.3s;
