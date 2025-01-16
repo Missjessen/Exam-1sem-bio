@@ -1,29 +1,19 @@
 <?php 
-
 class AuthController {
     private $db;
 
     public function __construct($db) {
         $this->db = $db;
+
+        // Start session, hvis det ikke allerede er gjort
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
     }
 
     public function loginUser($email, $password) {
         try {
-            session_start();
-
-            $maxAttempts = 5; // Maks antal loginforsøg
-            $lockoutTime = 900; // 15 minutter (900 sekunder)
-
-            // Hent tidligere forsøg fra session
-            $loginAttempts = $_SESSION['login_attempts'] ?? 0;
-            $lastAttempt = $_SESSION['last_login_attempt'] ?? 0;
-
-            // Tjek, om brugeren skal låses ude
-            if ($loginAttempts >= $maxAttempts && (time() - $lastAttempt) < $lockoutTime) {
-                throw new Exception("For mange loginforsøg. Prøv igen om 15 minutter.");
-            }
-
-            // Fortsæt med login-processen
+            // Login-logik her (ingen ændringer nødvendige)
             $query = "SELECT id, name, password FROM customers WHERE email = :email";
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':email', $email, PDO::PARAM_STR);
@@ -32,28 +22,18 @@ class AuthController {
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if ($user && password_verify($password, $user['password'])) {
-                // Nulstil loginforsøg efter succesfuldt login
-                unset($_SESSION['login_attempts'], $_SESSION['last_login_attempt']);
-
-                // Sæt brugeroplysninger i sessionen
+                // Sæt brugeroplysninger i session
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['user_name'] = $user['name'];
-                $_SESSION['last_activity'] = time(); // Gem tidspunkt for aktivitet
-                $_SESSION['login_time'] = time(); // Gem tidspunkt for login
-
+                $_SESSION['last_activity'] = time(); // Til inaktivitetshåndtering
                 return true;
             }
-
-            // Hvis login fejler, opdater loginforsøg
-            $_SESSION['login_attempts'] = $loginAttempts + 1;
-            $_SESSION['last_login_attempt'] = time();
 
             return false;
         } catch (PDOException $e) {
             throw new Exception("Fejl ved login: " . $e->getMessage());
         }
     }
-
     
     
     
@@ -136,7 +116,6 @@ class AuthController {
             setcookie(session_name(), '', time() - 42000, $params["path"], $params["domain"], $params["secure"], $params["httponly"]);
         }
     }
-
     
     
     
@@ -145,7 +124,6 @@ class AuthController {
     
 
     public function isLoggedIn() {
-        $this->autoLogout(); // Tjek automatisk inaktivitet
         return isset($_SESSION['user_id']);
     }
 
