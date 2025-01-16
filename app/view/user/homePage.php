@@ -1,13 +1,14 @@
 
 <body>
      <!-- Hero Image Section -->
-     <header class="hero-image">
+     <<header class="hero-image">
+    <div class="hero-overlay">
         <div class="hero-text">
-            
+            <h1>Welcome to Cruise Nights Cinema</h1>
             <p>Experience the best movies from the comfort of your car.</p>
-        
         </div>
-    </header>
+    </div>
+</header>
 
 
     <section class="hero">
