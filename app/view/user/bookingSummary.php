@@ -122,7 +122,7 @@
     padding: 10px;
     border: none;
     border-radius: 4px;
-    background-color: #007bff;
+    background-color: #828282;
     color: #fff;
     font-size: 16px;
     cursor: pointer;
@@ -201,7 +201,7 @@
     padding: 10px;
     border: none;
     border-radius: 4px;
-    background-color: #000;
+    background-color: #a35e14;
     color: #f6f6f6;
     font-size: 16px;
     cursor: pointer;
