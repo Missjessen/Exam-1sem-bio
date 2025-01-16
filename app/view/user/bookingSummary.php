@@ -145,7 +145,7 @@
     padding: 20px;
     border: 1px solid #ddd;
     border-radius: 8px;
-    background-color: #f9f9f9;
+    background-color: #000;
 }
 
 .booking-card, .user-auth-card {
@@ -185,7 +185,7 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 14px;
-    background-color: #fefefe;
+    background-color: #000;
     transition: border-color 0.3s, box-shadow 0.3s;
 }
 
@@ -201,7 +201,7 @@
     padding: 10px;
     border: none;
     border-radius: 4px;
-    background-color: #007bff;
+    background-color: #000;
     color: #fff;
     font-size: 16px;
     cursor: pointer;
