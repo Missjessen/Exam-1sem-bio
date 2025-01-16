@@ -76,7 +76,7 @@ html, body {
 
     /* Styling navbar */
     body {
-        font-family: Arial, sans-serif;
+        font-family: bookman old style, sans-serif;
        
         color: #f6f6f6;
     }
