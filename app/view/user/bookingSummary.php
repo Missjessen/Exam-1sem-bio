@@ -89,7 +89,7 @@
 
 .booking-card h2, .user-auth-card h3 {
     margin-top: 0;
-    color: #333;
+    color: #f6f6f6;
 }
 
 .booking-card p {
