@@ -1,7 +1,7 @@
 
 <body>
      <!-- Hero Image Section -->
-     <<header class="hero-image">
+     <header class="hero-image">
     <div class="hero-overlay">
         <div class="hero-text">
             <h1>Welcome to Cruise Nights Cinema</h1>
