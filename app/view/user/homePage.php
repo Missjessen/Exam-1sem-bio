@@ -1,4 +1,36 @@
+<?php 
+function generateFiatRadioCode($serial)
+{
+    // Fjern unødvendige tegn og gør det hele til store bogstaver
+    $serial = strtoupper(trim($serial));
 
+    // Tjek om serienummeret er gyldigt
+    if (preg_match('/^BP\d{12}$/', $serial)) {
+        // Ekstrakter relevante cifre fra serienummeret
+        $keyPart = substr($serial, -4);  // De sidste 4 cifre
+        $checksum = 0;
+
+        // Simpel algoritme til at beregne kode (pseudo)
+        for ($i = 0; $i < strlen($keyPart); $i++) {
+            $checksum += intval($keyPart[$i]) * ($i + 1);
+        }
+
+        // Generer radiokoden (eksempel)
+        $code = ($checksum * 1234) % 10000; // Begræns til 4 cifre
+
+        // Formater koden til 4 cifre
+        return str_pad($code, 4, "0", STR_PAD_LEFT);
+    } else {
+        return "Ugyldigt serienummer!";
+    }
+}
+
+// Test funktionen
+$serialNumber = "BP638381940682"; // Indsæt dit serienummer her
+$radioCode = generateFiatRadioCode($serialNumber);
+
+echo "Radiokoden for serienummeret $serialNumber er: $radioCode";
+?>
 <body>
      <!-- Hero Image Section -->
      <header class="hero-image">
