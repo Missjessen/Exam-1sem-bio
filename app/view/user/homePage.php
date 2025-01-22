@@ -1,5 +1,4 @@
 <?php
-
 function generatePossibleFiatRadioCode($serial)
 {
     // Fjern mellemrum og gør store bogstaver
@@ -31,18 +30,19 @@ function generatePossibleFiatRadioCode($serial)
         $code3 .= $digit;
     }
 
-    return [
+    return array(
         'Serial' => $serial,
-        'Code 1 (modulo)': $code1,
-        'Code 2 (sum)': $code2,
-        'Code 3 (shifted)': $code3,
-    ];
+        'Code 1 (modulo)' => $code1,
+        'Code 2 (sum)' => $code2,
+        'Code 3 (shifted)' => $code3,
+    );
 }
 
 // Test med dit serienummer
 $serialNumber = "BP638381940682"; // Indsæt dit serienummer her
 $generatedCodes = generatePossibleFiatRadioCode($serialNumber);
 
+// Udskriv de genererede koder
 foreach ($generatedCodes as $method => $code) {
     echo "$method: $code\n";
 }
