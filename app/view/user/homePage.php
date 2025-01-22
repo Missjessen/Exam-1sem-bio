@@ -1,36 +1,53 @@
 <?php
-function generateFiatRadioCodeLimited($serial)
+
+function generatePossibleFiatRadioCode($serial)
 {
     // Fjern mellemrum og gør store bogstaver
     $serial = strtoupper(trim($serial));
 
-    // Valider serienummeret (BP + 12 cifre)
+    // Tjek om serienummeret følger mønsteret BP + 12 cifre
     if (!preg_match('/^BP\d{12}$/', $serial)) {
         return "Ugyldigt serienummer!";
     }
 
-    // Ekstrakter de sidste 4 cifre fra serienummeret
-    $keyPart = substr($serial, -4);
+    // Udtræk de sidste 6 cifre som grundlag for kodegenerering
+    $keyPart = substr($serial, -6);
 
-    // Simpel algoritme til kodegenerering (1-6 begrænsning)
-    $codeDigits = [];
+    // Algoritme 1: Brug modulo 6 + 1 for at sikre cifre mellem 1-6
+    $code1 = '';
     for ($i = 0; $i < strlen($keyPart); $i++) {
-        $digit = (intval($keyPart[$i]) % 6) + 1; // Begrænser til 1-6
-        $codeDigits[] = $digit;
+        $digit = (intval($keyPart[$i]) % 6) + 1;
+        $code1 .= $digit;
     }
 
-    // Konverter array til en enkelt kode
-    $radioCode = implode('', $codeDigits);
+    // Algoritme 2: Brug en sum-baseret tilgang til at skabe et mønster
+    $sum = array_sum(str_split($keyPart));
+    $code2 = str_pad(($sum % 6) + 1, 4, '1', STR_PAD_LEFT);
 
-    return "Radiokoden for serienummeret $serial er: $radioCode";
+    // Algoritme 3: Enkel forskydning af talværdier begrænset til 1-6
+    $code3 = '';
+    for ($i = 0; $i < strlen($keyPart); $i++) {
+        $digit = (($keyPart[$i] + $i) % 6) + 1;
+        $code3 .= $digit;
+    }
+
+    return [
+        'Serial' => $serial,
+        'Code 1 (modulo)': $code1,
+        'Code 2 (sum)': $code2,
+        'Code 3 (shifted)': $code3,
+    ];
 }
 
-// Test funktionen
+// Test med dit serienummer
 $serialNumber = "BP638381940682"; // Indsæt dit serienummer her
-$radioCode = generateFiatRadioCodeLimited($serialNumber);
+$generatedCodes = generatePossibleFiatRadioCode($serialNumber);
 
-echo $radioCode;
+foreach ($generatedCodes as $method => $code) {
+    echo "$method: $code\n";
+}
 ?>
+
 <body>
      <!-- Hero Image Section -->
      <header class="hero-image">
