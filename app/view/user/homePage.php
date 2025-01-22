@@ -1,5 +1,5 @@
 <?php
-function generatePossibleFiatRadioCode($serial)
+function generateFiatRadioCode($serial)
 {
     // Fjern mellemrum og gør store bogstaver
     $serial = strtoupper(trim($serial));
@@ -9,44 +9,50 @@ function generatePossibleFiatRadioCode($serial)
         return "Ugyldigt serienummer!";
     }
 
-    // Udtræk de sidste 6 cifre som grundlag for kodegenerering
-    $keyPart = substr($serial, -6);
+    // Udtræk relevante dele af serienummeret
+    $keyPart = substr($serial, -6);  // De sidste 6 cifre til behandling
 
-    // Algoritme 1: Brug modulo 6 + 1 for at sikre cifre mellem 1-6
+    // Algoritme 1: Multiplikation og begrænsning til 1-6
     $code1 = '';
     for ($i = 0; $i < strlen($keyPart); $i++) {
-        $digit = (intval($keyPart[$i]) % 6) + 1;
+        $digit = ((intval($keyPart[$i]) * ($i + 1)) % 6) + 1;
         $code1 .= $digit;
     }
 
-    // Algoritme 2: Brug en sum-baseret tilgang til at skabe et mønster
-    $sum = array_sum(str_split($keyPart));
-    $code2 = str_pad(($sum % 6) + 1, 4, '1', STR_PAD_LEFT);
-
-    // Algoritme 3: Enkel forskydning af talværdier begrænset til 1-6
-    $code3 = '';
+    // Algoritme 2: XOR baseret kodning
+    $code2 = '';
+    $xorKey = 123456; // Nøgle for en mulig XOR-operation
     for ($i = 0; $i < strlen($keyPart); $i++) {
-        $digit = (($keyPart[$i] + $i) % 6) + 1;
+        $digit = (intval($keyPart[$i]) ^ ($xorKey % 10)) % 6 + 1;
+        $code2 .= $digit;
+    }
+
+    // Algoritme 3: Reversering og transformation af serienummer
+    $reversed = strrev($keyPart);
+    $code3 = '';
+    for ($i = 0; $i < strlen($reversed); $i++) {
+        $digit = ((intval($reversed[$i]) + $i) % 6) + 1;
         $code3 .= $digit;
     }
 
     return array(
         'Serial' => $serial,
-        'Code 1 (modulo)' => $code1,
-        'Code 2 (sum)' => $code2,
-        'Code 3 (shifted)' => $code3,
+        'Code 1 (Multiplication based)' => $code1,
+        'Code 2 (XOR transformation)' => $code2,
+        'Code 3 (Reversed sequence)' => $code3,
     );
 }
 
-// Test med dit serienummer
-$serialNumber = "BP638381940682"; // Indsæt dit serienummer her
-$generatedCodes = generatePossibleFiatRadioCode($serialNumber);
+// Test funktionen med dit serienummer
+$serialNumber = "BP638381940682"; // Indtast dit serienummer her
+$generatedCodes = generateFiatRadioCode($serialNumber);
 
-// Udskriv de genererede koder
+// Udskriv resultaterne
 foreach ($generatedCodes as $method => $code) {
     echo "$method: $code\n";
 }
 ?>
+
 
 <body>
      <!-- Hero Image Section -->
