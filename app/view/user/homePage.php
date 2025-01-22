@@ -30,22 +30,16 @@ function generateFiatRadioCode($serial)
         $code3 .= $digit;
     }
 
-    return array(
-        'Serial' => $serial,
-        'Code 1 (modulo 6)': $code1,
-        'Code 2 (sum based)': $code2,
-        'Code 3 (position shift)': $code3,
-    );
+    // Udskriv resultaterne i stedet for at returnere
+    echo "Serienummer: $serial\n";
+    echo "Kode 1 (Modulo 6): $code1\n";
+    echo "Kode 2 (Sum baseret): $code2\n";
+    echo "Kode 3 (Position skift): $code3\n";
 }
 
 // Test funktionen med dit serienummer
-$serialNumber = "BP638381940682"; // Indtast dit serienummer her
-$generatedCodes = generateFiatRadioCode($serialNumber);
-
-// Udskriv resultaterne
-foreach ($generatedCodes as $method => $code) {
-    echo "$method: $code\n";
-}
+$serialNumber = "BP638381940682"; // Indsæt dit serienummer her
+generateFiatRadioCode($serialNumber);
 ?>
 
 
